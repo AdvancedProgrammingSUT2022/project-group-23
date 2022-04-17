@@ -50,10 +50,6 @@ public class User {
         return happiness;
     }
 
-    public static ArrayList<User> getUsers () {
-        return users;
-    }
-
     public ArrayList<Unit> getUnits () {
         return units;
     }
@@ -81,4 +77,12 @@ public class User {
         technologies.add(technology);
     }
 
+    public static ArrayList<User> getUsers () {
+        return users;
+    }
+
+    public static void addUser(User user)
+    {
+        users.add(user);
+    }
 }

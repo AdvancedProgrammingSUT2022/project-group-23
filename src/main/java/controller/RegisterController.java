@@ -35,5 +35,22 @@ public class RegisterController {
         User.addUser(user);
         return "user created successfully!";
     }
+    public String login(String username,String password)
+    {
+        for (User user : User.getUsers()) {
+            if(user.getUsername().equals(username))
+            {
+                if(!user.getPassword().equals(password))
+                {
+                    return "Username and password didn’t match!";
+                }
+                User.setUserLogged(user);
+                return "user logged in successfully!";
+            }
+        }
+        return "Username and password didn’t match!";
+    }
+
+
 
 }

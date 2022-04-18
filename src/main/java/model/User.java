@@ -14,6 +14,7 @@ public class User {
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
     private ArrayList<Technology> technologies;
+    private static User userLogged;
 
     public User(String username,String password,String nickname)
     {
@@ -85,5 +86,13 @@ public class User {
     public static void addUser(User user)
     {
         users.add(user);
+    }
+
+    public static User getUserLogged () {
+        return userLogged;
+    }
+
+    public static void setUserLogged (User userLogged) {
+        User.userLogged = userLogged;
     }
 }

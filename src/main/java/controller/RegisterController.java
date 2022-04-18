@@ -42,13 +42,13 @@ public class RegisterController {
             {
                 if(!user.getPassword().equals(password))
                 {
-                    return "Username and password didn’t match!";
+                    return "Username and password didn't match!";
                 }
                 User.setUserLogged(user);
                 return "user logged in successfully!";
             }
         }
-        return "Username and password didn’t match!";
+        return "Username and password didn't match!";
     }
 
 

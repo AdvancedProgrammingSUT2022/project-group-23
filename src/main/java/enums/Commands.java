@@ -4,9 +4,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum Commands {
-    CREATE_USER("user create --(?<firstOption>\\w+) (?<firstValue>\\w+) " +
-            "--(?<secondOption>\\w+) (?<secondValue>\\w+) " +
-            "--(?<thirdOption>\\w+) (?<thirdValue>)\\w+");
+    CREATE_USER("user create --(?<option1>\\w+) (?<value1>\\w+) " +
+            "--(?<option2>\\w+) (?<value2>\\w+) " +
+            "--(?<option3>\\w+) (?<value3>\\w+)"),
+    LOGIN_USER("user login --(?<option1>\\w+) (?<value1>\\w+) " +
+            "--(?<option2>\\w+) (?<value2>\\w+)");
 
 
     private String regex;

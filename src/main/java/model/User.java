@@ -95,4 +95,12 @@ public class User {
     public static void setUserLogged (User userLogged) {
         User.userLogged = userLogged;
     }
+
+    public void setPassword (String password) {
+        this.password = password;
+    }
+
+    public void setNickname (String nickname) {
+        this.nickname = nickname;
+    }
 }

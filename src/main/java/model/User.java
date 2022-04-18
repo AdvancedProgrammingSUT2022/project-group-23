@@ -10,7 +10,7 @@ public class User {
     private int cup;
     private int gold;
     private int happiness;
-    private static ArrayList<User> users;
+    private static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
     private ArrayList<Technology> technologies;
@@ -20,6 +20,7 @@ public class User {
         this.username=username;
         this.password=password;
         this.nickname=nickname;
+        users.add(this);
     }
 
     public String getUsername () {

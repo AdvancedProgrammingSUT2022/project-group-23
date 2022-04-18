@@ -1,5 +1,11 @@
+import view.RegisterMenu;
+
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args){
-        System.out.println("Civ5");
+        Scanner scanner = new Scanner(System.in);
+        RegisterMenu registerMenu = RegisterMenu.getInstance();
+        registerMenu.run(scanner);
     }
 }

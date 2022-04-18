@@ -21,17 +21,17 @@ public class RegisterController {
         return instance;
     }
 
-    public String addUser(Matcher matcher)
+    public String addUser(String username, String nickname, String password)
     {
         for (User user : User.getUsers()) {
-            if (user.getUsername().equals(matcher.group("username"))) {
-                return "user with username " + matcher.group("username") + " already exists";
+            if (user.getUsername().equals(username)) {
+                return "user with username " + username + " already exists";
             }
-            if (user.getNickname().equals(matcher.group("nickname"))) {
-                return "user with nickname " + matcher.group("nickname") + " already exists";
+            if (user.getNickname().equals(nickname)) {
+                return "user with nickname " + nickname + " already exists";
             }
         }
-        User user= new User(matcher.group("username"),matcher.group("password"),matcher.group("nickname"));
+        User user= new User(username,password,nickname);
         User.addUser(user);
         return "user created successfully!";
     }

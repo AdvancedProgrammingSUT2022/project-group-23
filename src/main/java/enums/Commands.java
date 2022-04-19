@@ -1,5 +1,6 @@
 package enums;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,7 +9,8 @@ public enum Commands {
             "--(?<option2>\\w+) (?<value2>\\w+) " +
             "--(?<option3>\\w+) (?<value3>\\w+)"),
     LOGIN_USER("user login --(?<option1>\\w+) (?<value1>\\w+) " +
-            "--(?<option2>\\w+) (?<value2>\\w+)");
+            "--(?<option2>\\w+) (?<value2>\\w+)"),
+    ENTER_MENU("menu enter (?<menuName>\\w+)");
 
 
     private String regex;
@@ -21,5 +23,13 @@ public enum Commands {
         Matcher matcher = Pattern.compile(command.regex).matcher(input);
         if (matcher.matches()) return matcher;
         return null;
+    }
+    public static HashMap<String, String> getOptions(Matcher matcher, int countOfOptions) {
+        HashMap<String, String> options = new HashMap<>();
+        for (int i = 1; i <= countOfOptions; i++) {
+            options.put(matcher.group("option" + i), matcher.group("value" + i));
+
+        }
+        return options;
     }
 }

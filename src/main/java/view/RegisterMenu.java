@@ -25,27 +25,28 @@ public class RegisterMenu {
             input = scanner.nextLine();
             Matcher matcher;
             if((matcher = Commands.getCommandMatcher(input, Commands.CREATE_USER)) != null){
-                HashMap<String, String> options = getOptions(matcher, 3);
+                HashMap<String, String> options = Commands.getOptions(matcher, 3);
                 if(!options.containsKey("username") || !options.containsKey("nickname") ||
                         !options.containsKey("password"))
                     System.out.println("invalid command");
                 else System.out.println(registerController.addUser(options.get("username"), options.get("nickname"), options.get("password")));
             } else if((matcher = Commands.getCommandMatcher(input, Commands.LOGIN_USER)) != null){
-                HashMap<String, String> options = getOptions(matcher, 2);
+                HashMap<String, String> options = Commands.getOptions(matcher, 2);
+                String message = "";
                 if(!options.containsKey("username") || !options.containsKey("password"))
                     System.out.println("invalid command");
-                else System.out.println(registerController.login(options.get("username"), options.get("password")));
+                else System.out.println(message = registerController.login(options.get("username"), options.get("password")));
+                if(message.equals("user logged in successfully!")){
+                    MainMenu.getInstance().run(scanner);
+                }
             }
-            else if(input.equals("exit"))break;
+            else if(input.equals("menu show-current")) System.out.println("Login Menu");
+            else if(input.equals("menu exit"))break;
+            else if(input.equals("user logout")) System.out.println("please login first");
+            else if(input.startsWith("menu enter")) System.out.println("please login first");
+            else System.out.println("invalid command");
         }
     }
 
-    private HashMap<String, String> getOptions(Matcher matcher, int countOfOptions) {
-        HashMap<String, String> options = new HashMap<>();
-        for (int i = 1; i <= countOfOptions; i++) {
-            options.put(matcher.group("option" + i), matcher.group("value" + i));
 
-        }
-        return options;
-    }
 }

@@ -9,7 +9,7 @@ public class MainMenuController {
 
     }
 
-    private static MainMenuController getInstance()
+    public static MainMenuController getInstance()
     {
         if(instance==null)
         {

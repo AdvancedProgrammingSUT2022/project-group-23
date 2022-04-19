@@ -25,7 +25,7 @@ public class MainMenu {
             Matcher matcher;
             if((matcher = Commands.getCommandMatcher(input, Commands.ENTER_MENU)) != null){
                 String menuName = matcher.group("menuName");
-                if(menuName.matches("([pP]rofile)|([pP]rofile [mM]enu)")){
+                if(menuName.toLowerCase().matches("(profile)|(profile menu)")){
                     ProfileMenu.getInstance().run(scanner);
                 }
             }

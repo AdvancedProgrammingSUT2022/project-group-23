@@ -9,7 +9,7 @@ public class ProfileController {
 
     }
 
-    private static ProfileController getInstance()
+    public static ProfileController getInstance()
     {
         if(instance==null)
         {

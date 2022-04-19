@@ -26,7 +26,7 @@ public class MainMenu {
             if((matcher = Commands.getCommandMatcher(input, Commands.ENTER_MENU)) != null){
                 String menuName = matcher.group("menuName");
                 if(menuName.matches("([pP]rofile)|([pP]rofile [mM]enu)")){
-                    //TODO enter profile menu;
+                    ProfileMenu.getInstance().run(scanner);
                 }
             }
             else if(input.equals("menu show-current")) System.out.println("Main Menu");

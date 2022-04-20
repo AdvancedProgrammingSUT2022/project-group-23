@@ -103,4 +103,13 @@ public class User {
     public void setNickname (String nickname) {
         this.nickname = nickname;
     }
+
+    public void newGame(){
+        cup = 0;
+        gold = 0;
+        happiness = 0;
+        units = new ArrayList<>();
+        cities = new ArrayList<>();
+        technologies = new ArrayList<>();
+    }
 }

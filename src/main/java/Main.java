@@ -1,3 +1,4 @@
+import view.GameView;
 import view.RegisterMenu;
 
 import java.util.Scanner;

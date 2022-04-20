@@ -24,4 +24,11 @@ public class MainMenuController {
         return "user logged out successfully!";
     }
 
+    public boolean hasUser(String username){
+        for(User user : User.getUsers()){
+            if(user.getUsername().equals(username))
+                return true;
+        }
+        return false;
+    }
 }

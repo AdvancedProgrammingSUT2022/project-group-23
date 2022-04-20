@@ -6,6 +6,7 @@ import enums.Commands;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainMenu {
     private static MainMenu instance;
@@ -30,20 +31,25 @@ public class MainMenu {
                     ProfileMenu.getInstance().run(scanner);
                 }
             }else if(input.startsWith("play game")){
-                matcher = Commands.getCommandMatcher(input, Commands.PLAYER);
+                matcher = Pattern.compile("--player\\d (?<username>\\w+)").matcher(input);
                 ArrayList<String> usernames = new ArrayList<>();
+                boolean valid = true;
                 while(matcher.find()){
                     String username = matcher.group("username");
                     if(!mainMenuController.hasUser(username)){
                         System.out.println("some player doesn't exist!");
+                        valid = false;
+                        break;
                     }
                     usernames.add(username);
                 }
-                if(usernames.size() < 2) System.out.println("not enough players");
-                else {
-                    System.out.println("game started");
-                    GameView gameView = new GameView(usernames);
-                    gameView.run(scanner);
+                if(valid) {
+                    if (usernames.size() < 2) System.out.println("not enough players");
+                    else {
+                        System.out.println("game started");
+                        GameView gameView = new GameView(usernames);
+                        gameView.run(scanner);
+                    }
                 }
             }
             else if(input.equals("menu show-current")) System.out.println("Main Menu");

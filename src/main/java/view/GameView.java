@@ -31,6 +31,8 @@ public class GameView {
     CivilizationController civilizationController;
 
     public GameView(ArrayList<String> usernames){
+        System.out.println(usernames);
+
         ArrayList<User> players = new ArrayList<>();
         ArrayList<User> allUsers = User.getUsers();
         for(String username : usernames){

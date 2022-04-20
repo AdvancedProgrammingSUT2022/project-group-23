@@ -13,8 +13,7 @@ public enum Commands {
     ENTER_MENU("menu enter (?<menuName>.+)"),
     CHANGE_NICKNAME("profile change --nickname (?<nickname>\\w+)"),
     CHANGE_PASSWORD("profile change --password --(?<option1>\\w+) (?<value1>\\w+) " +
-            "--(?<option2>\\w+) (?<value2>\\w+)"),
-    PLAYER("--player\\d (?<username>\\w+)");
+            "--(?<option2>\\w+) (?<value2>\\w+)");
 
 
     private String regex;

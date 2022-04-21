@@ -9,11 +9,14 @@ public class Terrain {
     private int production;
     private int movementCost;
     private int combatPercentage;
-    private ArrayList<Resource> resources;
 
-    Terrain(String name)
-    {
-        this.name=name;
+    public Terrain(String name, int gold, int food, int production, int movementCost, int combatPercentage) {
+        this.name = name;
+        this.gold = gold;
+        this.food = food;
+        this.production = production;
+        this.movementCost = movementCost;
+        this.combatPercentage = combatPercentage;
     }
 
     public String getName () {
@@ -38,10 +41,6 @@ public class Terrain {
 
     public int getCombatPercentage () {
         return combatPercentage;
-    }
-
-    public ArrayList<Resource> getResources () {
-        return resources;
     }
 
     public void setGold (int gold) {

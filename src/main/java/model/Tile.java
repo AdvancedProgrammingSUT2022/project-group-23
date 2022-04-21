@@ -10,6 +10,7 @@ public class Tile {
     private int food;
     private Terrain terrain;
     private Feature feature;
+    private ArrayList<Resource> resources;
     private ArrayList<River> rivers;
     private ArrayList<Improvement> improvements;
     private String visibility;
@@ -47,6 +48,9 @@ public class Tile {
 
     public Feature getFeature () {
         return feature;
+    }
+    public ArrayList<Resource> getResources () {
+        return resources;
     }
 
     public ArrayList<River> getRivers () {

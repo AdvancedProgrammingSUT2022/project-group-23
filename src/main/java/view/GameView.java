@@ -28,7 +28,7 @@ public class GameView {
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
     private String[][] printableMap = new String[100][100];
-    CivilizationController civilizationController;
+    private CivilizationController civilizationController;
 
     public GameView(ArrayList<String> usernames){
         System.out.println(usernames);

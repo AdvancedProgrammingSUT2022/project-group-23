@@ -9,11 +9,14 @@ public class Feature {
     private int production;
     private int movementCost;
     private int combatPercentage;
-    private ArrayList<Resource> resources;
 
-    Feature(String name)
-    {
-        this.name=name;
+    public Feature(String name, int gold, int food, int production, int movementCost, int combatPercentage) {
+        this.name = name;
+        this.gold = gold;
+        this.food = food;
+        this.production = production;
+        this.movementCost = movementCost;
+        this.combatPercentage = combatPercentage;
     }
 
     public String getName () {
@@ -40,9 +43,6 @@ public class Feature {
         return combatPercentage;
     }
 
-    public ArrayList<Resource> getResources () {
-        return resources;
-    }
 
     public void setGold (int gold) {
         this.gold = gold;

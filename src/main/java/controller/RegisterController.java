@@ -1,18 +1,25 @@
 package controller;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.User;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.regex.Matcher;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class RegisterController {
     private static RegisterController instance;
 
     private RegisterController()
     {
-
+        try {
+            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\UsersInfo.json")));
+            User.setUsers(new Gson().fromJson(json, new TypeToken<List<User>>(){}.getType()));
+        } catch (IOException e) {
+            System.out.println("ERROR");
+        }
     }
 
     public static RegisterController getInstance()

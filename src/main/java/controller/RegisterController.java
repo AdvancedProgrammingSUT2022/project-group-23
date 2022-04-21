@@ -1,7 +1,10 @@
 package controller;
 
+import com.google.gson.Gson;
 import model.User;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.regex.Matcher;
 
 public class RegisterController {
@@ -31,8 +34,14 @@ public class RegisterController {
                 return "user with nickname " + nickname + " already exists";
             }
         }
-        User user= new User(username,password,nickname);
-        User.addUser(user);
+        new User(username,password,nickname);
+        try {
+            FileWriter writer=new FileWriter("src\\main\\resources\\UsersInfo.json");
+            writer.write(new Gson().toJson(User.getUsers()));
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("ERROR");
+        }
         return "user created successfully!";
     }
     public String login(String username,String password)

@@ -24,6 +24,10 @@ public class User {
         users.add(this);
     }
 
+    public static void setUsers (ArrayList<User> users) {
+        User.users = users;
+    }
+
     public String getUsername () {
         return username;
     }

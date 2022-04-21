@@ -119,6 +119,7 @@ public class User {
         units = new ArrayList<>();
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
+        updateUsersInfo();
     }
 
     public static void updateUsersInfo()

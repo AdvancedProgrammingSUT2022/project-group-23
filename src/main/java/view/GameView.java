@@ -1,7 +1,9 @@
 package view;
 
 import controller.CivilizationController;
+import database.TerrainDatabase;
 import enums.Commands;
+import model.Tile;
 import model.User;
 
 import java.util.ArrayList;
@@ -50,14 +52,30 @@ public class GameView {
         while (true){
             input = scanner.nextLine();
             Matcher matcher;
-            if(input.equals("menu show-current")) System.out.println("Game Menu");
+            if (input.equals("show map"))drawMap();
+            else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("menu exit"))break;
             else System.out.println("invalid command");
         }
     }
 
 
-    public void addHexagonal(int x, int y, String backgroundColor, ArrayList<Integer> riverDirections, ArrayList<String> infos){
+    private void drawMap(){
+        Tile[][] tiles = civilizationController.getTiles();
+        int width = civilizationController.getMapWidth();
+        int height = civilizationController.getMapHeight();
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                ArrayList<String> infos = new ArrayList<>();
+                if(tiles[i][j].getTerrain() != null)infos.add(tiles[i][j].getTerrain().getName());
+                if(tiles[i][j].getFeature() != null)infos.add(tiles[i][j].getFeature().getName());
+                addHexagonal(i, j, ANSI_GREEN_BACKGROUND, new ArrayList<>(),infos);
+                TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
+            }
+        }
+        printMap();
+    }
+    private void addHexagonal(int x, int y, String backgroundColor, ArrayList<Integer> riverDirections, ArrayList<String> infos){
         int mapY, mapX;
         if(y%2 == 0) {
             mapY = (y  / 2) * 11 + (y / 2) * 5 + 3;
@@ -92,8 +110,11 @@ public class GameView {
                 String c = " ";
                 if (infos.size() > 0 && infos.get(0).length() >= j)
                     c = String.valueOf(infos.get(0).charAt(j - 1));
-                if(i == 2)
-                    printableMap[mapX + 3 + i][mapY - 2 + i + j] = backgroundColor + "_" + ANSI_RESET;
+                if(i == 2) {
+                    if(riverDirections.contains(5))
+                        printableMap[mapX + 3 + i][mapY - 2 + i + j] = ANSI_BLUE_BACKGROUND + "_" + ANSI_RESET;
+                    else printableMap[mapX + 3 + i][mapY - 2 + i + j] = backgroundColor + "_" + ANSI_RESET;
+                }
                 else
                     printableMap[mapX + 3 + i][mapY - 2 + i + j] = backgroundColor + c + ANSI_RESET;
             }
@@ -103,7 +124,7 @@ public class GameView {
         }
 
     }
-    public void printMap(){
+    private void printMap(){
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
                 if (printableMap[i][j] != null) System.out.print(printableMap[i][j]);

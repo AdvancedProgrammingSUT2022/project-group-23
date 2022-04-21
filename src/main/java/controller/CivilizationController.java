@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class CivilizationController {
     private ArrayList<User> players;
 
-    private int mapWidth = 8;
-    private int mapHeight = 8;
+    private int mapWidth = 10;
+    private int mapHeight = 10;
 
     private Tile[][] tiles = new Tile[mapHeight][mapWidth];
 
@@ -22,8 +22,21 @@ public class CivilizationController {
     public void initializeMap(){
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapWidth; j++) {
+                tiles[i][j] = new Tile(i , j);
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
             }
         }
+    }
+
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    public int getMapHeight() {
+        return mapHeight;
+    }
+
+    public Tile[][] getTiles() {
+        return tiles;
     }
 }

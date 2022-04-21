@@ -16,7 +16,7 @@ public class Tile {
     private String visibility;
     private int citizen;
 
-    Tile(int x,int y)
+    public Tile(int x,int y)
     {
         this.x=x;
         this.y=y;

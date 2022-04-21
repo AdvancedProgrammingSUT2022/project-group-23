@@ -35,13 +35,7 @@ public class RegisterController {
             }
         }
         new User(username,password,nickname);
-        try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\UsersInfo.json");
-            writer.write(new Gson().toJson(User.getUsers()));
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("ERROR");
-        }
+        User.updateUsersInfo();
         return "user created successfully!";
     }
     public String login(String username,String password)

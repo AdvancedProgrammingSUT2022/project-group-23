@@ -1,5 +1,9 @@
 package model;
 
+import com.google.gson.Gson;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class User {
@@ -115,5 +119,16 @@ public class User {
         units = new ArrayList<>();
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
+    }
+
+    public static void updateUsersInfo()
+    {
+        try {
+            FileWriter writer=new FileWriter("src\\main\\resources\\UsersInfo.json");
+            writer.write(new Gson().toJson(User.getUsers()));
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("ERROR");
+        }
     }
 }

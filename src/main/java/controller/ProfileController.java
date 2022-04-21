@@ -31,13 +31,7 @@ public class ProfileController {
             }
         }
         User.getUserLogged().setNickname(nickname);
-        try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\UsersInfo.json");
-            writer.write(new Gson().toJson(User.getUsers()));
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("ERROR");
-        }
+        User.updateUsersInfo();
         return "nickname changed successfully!";
     }
 
@@ -52,13 +46,7 @@ public class ProfileController {
             return "please enter a new password";
         }
         User.getUserLogged().setPassword(newPassword);
-        try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\UsersInfo.json");
-            writer.write(new Gson().toJson(User.getUsers()));
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("ERROR");
-        }
+        User.updateUsersInfo();
         return "password changed successfully!";
     }
 }

@@ -2,14 +2,17 @@ package database;
 
 import model.Feature;
 import model.Terrain;
+import model.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class TerrainDatabase {
-    public static ArrayList<Terrain> terrains = new ArrayList<>();
-    public static ArrayList<Feature> features = new ArrayList<>();
-    public static HashMap<String, ArrayList<String>> possibleFeaturesForTerrains = new HashMap<>();
+    private static Random random = new Random();
+    private static ArrayList<Terrain> terrains = new ArrayList<>();
+    private static ArrayList<Feature> features = new ArrayList<>();
+    private static HashMap<String, ArrayList<String>> possibleFeaturesForTerrains = new HashMap<>();
 
     static {
         terrains.add(new Terrain("dessert" , 0, 0, 0, 1, -33));
@@ -32,7 +35,34 @@ public class TerrainDatabase {
         possibleFeaturesForTerrains.put("grassland",new ArrayList<>(){{add("forest"); add("marsh");}});
         possibleFeaturesForTerrains.put("hills",new ArrayList<>(){{add("forest"); add("jungle");}});
         possibleFeaturesForTerrains.put("plain",new ArrayList<>(){{add("forest"); add("jungle");}});
-        possibleFeaturesForTerrains.put("tundra",new ArrayList<>(){{add("forest"); add("oasis");}});
+        possibleFeaturesForTerrains.put("tundra",new ArrayList<>(){{add("forest");}});
 
+    }
+    public static void addRandomTerrainAndFeatureToTile(Tile tile){
+        Terrain terrain = null;
+        Feature feature = null;
+        if(random.nextInt(15) == 0){
+            for(Feature tempFeature : features){
+                if(tempFeature.getName().equals("ice")){
+                    feature = tempFeature;
+                    break;
+                }
+            }
+        }
+        else {
+            terrain = terrains.get(random.nextInt(terrains.size()));
+            if (possibleFeaturesForTerrains.containsKey(terrain.getName())) {
+                ArrayList<String> terrainPossibleFeatures = possibleFeaturesForTerrains.get(terrain.getName());
+                String featureName = terrainPossibleFeatures.get(random.nextInt(terrainPossibleFeatures.size()));
+                for (Feature tempFeature : features) {
+                    if (tempFeature.getName().equals(featureName)) {
+                        feature = tempFeature;
+                        break;
+                    }
+                }
+            }
+        }
+        tile.setTerrain(terrain);
+        tile.setFeature(feature);
     }
 }

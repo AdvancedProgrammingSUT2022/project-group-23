@@ -49,6 +49,15 @@ public class Tile {
     public Feature getFeature () {
         return feature;
     }
+
+    public void setTerrain(Terrain terrain) {
+        this.terrain = terrain;
+    }
+
+    public void setFeature(Feature feature) {
+        this.feature = feature;
+    }
+
     public ArrayList<Resource> getResources () {
         return resources;
     }

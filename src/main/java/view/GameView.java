@@ -29,7 +29,7 @@ public class GameView {
     public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
-    private String[][] printableMap = new String[100][100];
+
     private CivilizationController civilizationController;
 
     public GameView(ArrayList<String> usernames){
@@ -61,6 +61,7 @@ public class GameView {
 
 
     private void drawMap(){
+        String[][] printableMap = new String[100][100];
         Tile[][] tiles = civilizationController.getTiles();
         int width = civilizationController.getMapWidth();
         int height = civilizationController.getMapHeight();
@@ -69,13 +70,13 @@ public class GameView {
                 ArrayList<String> infos = new ArrayList<>();
                 if(tiles[i][j].getTerrain() != null)infos.add(tiles[i][j].getTerrain().getName());
                 if(tiles[i][j].getFeature() != null)infos.add(tiles[i][j].getFeature().getName());
-                addHexagonal(i, j, ANSI_GREEN_BACKGROUND, new ArrayList<>(),infos);
+                addHexagonal(printableMap, i, j, ANSI_GREEN_BACKGROUND, tiles[i][j].getRivers(),infos);
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
             }
         }
-        printMap();
+        printMap(printableMap);
     }
-    private void addHexagonal(int x, int y, String backgroundColor, ArrayList<Integer> riverDirections, ArrayList<String> infos){
+    private void addHexagonal(String[][] printableMap, int x, int y, String backgroundColor, ArrayList<Integer> riverDirections, ArrayList<String> infos){
         int mapY, mapX;
         if(y%2 == 0) {
             mapY = (y  / 2) * 11 + (y / 2) * 5 + 3;
@@ -88,7 +89,7 @@ public class GameView {
         String coordinates = x + "," + y;
         for (int i = 0; i < 3; i++) {
             printableMap[mapX + i][mapY - i] = "/";
-            if(riverDirections.contains(1)) printableMap[mapX + i][mapY - i] = ANSI_BLUE_BACKGROUND + "/" + ANSI_RESET;
+            if(riverDirections.contains(6)) printableMap[mapX + i][mapY - i] = ANSI_BLUE_BACKGROUND + "/" + ANSI_RESET;
             for (int j = 1; j <= 5 + 2 * i; j++) {
                 String c = " ";
                 if (i != 2) {
@@ -105,13 +106,13 @@ public class GameView {
         }
         for (int i = 0; i < 3; i++) {
             printableMap[mapX + 3 + i][mapY - 2 + i] = "\\";
-            if(riverDirections.contains(3)) printableMap[mapX + 3 + i][mapY - 2 + i] = ANSI_BLUE_BACKGROUND + "\\" + ANSI_RESET;
+            if(riverDirections.contains(5)) printableMap[mapX + 3 + i][mapY - 2 + i] = ANSI_BLUE_BACKGROUND + "\\" + ANSI_RESET;
             for (int j = 1; j <= 5 + 2 * (2 - i); j++) {
                 String c = " ";
                 if (infos.size() > 0 && infos.get(0).length() >= j)
                     c = String.valueOf(infos.get(0).charAt(j - 1));
                 if(i == 2) {
-                    if(riverDirections.contains(5))
+                    if(riverDirections.contains(4))
                         printableMap[mapX + 3 + i][mapY - 2 + i + j] = ANSI_BLUE_BACKGROUND + "_" + ANSI_RESET;
                     else printableMap[mapX + 3 + i][mapY - 2 + i + j] = backgroundColor + "_" + ANSI_RESET;
                 }
@@ -119,12 +120,12 @@ public class GameView {
                     printableMap[mapX + 3 + i][mapY - 2 + i + j] = backgroundColor + c + ANSI_RESET;
             }
             printableMap[mapX + 3 + i][mapY - 2 + i + 6 + 2 * (2 - i)] = "/";
-            if(riverDirections.contains(4)) printableMap[mapX + 3 + i][mapY - 2 + i + 6 + 2 * (2 - i)] = ANSI_BLUE_BACKGROUND + "/" + ANSI_RESET;
+            if(riverDirections.contains(3)) printableMap[mapX + 3 + i][mapY - 2 + i + 6 + 2 * (2 - i)] = ANSI_BLUE_BACKGROUND + "/" + ANSI_RESET;
             if(i != 2 && !infos.isEmpty())infos.remove(0);
         }
 
     }
-    private void printMap(){
+    private void printMap(String[][] printableMap){
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
                 if (printableMap[i][j] != null) System.out.print(printableMap[i][j]);

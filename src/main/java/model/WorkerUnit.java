@@ -1,8 +1,8 @@
 package model;
 
 public class WorkerUnit extends Unit {
-    public WorkerUnit (String name)
+    public WorkerUnit ()
     {
-        super(name);
+        super("worker", 70 , 2, -1, -1);
     }
 }

@@ -11,7 +11,7 @@ public class Tile {
     private Terrain terrain;
     private Feature feature;
     private ArrayList<Resource> resources;
-    private ArrayList<River> rivers;
+    private ArrayList<Integer> rivers;
     private ArrayList<Improvement> improvements;
     private String visibility;
     private int citizen;
@@ -20,6 +20,7 @@ public class Tile {
     {
         this.x=x;
         this.y=y;
+        rivers = new ArrayList<>();
     }
 
     public int getX () {
@@ -62,8 +63,12 @@ public class Tile {
         return resources;
     }
 
-    public ArrayList<River> getRivers () {
+    public ArrayList<Integer> getRivers () {
         return rivers;
+    }
+
+    public void addRiver(int riverPosition){
+        if(!rivers.contains(riverPosition))rivers.add(riverPosition);
     }
 
     public ArrayList<Improvement> getImprovements () {

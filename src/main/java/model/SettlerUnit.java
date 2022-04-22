@@ -2,8 +2,8 @@ package model;
 
 public class SettlerUnit extends Unit {
 
-    public SettlerUnit (String name)
+    public SettlerUnit ()
     {
-        super(name);
+        super("settler", 89 , 2, -1, -1);
     }
 }

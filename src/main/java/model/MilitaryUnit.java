@@ -4,11 +4,10 @@ public class MilitaryUnit extends Unit {
     private int strength;
     private int rangeStrength;
     private int range;
-    private int health;
 
-    public MilitaryUnit(String name)
+    public MilitaryUnit(String name, int cost, int movement, int x, int y)
     {
-        super(name);
+        super(name, cost, movement, x, y);
     }
 
 }

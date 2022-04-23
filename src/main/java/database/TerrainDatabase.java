@@ -15,27 +15,27 @@ public class TerrainDatabase {
     private static HashMap<String, ArrayList<String>> possibleFeaturesForTerrains = new HashMap<>();
 
     static {
-        terrains.add(new Terrain("dessert" , 0, 0, 0, 1, -33));
-        terrains.add(new Terrain("grassland" , 0, 2, 0, 1, -33));
-        terrains.add(new Terrain("hills" , 0, 0, 2, 2, 25));
-        terrains.add(new Terrain("mountain" , 0, 0, 0, -1, 0));
-        terrains.add(new Terrain("ocean" , 0, 0, 0, -1, 0));
-        terrains.add(new Terrain("plain" , 0, 1, 1, 1, -33));
-        terrains.add(new Terrain("snow" , 0, 0, 0, 1, -33));
-        terrains.add(new Terrain("tundra" , 0, 1, 0, 1, -33));
+        terrains.add(new Terrain("Dessert" , 0, 0, 0, 1, -33));
+        terrains.add(new Terrain("Grassland" , 0, 2, 0, 1, -33));
+        terrains.add(new Terrain("Hill" , 0, 0, 2, 2, 25));
+        terrains.add(new Terrain("Mountain" , 0, 0, 0, -1, 0));
+        terrains.add(new Terrain("Ocean" , 0, 0, 0, -1, 0));
+        terrains.add(new Terrain("Plain" , 0, 1, 1, 1, -33));
+        terrains.add(new Terrain("Snow" , 0, 0, 0, 1, -33));
+        terrains.add(new Terrain("Tundra" , 0, 1, 0, 1, -33));
 
-        features.add(new Feature("flood plains", 0, 2 ,0, 1, -33));
-        features.add(new Feature("forest", 0, 1 ,1, 2, 25));
-        features.add(new Feature("ice", 0, 0 ,0, -1, 0));
-        features.add(new Feature("jungle", 0, 1 ,-1, 2, 25));
-        features.add(new Feature("marsh", 0, -1 ,0, 2, -33));
-        features.add(new Feature("oasis", 1, 3 ,0, 1, -33));
+        features.add(new Feature("Flood Plain", 0, 2 ,0, 1, -33));
+        features.add(new Feature("Forest", 0, 1 ,1, 2, 25));
+        features.add(new Feature("Ice", 0, 0 ,0, -1, 0));
+        features.add(new Feature("Jungle", 0, 1 ,-1, 2, 25));
+        features.add(new Feature("Marsh", 0, -1 ,0, 2, -33));
+        features.add(new Feature("Oasis", 1, 3 ,0, 1, -33));
 
-        possibleFeaturesForTerrains.put("desert",new ArrayList<>(){{add("flood plains"); add("oasis");}});
-        possibleFeaturesForTerrains.put("grassland",new ArrayList<>(){{add("forest"); add("marsh");}});
-        possibleFeaturesForTerrains.put("hills",new ArrayList<>(){{add("forest"); add("jungle");}});
-        possibleFeaturesForTerrains.put("plain",new ArrayList<>(){{add("forest"); add("jungle");}});
-        possibleFeaturesForTerrains.put("tundra",new ArrayList<>(){{add("forest");}});
+        possibleFeaturesForTerrains.put("Desert",new ArrayList<>(){{add("Flood Plain"); add("Oasis");}});
+        possibleFeaturesForTerrains.put("Grassland",new ArrayList<>(){{add("Forest"); add("Marsh");}});
+        possibleFeaturesForTerrains.put("Hill",new ArrayList<>(){{add("Forest"); add("Jungle");}});
+        possibleFeaturesForTerrains.put("Plain",new ArrayList<>(){{add("Forest"); add("Jungle");}});
+        possibleFeaturesForTerrains.put("Tundra",new ArrayList<>(){{add("Forest");}});
 
     }
     public static void addRandomTerrainAndFeatureToTile(Tile tile){
@@ -43,7 +43,7 @@ public class TerrainDatabase {
         Feature feature = null;
         if(random.nextInt(15) == 0){
             for(Feature tempFeature : features){
-                if(tempFeature.getName().equals("ice")){
+                if(tempFeature.getName().equals("Ice")){
                     feature = tempFeature;
                     break;
                 }

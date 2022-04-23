@@ -75,7 +75,13 @@ public class GameView {
                 if(tiles[i][j].getFeature() != null)infos.add(tiles[i][j].getFeature().getName());
                 if(unitController.getTileNonCombatUnit(i, j) != null)infos.add(unitController.getTileNonCombatUnit(i, j).getName());
                 if(unitController.getTileCombatUnit(i, j) != null)infos.add(unitController.getTileCombatUnit(i, j).getName());
-                addHexagonal(printableMap, i, j, ANSI_GREEN_BACKGROUND, tiles[i][j].getRivers(),infos);
+
+                String background = ANSI_PURPLE_BACKGROUND;
+                if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("visible"))background = ANSI_YELLOW_BACKGROUND;
+                if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))background = ANSI_BLUE_BACKGROUND;
+
+
+                addHexagonal(printableMap, i, j, background, tiles[i][j].getRivers(),infos);
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
             }
         }

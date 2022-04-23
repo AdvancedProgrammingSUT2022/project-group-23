@@ -26,8 +26,7 @@ public class CivilizationController {
         currentPlayer = players.get(0);
         initializeMap();
         turn = 0;
-        unitController = new UnitController(mapWidth, mapHeight, players, tiles);
-        unitController.initializeUnits();
+        unitController = new UnitController(mapWidth, mapHeight, players, tiles, currentPlayer, turn);
     }
 
     public void initializeMap() {
@@ -58,12 +57,12 @@ public class CivilizationController {
                             if (k == 2 && isCoordinateValid(i - 1, j + 1)) tiles[i - 1][j + 1].addRiver(5);
                             else if (k == 3 && isCoordinateValid(i, j + 1)) tiles[i][j + 1].addRiver(6);
                             else if (k == 5 && isCoordinateValid(i, j - 1)) tiles[i][j - 1].addRiver(2);
-                            else if (k == 6 && isCoordinateValid(i - 1, j - 1)) tiles[i - 1][j + 1].addRiver(3);
+                            else if (k == 6 && isCoordinateValid(i - 1, j - 1)) tiles[i - 1][j - 1].addRiver(3);
                         } else {
                             if (k == 2 && isCoordinateValid(i, j + 1)) tiles[i][j + 1].addRiver(5);
                             else if (k == 3 && isCoordinateValid(i + 1, j + 1)) tiles[i + 1][j + 1].addRiver(6);
                             else if (k == 5 && isCoordinateValid(i + 1, j - 1)) tiles[i + 1][j - 1].addRiver(2);
-                            else if (k == 6 && isCoordinateValid(i, j - 1)) tiles[i][j + 1].addRiver(3);
+                            else if (k == 6 && isCoordinateValid(i, j - 1)) tiles[i][j - 1].addRiver(3);
                         }
                     }
                 }
@@ -71,13 +70,17 @@ public class CivilizationController {
         }
     }
 
-    private boolean isCoordinateValid(int x, int y) {
+    public boolean isCoordinateValid(int x, int y) {
         return x >= 0 && x < mapHeight && y >= 0 && y < mapWidth;
     }
 
     public void nextTurn() {
+        //TODO check if unit needs action or ...
         this.turn = (turn + 1) % players.size();
         this.currentPlayer = players.get(turn);
+        unitController.setCurrentPlayer(this.currentPlayer);
+        unitController.setTurn(this.turn);
+        unitController.checkVisibility();
     }
 
     public int getMapWidth() {
@@ -94,5 +97,9 @@ public class CivilizationController {
 
     public UnitController getUnitController() {
         return unitController;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 }

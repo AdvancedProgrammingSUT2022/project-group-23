@@ -1,14 +1,21 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Improvement {
     private String name;
     private int gold;
     private int food;
     private int production;
 
-    Improvement(String name)
-    {
-        this.name=name;
+    private ArrayList<String> placesItCanBeBuild;
+
+    public Improvement(String name, int gold, int food, int production, ArrayList<String> placesItCanBeBuild) {
+        this.name = name;
+        this.gold = gold;
+        this.food = food;
+        this.production = production;
+        this.placesItCanBeBuild = placesItCanBeBuild;
     }
 
     public String getName () {

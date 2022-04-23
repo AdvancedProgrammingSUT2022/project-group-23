@@ -11,4 +11,8 @@ public class TechnologyDatabase {
         technologies.add(new Technology("Animal Husbandry", 35, new ArrayList<>(){{add("Agriculture");}}));
         //TODO fill in the rest of technologies
     }
+
+    public static ArrayList<Technology> getTechnologies() {
+        return technologies;
+    }
 }

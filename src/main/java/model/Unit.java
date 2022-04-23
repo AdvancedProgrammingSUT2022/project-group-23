@@ -46,6 +46,14 @@ public class Unit {
         this.y = y;
     }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
     public String getState() {
         return state;
     }

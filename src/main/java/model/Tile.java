@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Tile {
     private int x;
@@ -12,15 +13,17 @@ public class Tile {
     private Feature feature;
     private ArrayList<Resource> resources;
     private ArrayList<Integer> rivers;
-    private ArrayList<Improvement> improvements;
-    private String visibility;
+    private HashMap<Integer,ArrayList<Improvement>> improvements;
+    private HashMap<Integer,String> visibility;
     private int citizen;
 
     public Tile(int x,int y)
     {
         this.x=x;
         this.y=y;
-        rivers = new ArrayList<>();
+        this.rivers = new ArrayList<>();
+        this.visibility = new HashMap<>();
+        this.improvements = new HashMap<>();
     }
 
     public int getX () {
@@ -71,21 +74,21 @@ public class Tile {
         if(!rivers.contains(riverPosition))rivers.add(riverPosition);
     }
 
-    public ArrayList<Improvement> getImprovements () {
-        return improvements;
+    public ArrayList<Improvement> getImprovementsForUser (int userId) {
+        return improvements.get(userId);
     }
 
-    public String getVisibility () {
-        return visibility;
+    public String getVisibilityForUser (int userId) {
+        return visibility.get(userId);
     }
 
-    public void setVisibility (String visibility) {
-        this.visibility = visibility;
+    public void setVisibilityForUser (String visibility, int userId) {
+        this.visibility.put(userId, visibility);
     }
 
-    public void addImprovement(Improvement improvement)
-    {
-        improvements.add(improvement);
+    public void addImprovementForUser(Improvement improvement, int userId) {
+        if(!improvements.containsKey(userId)) improvements.put(userId, new ArrayList<>());
+        improvements.get(userId).add(improvement);
     }
 
     public void setGold (int gold) {

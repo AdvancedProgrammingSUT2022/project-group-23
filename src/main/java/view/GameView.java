@@ -1,6 +1,7 @@
 package view;
 
 import controller.CivilizationController;
+import controller.UnitController;
 import database.TerrainDatabase;
 import enums.Commands;
 import model.Tile;
@@ -12,25 +13,26 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 
 public class GameView {
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
-    public static final String ANSI_RED_BACKGROUND = "\u001B[41m";
-    public static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
-    public static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
-    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
-    public static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
-    public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
-    public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_WHITE = "\u001B[37m";
+    private static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
+    private static final String ANSI_RED_BACKGROUND = "\u001B[41m";
+    private static final String ANSI_GREEN_BACKGROUND = "\u001B[42m";
+    private static final String ANSI_YELLOW_BACKGROUND = "\u001B[43m";
+    private static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    private static final String ANSI_PURPLE_BACKGROUND = "\u001B[45m";
+    private static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
+    private static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
     private CivilizationController civilizationController;
+    private UnitController unitController;
 
     public GameView(ArrayList<String> usernames){
         System.out.println(usernames);
@@ -46,6 +48,7 @@ public class GameView {
             }
         }
         civilizationController = new CivilizationController(players);
+        unitController = civilizationController.getUnitController();
     }
     public void run(Scanner scanner){
         String input;
@@ -70,6 +73,8 @@ public class GameView {
                 ArrayList<String> infos = new ArrayList<>();
                 if(tiles[i][j].getTerrain() != null)infos.add(tiles[i][j].getTerrain().getName());
                 if(tiles[i][j].getFeature() != null)infos.add(tiles[i][j].getFeature().getName());
+                if(unitController.getTileNonCombatUnit(i, j) != null)infos.add(unitController.getTileNonCombatUnit(i, j).getName());
+                if(unitController.getTileCombatUnit(i, j) != null)infos.add(unitController.getTileCombatUnit(i, j).getName());
                 addHexagonal(printableMap, i, j, ANSI_GREEN_BACKGROUND, tiles[i][j].getRivers(),infos);
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
             }

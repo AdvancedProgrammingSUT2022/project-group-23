@@ -1,11 +1,17 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Technology {
     private String name;
     private int cost;
 
-    Technology(String name){
-        this.name=name;
+    private ArrayList<String> prerequisiteTechnologies;
+
+    public Technology(String name, int cost, ArrayList<String> prerequisiteTechnologies) {
+        this.name = name;
+        this.cost = cost;
+        this.prerequisiteTechnologies = prerequisiteTechnologies;
     }
 
     public String getName () {

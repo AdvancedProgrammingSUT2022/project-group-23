@@ -8,13 +8,15 @@ public class Improvement {
     private int food;
     private int production;
 
+    private String neededTechnology;
     private ArrayList<String> placesItCanBeBuild;
 
-    public Improvement(String name, int gold, int food, int production, ArrayList<String> placesItCanBeBuild) {
+    public Improvement(String name, int gold, int food, int production, String neededTechnology, ArrayList<String> placesItCanBeBuild) {
         this.name = name;
         this.gold = gold;
         this.food = food;
         this.production = production;
+        this.neededTechnology = neededTechnology;
         this.placesItCanBeBuild = placesItCanBeBuild;
     }
 

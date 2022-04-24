@@ -15,7 +15,7 @@ public class Unit {
     protected String neededTechnology;
     protected String neededResource;
     protected int health;
-    protected ArrayList<Tile> moves;
+    protected ArrayList<Integer> moves;
     public Unit(String name, int cost, int movement, String neededTechnology, String neededResource) {
         this.name = name;
         this.cost = cost;
@@ -36,8 +36,8 @@ public class Unit {
         this.cost = cost;
     }
 
-    public void setMovement (int movement) {
-        this.movement = movement;
+    public int getMovement () {
+        return movement;
     }
 
     public void setX (int x) {
@@ -64,11 +64,23 @@ public class Unit {
         this.state = state;
     }
 
+    public int getHealth() {
+        return health;
+    }
+
     public int getRemainingMoves() {
         return remainingMoves;
     }
 
     public void setRemainingMoves(int remainingMoves) {
         this.remainingMoves = remainingMoves;
+    }
+
+    public ArrayList<Integer> getMoves() {
+        return moves;
+    }
+
+    public void setMoves(ArrayList<Integer> moves) {
+        this.moves = moves;
     }
 }

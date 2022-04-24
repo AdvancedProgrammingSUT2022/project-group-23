@@ -56,6 +56,11 @@ public class GameView {
             input = scanner.nextLine();
             Matcher matcher;
             if (input.equals("show map"))drawMap();
+            else if((matcher = Commands.getCommandMatcher(input, Commands.SELECT_COMBAT_UNIT)) != null)
+                System.out.println(unitController.selectUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")), true));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.SELECT_NONCOMBAT_UNIT)) != null)
+                System.out.println(unitController.selectUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")), false));
+            else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("menu exit"))break;
             else System.out.println("invalid command");
@@ -137,7 +142,7 @@ public class GameView {
 
     }
     private void printMap(String[][] printableMap){
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 70; i++) {
             for (int j = 0; j < 100; j++) {
                 if (printableMap[i][j] != null) System.out.print(printableMap[i][j]);
                 else System.out.print(" ");

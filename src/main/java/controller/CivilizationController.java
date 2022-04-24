@@ -74,13 +74,17 @@ public class CivilizationController {
         return x >= 0 && x < mapHeight && y >= 0 && y < mapWidth;
     }
 
-    public void nextTurn() {
+    public String nextTurn() {
         //TODO check if unit needs action or ...
+        String message;
+        if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
         this.turn = (turn + 1) % players.size();
         this.currentPlayer = players.get(turn);
         unitController.setCurrentPlayer(this.currentPlayer);
         unitController.setTurn(this.turn);
         unitController.checkVisibility();
+
+        return "it's " + currentPlayer.getUsername() + "turn";
     }
 
     public int getMapWidth() {

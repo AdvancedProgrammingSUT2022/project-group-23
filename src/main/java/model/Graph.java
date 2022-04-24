@@ -1,8 +1,6 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 public class Graph {
     private int V;
@@ -64,5 +62,45 @@ public class Graph {
             }
         }
         return visibleTiles;
+    }
+    public ArrayList<Integer> getShortestPath(int s, int f, int userId){
+        int distance[] = new int[V];
+        int parent[] = new int[V];
+        for (int i = 0; i < V; i++) {
+            distance[i] = 100000000;
+        }
+
+        LinkedList<Integer> queue = new LinkedList();
+
+        distance[s] = 0;
+        parent[s] = s;
+        queue.add(s);
+
+        while (queue.size() != 0) {
+            s = queue.poll();
+            if(s == f)break;
+            if(distance[s] != 0){
+                if(tiles[s / mapWidth][s % mapWidth].getMovementCost() == -1)continue;
+            }
+            Iterator<Integer> i = adj[s].listIterator();
+            while (i.hasNext()) {
+                int n = i.next();
+                if (distance[s] + 1 < distance[n] && !tiles[n / mapWidth][n % mapWidth].getVisibilityForUser(userId).equals("fog of war")) {
+                    distance[n] = distance[s] + 1;
+                    parent[n] = s;
+                    queue.add(n);
+                }
+            }
+        }
+        ArrayList<Integer> path = new ArrayList<>();
+        int vertex = f;
+        if(parent[vertex] == 0) return null;
+        while (parent[vertex] != vertex){
+            path.add(vertex);
+            vertex = parent[vertex];
+        }
+        //path.add(vertex);
+        Collections.reverse(path);
+        return path;
     }
 }

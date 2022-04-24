@@ -1,5 +1,7 @@
 package model;
 
+import jdk.jshell.execution.Util;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -101,5 +103,18 @@ public class Tile {
 
     public void setFood (int food) {
         this.food = food;
+    }
+
+    public int getMovementCost(){
+        int movementCost = 0;
+        if(this.getFeature() != null){
+            if(this.getFeature().getMovementCost() == -1)return -1;
+            movementCost += this.getFeature().getMovementCost();
+        }
+        if(this.getTerrain() != null){
+            if(this.getTerrain().getMovementCost() == -1)return -1;
+            movementCost += this.getTerrain().getMovementCost();
+        }
+        return movementCost;
     }
 }

@@ -84,7 +84,7 @@ public class CivilizationController {
         unitController.setTurn(this.turn);
         unitController.checkVisibility();
 
-        return "it's " + currentPlayer.getUsername() + "turn";
+        return "it's " + currentPlayer.getUsername() + " turn";
     }
 
     public int getMapWidth() {

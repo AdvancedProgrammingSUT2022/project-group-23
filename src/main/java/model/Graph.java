@@ -79,13 +79,11 @@ public class Graph {
         while (queue.size() != 0) {
             s = queue.poll();
             if(s == f)break;
-            if(distance[s] != 0){
-                if(tiles[s / mapWidth][s % mapWidth].getMovementCost() == -1)continue;
-            }
             Iterator<Integer> i = adj[s].listIterator();
             while (i.hasNext()) {
                 int n = i.next();
-                if (distance[s] + 1 < distance[n] && !tiles[n / mapWidth][n % mapWidth].getVisibilityForUser(userId).equals("fog of war")) {
+                if (distance[s] + 1 < distance[n] && tiles[n / mapWidth][n % mapWidth].getMovementCost() != -1 &&
+                        !tiles[n / mapWidth][n % mapWidth].getVisibilityForUser(userId).equals("fog of war")) {
                     distance[n] = distance[s] + 1;
                     parent[n] = s;
                     queue.add(n);

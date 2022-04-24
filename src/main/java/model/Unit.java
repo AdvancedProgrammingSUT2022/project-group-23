@@ -12,14 +12,16 @@ public class Unit {
     protected int x;
     protected int y;
 
+    protected String neededTechnology;
+    protected String neededResource;
     protected int health;
     protected ArrayList<Tile> moves;
-    public Unit(String name, int cost, int movement, int x, int y) {
+    public Unit(String name, int cost, int movement, String neededTechnology, String neededResource) {
         this.name = name;
         this.cost = cost;
         this.movement = movement;
-        this.x = x;
-        this.y = y;
+        this.neededResource = neededResource;
+        this.neededTechnology = neededTechnology;
         this.health = 10;
         this.moves = null;
         this.state = "ready";

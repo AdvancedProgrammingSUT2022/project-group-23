@@ -13,6 +13,8 @@ public class TerrainDatabase {
     private static ArrayList<Terrain> terrains = new ArrayList<>();
     private static ArrayList<Feature> features = new ArrayList<>();
     private static HashMap<String, ArrayList<String>> possibleFeaturesForTerrains = new HashMap<>();
+    private static HashMap<String, ArrayList<String>> possibleResourcesForTerrains = new HashMap<>();
+    private static HashMap<String, ArrayList<String>> possibleResourcesForFeatures = new HashMap<>();
 
     static {
         terrains.add(new Terrain("Dessert" , 0, 0, 0, 1, -33));
@@ -36,6 +38,15 @@ public class TerrainDatabase {
         possibleFeaturesForTerrains.put("Hill",new ArrayList<>(){{add("Forest"); add("Jungle");}});
         possibleFeaturesForTerrains.put("Plain",new ArrayList<>(){{add("Forest"); add("Jungle");}});
         possibleFeaturesForTerrains.put("Tundra",new ArrayList<>(){{add("Forest");}});
+
+
+        possibleResourcesForTerrains.put("Desert",new ArrayList<>(){{add("Sheep"); add("Iron"); add("Cotton"); add("Gems");add("Gold");add("Incense"); add("Marble");add("Silver");}});
+        //TODO fill the rest of hash map
+
+        possibleFeaturesForTerrains.put("Flood Plain",new ArrayList<>(){{add("Wheat");add("Sugar");}});
+        //TODO fill the rest of hash map
+
+
 
     }
     public static void addRandomTerrainAndFeatureToTile(Tile tile){

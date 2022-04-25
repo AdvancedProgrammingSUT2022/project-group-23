@@ -4,7 +4,9 @@ import controller.CivilizationController;
 import controller.UnitController;
 import database.TerrainDatabase;
 import enums.Commands;
+import model.City;
 import model.Tile;
+import model.Unit;
 import model.User;
 
 import java.util.ArrayList;
@@ -64,6 +66,8 @@ public class GameView {
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
+            else if(input.equals("show units info")) showUnitsInfo(civilizationController.showUnitsInfo());
+            else if(input.equals("show cities info")) showCitiesInfo(civilizationController.showCitiesInfo());
             else if(input.equals("menu exit"))break;
             else System.out.println("invalid command");
         }
@@ -149,6 +153,18 @@ public class GameView {
                 else System.out.print(" ");
             }
             System.out.print("\n");
+        }
+    }
+
+    private void showUnitsInfo(ArrayList<Unit> units){
+        for(int i=0;i<units.size();i++){
+            System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") state: "+units.get(i).getState());
+        }
+    }
+
+    private void showCitiesInfo(ArrayList<City> cities){
+        for(int i=0;i<cities.size();i++){
+            System.out.println((i+1)+"- capital: "+cities.get(i).getCapital()+" number of citizens: "+cities.get(i).getCountOfCitizens()+" number of tiles: "+cities.get(i).getTiles().size());
         }
     }
 }

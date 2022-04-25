@@ -1,7 +1,9 @@
 package controller;
 
 import database.TerrainDatabase;
+import model.City;
 import model.Tile;
+import model.Unit;
 import model.User;
 
 import java.util.ArrayList;
@@ -85,6 +87,16 @@ public class CivilizationController {
         unitController.checkVisibility();
 
         return "it's " + currentPlayer.getUsername() + " turn";
+    }
+
+    public ArrayList<Unit> showUnitsInfo()
+    {
+        return currentPlayer.getUnits();
+    }
+
+    public ArrayList<City> showCitiesInfo()
+    {
+        return currentPlayer.getCities();
     }
 
     public int getMapWidth() {

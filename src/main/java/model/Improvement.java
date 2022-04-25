@@ -47,4 +47,8 @@ public class Improvement {
     public void setProduction (int production) {
         this.production = production;
     }
+
+    public String getNeededTechnology () {
+        return neededTechnology;
+    }
 }

@@ -17,6 +17,7 @@ public class User {
     private static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
+    private Technology currentStudy;
     private ArrayList<Technology> technologies;
     private static User userLogged;
 
@@ -94,6 +95,10 @@ public class User {
     public static void addUser(User user)
     {
         users.add(user);
+    }
+
+    public Technology getCurrentStudy () {
+        return currentStudy;
     }
 
     public static User getUserLogged () {

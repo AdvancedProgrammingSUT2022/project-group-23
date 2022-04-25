@@ -83,4 +83,8 @@ public class Unit {
     public void setMoves(ArrayList<Integer> moves) {
         this.moves = moves;
     }
+
+    public String getNeededTechnology () {
+        return neededTechnology;
+    }
 }

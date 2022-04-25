@@ -2,12 +2,12 @@ package view;
 
 import controller.CivilizationController;
 import controller.UnitController;
+import database.ImprovementDatabase;
+import database.ResourceDatabase;
 import database.TerrainDatabase;
+import database.UnitsDatabase;
 import enums.Commands;
-import model.City;
-import model.Tile;
-import model.Unit;
-import model.User;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +68,7 @@ public class GameView {
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("show units info")) showUnitsInfo(civilizationController.showUnitsInfo());
             else if(input.equals("show cities info")) showCitiesInfo(civilizationController.showCitiesInfo());
+            else if(input.equals("show research info")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
             else if(input.equals("menu exit"))break;
             else System.out.println("invalid command");
         }
@@ -165,6 +166,38 @@ public class GameView {
     private void showCitiesInfo(ArrayList<City> cities){
         for(int i=0;i<cities.size();i++){
             System.out.println((i+1)+"- capital: "+cities.get(i).getCapital()+" number of citizens: "+cities.get(i).getCountOfCitizens()+" number of tiles: "+cities.get(i).getTiles().size());
+        }
+    }
+
+    private void showCurrentStudyInfo(Technology technology) {
+        if (technology != null) {
+            int turnsLeft;
+            if (technology.getCost() % civilizationController.getCurrentPlayer().getCup() == 0) {
+                turnsLeft =  technology.getCost() / civilizationController.getCurrentPlayer().getCup();
+            } else {
+                turnsLeft = technology.getCost() / civilizationController.getCurrentPlayer().getCup() + 1;
+            }
+            System.out.println("you are currently studying " + technology.getName() + " and there is " + turnsLeft + " turns left to unlock");
+            System.out.println("resources that need this technology to be discovered:");
+            for (Resource resource : ResourceDatabase.getResources()) {
+                if (resource.getNeededTechnology().equals(technology.getName())) {
+                    System.out.println(resource.getName());
+                }
+            }
+            System.out.println("units that need this technology to be build:");
+            for (Unit unit : UnitsDatabase.getUnits()) {
+                if (unit.getNeededTechnology().equals(technology.getName())) {
+                    System.out.println(unit.getName());
+                }
+            }
+            System.out.println("improvements that need this technology:");
+            for (Improvement improvement : ImprovementDatabase.getImprovements()) {
+                if (improvement.getNeededTechnology().equals(technology.getName())) {
+                    System.out.println(improvement.getName());
+                }
+            }
+        }else {
+            System.out.println("no current Studying");
         }
     }
 }

@@ -1,10 +1,7 @@
 package controller;
 
 import database.TerrainDatabase;
-import model.City;
-import model.Tile;
-import model.Unit;
-import model.User;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -99,6 +96,10 @@ public class CivilizationController {
         return currentPlayer.getCities();
     }
 
+    public Technology showCurrentStudy(){
+        return currentPlayer.getCurrentStudy();
+    }
+
     public int getMapWidth() {
         return mapWidth;
     }
@@ -117,5 +118,9 @@ public class CivilizationController {
 
     public int getTurn() {
         return turn;
+    }
+
+    public User getCurrentPlayer () {
+        return currentPlayer;
     }
 }

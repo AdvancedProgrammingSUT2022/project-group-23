@@ -43,7 +43,7 @@ public class TerrainDatabase {
         possibleResourcesForTerrains.put("Desert",new ArrayList<>(){{add("Sheep"); add("Iron"); add("Cotton"); add("Gems");add("Gold");add("Incense"); add("Marble");add("Silver");}});
         //TODO fill the rest of hash map
 
-        possibleFeaturesForTerrains.put("Flood Plain",new ArrayList<>(){{add("Wheat");add("Sugar");}});
+        possibleResourcesForFeatures.put("Flood Plain",new ArrayList<>(){{add("Wheat");add("Sugar");}});
         //TODO fill the rest of hash map
 
 

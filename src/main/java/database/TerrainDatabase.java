@@ -41,10 +41,21 @@ public class TerrainDatabase {
 
 
         possibleResourcesForTerrains.put("Desert",new ArrayList<>(){{add("Sheep"); add("Iron"); add("Cotton"); add("Gems");add("Gold");add("Incense"); add("Marble");add("Silver");}});
-        //TODO fill the rest of hash map
+        possibleResourcesForTerrains.put("Grassland",new ArrayList<>(){{add("Cattle"); add("Sheep"); add("Coal"); add("Horses");add("Iron");add("Cotton"); add("Gems");add("Gold");add("Marble");}});
+        possibleResourcesForTerrains.put("Hill",new ArrayList<>(){{add("Deer"); add("Sheep"); add("Coal"); add("Iron");add("Gems");add("Gold"); add("Marble");}});
+        possibleResourcesForTerrains.put("Mountain",new ArrayList<>(){});
+        possibleResourcesForTerrains.put("Ocean",new ArrayList<>(){});
+        possibleResourcesForTerrains.put("Plain",new ArrayList<>(){{add("Sheep"); add("Wheat"); add("Coal"); add("Horses");add("Iron");add("Cotton"); add("Gems");add("Gold");add("Incense");add("Ivory");add("Marble");}});
+        possibleResourcesForTerrains.put("Snow",new ArrayList<>(){{add("Iron");}});
+        possibleResourcesForTerrains.put("Tundra",new ArrayList<>(){{add("Deer"); add("Horses"); add("Iron"); add("Furs");add("Gems");add("Marble"); add("Silver");}});
+
 
         possibleResourcesForFeatures.put("Flood Plain",new ArrayList<>(){{add("Wheat");add("Sugar");}});
-        //TODO fill the rest of hash map
+        possibleResourcesForFeatures.put("Forest",new ArrayList<>(){{add("Deer");add("Dyes");add("Furs");add("Gems");add("Silk");}});
+        possibleResourcesForFeatures.put("Ice",new ArrayList<>(){});
+        possibleResourcesForFeatures.put("Jungle",new ArrayList<>(){{add("Banana");add("Dyes");}});
+        possibleResourcesForFeatures.put("Marsh",new ArrayList<>(){{add("Sugar");}});
+        possibleResourcesForFeatures.put("Oasis",new ArrayList<>(){});
 
 
 

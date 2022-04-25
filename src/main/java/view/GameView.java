@@ -83,10 +83,10 @@ public class GameView {
                 if(unitController.getTileNonCombatUnit(i, j) != null)infos.add(unitController.getTileNonCombatUnit(i, j).getName());
                 if(unitController.getTileCombatUnit(i, j) != null)infos.add(unitController.getTileCombatUnit(i, j).getName());
 
-                String background = ANSI_PURPLE_BACKGROUND;
+                String background = ANSI_CYAN_BACKGROUND;
                 if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("visible"))background = ANSI_YELLOW_BACKGROUND;
-                if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))background = ANSI_BLUE_BACKGROUND;
-
+                else if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))background = ANSI_BLUE_BACKGROUND;
+                else infos.clear();
 
                 addHexagonal(printableMap, i, j, background, tiles[i][j].getRivers(),infos);
             }

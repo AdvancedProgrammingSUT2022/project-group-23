@@ -1,5 +1,7 @@
 package model;
 
+import controller.UnitController;
+
 import java.util.*;
 
 public class Graph {
@@ -12,7 +14,9 @@ public class Graph {
 
     private Tile[][] tiles;
 
-    public Graph(int mapHeight, int mapWidth, Tile[][] tiles) {
+    UnitController unitController;
+
+    public Graph(int mapHeight, int mapWidth, Tile[][] tiles, UnitController unitController) {
         V = mapHeight * mapWidth;
         this.mapHeight = mapHeight;
         this.mapWidth = mapWidth;
@@ -20,6 +24,7 @@ public class Graph {
         for (int i = 0; i < V; ++i)
             adj[i] = new LinkedList();
         this.tiles = tiles;
+        this.unitController = unitController;
     }
 
     public void addEdge(int v, int w) {
@@ -82,8 +87,11 @@ public class Graph {
             Iterator<Integer> i = adj[s].listIterator();
             while (i.hasNext()) {
                 int n = i.next();
-                if (distance[s] + 1 < distance[n] && tiles[n / mapWidth][n % mapWidth].getMovementCost() != -1 &&
-                        !tiles[n / mapWidth][n % mapWidth].getVisibilityForUser(userId).equals("fog of war")) {
+                if (distance[s] + 1 < distance[n] && tiles[n / mapWidth][n % mapWidth].getMovementCost() != -1 ){//&&
+                      //  !tiles[n / mapWidth][n % mapWidth].getVisibilityForUser(userId).equals("fog of war")) {
+
+                    if(unitController.getSelectedUnit() instanceof MilitaryUnit && unitController.getTileCombatUnit(n / mapWidth,n % mapWidth) != null)continue;
+                    if(!(unitController.getSelectedUnit() instanceof MilitaryUnit) && unitController.getTileNonCombatUnit(n / mapWidth,n % mapWidth) != null)continue;
                     distance[n] = distance[s] + 1;
                     parent[n] = s;
                     queue.add(n);

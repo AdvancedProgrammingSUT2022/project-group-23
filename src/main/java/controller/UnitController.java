@@ -43,18 +43,18 @@ public class UnitController {
             user.addUnit(new SettlerUnit(x, y));
         }
     }
-    public boolean moveUnit(Unit unit, int x, int y){
+    public String moveUnit(Unit unit, int x, int y){
         checkVisibility();
         ArrayList<Integer> path;
         if(x != -1) {
-            if(unit instanceof MilitaryUnit && getTileCombatUnit(x, y) != null)return false;
-            if(!(unit instanceof MilitaryUnit) && getTileNonCombatUnit(x, y) != null)return false;
+            if(unit instanceof MilitaryUnit && getTileCombatUnit(x, y) != null)return "tile is occupied";
+            if(!(unit instanceof MilitaryUnit) && getTileNonCombatUnit(x, y) != null)return "tile is occupied";
             Graph graph = createGraph();
             path = graph.getShortestPath(coordinatesToNumber(unit.getX(), unit.getY()), coordinatesToNumber(x, y), turn);
-            if (path == null) return false;
+            if (path == null) return "can't get to destination";
         }else {
             path = unit.getMoves();
-            if(path == null || path.isEmpty()) return false;
+            if(path == null || path.isEmpty()) return "no chosen path";
         }
 
         while (!path.isEmpty() && unit.getRemainingMoves() > 0){
@@ -74,7 +74,7 @@ public class UnitController {
         if(unit.getRemainingMoves() < 0)unit.setRemainingMoves(0);
         unit.setMoves(path);
         checkVisibility();
-        return true;
+        return "ok";
     }
 
     public boolean isRiver(int x1, int y1, int x2, int y2){
@@ -113,7 +113,7 @@ public class UnitController {
     }
 
     private Graph createGraph() {
-        Graph graph = new Graph(mapHeight, mapWidth, tiles);
+        Graph graph = new Graph(mapHeight, mapWidth, tiles, this);
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapHeight; j++) {
                 if(isCoordinateValid(i - 1, j)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j));
@@ -185,8 +185,8 @@ public class UnitController {
         if(selectedUnit == null)return "no unit selected";
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
-        if(!moveUnit(selectedUnit, x, y)) return "destination invalid";
-            //TODO return why destination is invalid
+        String message = null;
+        if(!(message = moveUnit(selectedUnit, x, y)).equals("ok")) return message;
         return "unit moved successfully";
 
     }
@@ -213,4 +213,7 @@ public class UnitController {
         return "ok";
     }
 
+    public Unit getSelectedUnit() {
+        return selectedUnit;
+    }
 }

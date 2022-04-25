@@ -13,7 +13,7 @@ public class Tile {
     private int food;
     private Terrain terrain;
     private Feature feature;
-    private ArrayList<Resource> resources;
+    private Resource resource;
     private ArrayList<Integer> rivers;
     private HashMap<Integer,ArrayList<Improvement>> improvements;
     private HashMap<Integer,String> visibility;
@@ -64,8 +64,8 @@ public class Tile {
         this.feature = feature;
     }
 
-    public ArrayList<Resource> getResources () {
-        return resources;
+    public Resource getResource () {
+        return resource;
     }
 
     public ArrayList<Integer> getRivers () {

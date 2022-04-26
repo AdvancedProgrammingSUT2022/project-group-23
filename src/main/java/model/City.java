@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class City {
+    private static int countOfCities = 0;
+
+    private int id;
     private Tile capital;
     private int countOfCitizens;
     private ArrayList<Tile> tiles;
     private HashMap<Integer,Tile> citizenTiles;
 
-    City(Tile capital)
+    public City(Tile capital)
     {
         this.capital=capital;
+        this.tiles.add(capital);
+        this.id = countOfCities;
+        countOfCities++;
     }
 
     public Tile getCapital () {

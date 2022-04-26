@@ -33,7 +33,7 @@ public class UnitController extends GameController {
             if(unit instanceof MilitaryUnit && getTileCombatUnit(x, y) != null)return "tile is occupied";
             if(!(unit instanceof MilitaryUnit) && getTileNonCombatUnit(x, y) != null)return "tile is occupied";
             Graph graph = createGraph();
-            path = graph.getShortestPath(coordinatesToNumber(unit.getX(), unit.getY()), coordinatesToNumber(x, y), turn);
+            path = graph.getShortestPath(coordinatesToNumber(unit.getX(), unit.getY()), coordinatesToNumber(x, y), turn, this);
             if (path == null) return "can't get to destination";
         }else {
             path = unit.getMoves();
@@ -87,7 +87,7 @@ public class UnitController extends GameController {
             }
         }
         for(Unit unit : currentPlayer.getUnits()) {
-            ArrayList<Tile> visibleTiles = graph.getVisibleTiles(coordinatesToNumber(unit.getX(), unit.getY()));
+            ArrayList<Tile> visibleTiles = graph.getVisibleTiles(coordinatesToNumber(unit.getX(), unit.getY()), 2);
             for(Tile tile : visibleTiles){
                 tile.setVisibilityForUser("visible", turn);
             }
@@ -95,31 +95,9 @@ public class UnitController extends GameController {
         //TODO check visibility for tiles because of cities
     }
 
-    private Graph createGraph() {
-        Graph graph = new Graph(mapHeight, mapWidth, tiles, this);
-        for (int i = 0; i < mapHeight; i++) {
-            for (int j = 0; j < mapHeight; j++) {
-                if(isCoordinateValid(i - 1, j)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j));
-                if(isCoordinateValid(i + 1, j)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i + 1, j));
-                if(j % 2 == 0){
-                    if(isCoordinateValid(i - 1, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j - 1));
-                    if(isCoordinateValid(i - 1, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j + 1));
-                    if(isCoordinateValid(i, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j - 1));
-                    if(isCoordinateValid(i, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j + 1));
-                } else {
-                    if(isCoordinateValid(i, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j - 1));
-                    if(isCoordinateValid(i, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j + 1));
-                    if(isCoordinateValid(i + 1, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i + 1, j - 1));
-                    if(isCoordinateValid(i + 1, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i + 1, j + 1));
-                }
-            }
-        }
-        return graph;
-    }
 
-    private int coordinatesToNumber(int x, int y){
-        return x * mapWidth + y;
-    }
+
+
     public Unit getTileCombatUnit(int x, int y){
         for(User user : players){
             for(Unit unit : user.getUnits()){

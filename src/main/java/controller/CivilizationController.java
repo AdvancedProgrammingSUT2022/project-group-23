@@ -9,6 +9,7 @@ import java.util.Random;
 public class CivilizationController extends GameController{
 
     private UnitController unitController;
+    private CityController cityController;
 
     public CivilizationController(ArrayList<User> players) {
         GameController.players = players;
@@ -18,6 +19,7 @@ public class CivilizationController extends GameController{
         initializeMap();
         turn = 0;
         unitController = new UnitController();
+        cityController = new CityController();
     }
 
     public void initializeMap() {

@@ -14,9 +14,8 @@ public class Graph {
 
     private Tile[][] tiles;
 
-    UnitController unitController;
 
-    public Graph(int mapHeight, int mapWidth, Tile[][] tiles, UnitController unitController) {
+    public Graph(int mapHeight, int mapWidth, Tile[][] tiles) {
         V = mapHeight * mapWidth;
         this.mapHeight = mapHeight;
         this.mapWidth = mapWidth;
@@ -24,7 +23,6 @@ public class Graph {
         for (int i = 0; i < V; ++i)
             adj[i] = new LinkedList();
         this.tiles = tiles;
-        this.unitController = unitController;
     }
 
     public void addEdge(int v, int w) {
@@ -32,7 +30,7 @@ public class Graph {
     }
 
 
-    public ArrayList<Tile> getVisibleTiles(int s) {
+    public ArrayList<Tile> getVisibleTiles(int s, int range) {
         ArrayList<Tile> visibleTiles = new ArrayList<>();
 
         int distance[] = new int[V];
@@ -47,7 +45,7 @@ public class Graph {
 
         while (queue.size() != 0) {
             s = queue.poll();
-            if(distance[s] > 2)continue;
+            if(distance[s] > range)continue;
             visibleTiles.add(tiles[s / mapWidth][s % mapWidth]);
             if(distance[s] != 0 && tiles[s / mapWidth][s % mapWidth].getTerrain() != null){
                 String terrainName = tiles[s / mapWidth][s % mapWidth].getTerrain().getName();
@@ -68,7 +66,38 @@ public class Graph {
         }
         return visibleTiles;
     }
-    public ArrayList<Integer> getShortestPath(int s, int f, int userId){
+    public ArrayList<Tile> getTilesAtDistance(int s, int range){
+        ArrayList<Tile> tilesAtDistnace = new ArrayList<>();
+
+        int distance[] = new int[V];
+        for (int i = 0; i < V; i++) {
+            distance[i] = 100000000;
+        }
+
+        LinkedList<Integer> queue = new LinkedList();
+
+        distance[s] = 0;
+        queue.add(s);
+
+        while (queue.size() != 0) {
+            s = queue.poll();
+            if(distance[s] == range){
+                tilesAtDistnace.add(tiles[s / mapWidth][s % mapWidth]);
+                continue;
+            }
+
+            Iterator<Integer> i = adj[s].listIterator();
+            while (i.hasNext()) {
+                int n = i.next();
+                if (distance[s] + 1 < distance[n]) {
+                    distance[n] = distance[s] + 1;
+                    queue.add(n);
+                }
+            }
+        }
+        return tilesAtDistnace;
+    }
+    public ArrayList<Integer> getShortestPath(int s, int f, int userId, UnitController unitController){
         int distance[] = new int[V];
         int parent[] = new int[V];
         for (int i = 0; i < V; i++) {

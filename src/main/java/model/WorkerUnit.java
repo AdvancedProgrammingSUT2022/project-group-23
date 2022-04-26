@@ -1,8 +1,10 @@
 package model;
 
 public class WorkerUnit extends Unit {
-    public WorkerUnit ()
+    public WorkerUnit (int x, int y)
     {
-        super("worker", 70 , 2, null, null);
+        super("Worker", 70 , 2, null, null);
+        setX(x);
+        setY(y);
     }
 }

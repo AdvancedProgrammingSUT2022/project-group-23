@@ -124,6 +124,7 @@ public class User {
         units = new ArrayList<>();
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
+        currentStudy = null;
         updateUsersInfo();
     }
 

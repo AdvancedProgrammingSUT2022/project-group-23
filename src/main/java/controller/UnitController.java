@@ -5,31 +5,14 @@ import model.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class UnitController {
+public class UnitController extends GameController {
 
-    private final int mapWidth;
-    private final int mapHeight;
-    private ArrayList<User> players;
-    private Tile[][] tiles;
 
-    private Unit selectedUnit;
-    private int turn;
-    private User currentPlayer;
-
-    public UnitController(int mapWidth, int mapHeight, ArrayList<User> players, Tile[][] tiles, User currentPlayer, int turn) {
-        this.mapWidth = mapWidth;
-        this.mapHeight = mapHeight;
-        this.players = players;
-        this.tiles = tiles;
-        this.currentPlayer = currentPlayer;
-        this.turn = turn;
+    public UnitController() {
         initializeUnits();
         checkVisibility();
     }
 
-    public void setTurn(int turn) {
-        this.turn = turn;
-    }
 
     public void initializeUnits(){
         Random random = new Random();
@@ -158,23 +141,16 @@ public class UnitController {
         return null;
     }
 
-    public void setCurrentPlayer(User currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    public boolean isCoordinateValid(int x, int y) {
-        return x >= 0 && x < mapHeight && y >= 0 && y < mapWidth;
-    }
 
     public String selectUnit(int x, int y, boolean isMilitary){
         if(!isCoordinateValid(x, y))return "invalid coordinate";
         if(isMilitary) {
-            this.selectedUnit = getTileCombatUnit(x, y);
-            if(this.selectedUnit == null)return "no combat unit in coordinate";
+            selectedUnit = getTileCombatUnit(x, y);
+            if(selectedUnit == null)return "no combat unit in coordinate";
         }
         else {
-            this.selectedUnit = getTileNonCombatUnit(x, y);
-            if(this.selectedUnit == null)return "no noncombat unit in coordinate";
+            selectedUnit = getTileNonCombatUnit(x, y);
+            if(selectedUnit == null)return "no noncombat unit in coordinate";
         }
         return "unit selected - name: " + selectedUnit.getName() + " - belongs to : " + getUnitOwner(selectedUnit).getUsername() + " - remaining movement: " + selectedUnit.getRemainingMoves() + " - health: " + selectedUnit.getHealth();
 

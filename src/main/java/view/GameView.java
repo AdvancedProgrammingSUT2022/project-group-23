@@ -1,5 +1,6 @@
 package view;
 
+
 import controller.CivilizationController;
 import controller.UnitController;
 import database.ImprovementDatabase;
@@ -34,6 +35,7 @@ public class GameView {
     private static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
     private CivilizationController civilizationController;
+
     private UnitController unitController;
 
     public GameView(ArrayList<String> usernames){
@@ -159,7 +161,7 @@ public class GameView {
 
     private void showUnitsInfo(ArrayList<Unit> units){
         for(int i=0;i<units.size();i++){
-            System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") state: "+units.get(i).getState());
+            System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves());
         }
     }
 

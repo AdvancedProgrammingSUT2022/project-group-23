@@ -6,26 +6,18 @@ import model.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class CivilizationController {
+public class CivilizationController extends GameController{
 
-    UnitController unitController;
-    private ArrayList<User> players;
-
-    private User currentPlayer;
-
-    private final int mapWidth = 10;
-    private final int mapHeight = 10;
-
-    private int turn;
-    private Tile[][] tiles = new Tile[mapHeight][mapWidth];
+    private UnitController unitController;
 
     public CivilizationController(ArrayList<User> players) {
-        this.players = players;
+        GameController.players = players;
+        tiles = new Tile[mapHeight][mapWidth];
         for (User user : players) user.newGame();
         currentPlayer = players.get(0);
         initializeMap();
         turn = 0;
-        unitController = new UnitController(mapWidth, mapHeight, players, tiles, currentPlayer, turn);
+        unitController = new UnitController();
     }
 
     public void initializeMap() {
@@ -69,19 +61,17 @@ public class CivilizationController {
         }
     }
 
-    public boolean isCoordinateValid(int x, int y) {
-        return x >= 0 && x < mapHeight && y >= 0 && y < mapWidth;
-    }
 
     public String nextTurn() {
         //TODO check if unit needs action or ...
         String message;
         if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
-        this.turn = (turn + 1) % players.size();
-        this.currentPlayer = players.get(turn);
-        unitController.setCurrentPlayer(this.currentPlayer);
-        unitController.setTurn(this.turn);
+        turn = (turn + 1) % players.size();
+        currentPlayer = players.get(turn);
+
+
         unitController.checkVisibility();
+
 
         return "it's " + currentPlayer.getUsername() + " turn";
     }
@@ -123,4 +113,5 @@ public class CivilizationController {
     public User getCurrentPlayer () {
         return currentPlayer;
     }
+
 }

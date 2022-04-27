@@ -8,9 +8,9 @@ public class City {
 
     private int id;
     private Tile capital;
-    private int countOfCitizens;
+    private int countOfCitizens=1;
     private ArrayList<Tile> tiles;
-    private HashMap<Integer,Tile> citizenTiles;
+    private ArrayList<Tile> tilesWithCitizen;
 
     public City(Tile capital)
     {
@@ -28,22 +28,22 @@ public class City {
         return countOfCitizens;
     }
 
+    public void setCountOfCitizens (int countOfCitizens) {
+        this.countOfCitizens = countOfCitizens;
+    }
+
     public ArrayList<Tile> getTiles () {
         return tiles;
     }
 
-    public HashMap<Integer, Tile> getCitizenTiles () {
-        return citizenTiles;
+    public ArrayList<Tile> getTilesWithCitizen () {
+        return tilesWithCitizen;
     }
-
 
     public void setCapital (Tile capital) {
         this.capital = capital;
     }
 
-    public void setCountOfCitizens (int countOfCitizens) {
-        this.countOfCitizens = countOfCitizens;
-    }
 
     public void addTile(Tile tile)
     {
@@ -52,12 +52,17 @@ public class City {
 
     public void removeCitizenFromTile(Tile tile)
     {
-
+        for (Tile tile1 : tilesWithCitizen) {
+            if(tile1.equals(tile))
+            {
+                tilesWithCitizen.remove(tile);
+            }
+        }
     }
 
     public void addCitizenToTile(Tile tile)
     {
-
+        tilesWithCitizen.add(tile);
     }
 
 

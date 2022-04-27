@@ -37,7 +37,6 @@ public class Unit {
     }
 
     public int getMovement () {
-    	
         return movement;
     }
 

@@ -6,6 +6,7 @@ import java.util.HashMap;
 public class City {
     private static int countOfCities = 0;
 
+    private int foodLeft;
     private int id;
     private Tile capital;
     private int countOfCitizens=1;
@@ -64,6 +65,23 @@ public class City {
     {
         tilesWithCitizen.add(tile);
     }
+
+    public int getFoodLeft () {
+        return foodLeft;
+    }
+
+    public void setFoodLeft (int foodLeft) {
+        this.foodLeft = foodLeft;
+    }
+
+    public int totalFood(){
+        int food=capital.getFood();
+       for (Tile tile : tilesWithCitizen) {
+           food += tile.getFood();
+       }
+       food -= countOfCitizens*2;
+       return food;
+   }
 
 
 }

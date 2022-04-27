@@ -8,14 +8,11 @@ import java.util.HashMap;
 public class Tile {
     private int x;
     private int y;
-    private int gold;
-    private int production;
-    private int food;
     private Terrain terrain;
     private Feature feature;
     private Resource resource;
     private ArrayList<Integer> rivers;
-    private HashMap<Integer,ArrayList<Improvement>> improvements;
+    private Improvement improvement;
     private HashMap<Integer,String> visibility;
     private int citizen;
 
@@ -25,7 +22,6 @@ public class Tile {
         this.y=y;
         this.rivers = new ArrayList<>();
         this.visibility = new HashMap<>();
-        this.improvements = new HashMap<>();
     }
 
     public int getX () {
@@ -34,18 +30,6 @@ public class Tile {
 
     public int getY () {
         return y;
-    }
-
-    public int getGold () {
-        return gold;
-    }
-
-    public int getProduction () {
-        return production;
-    }
-
-    public int getFood () {
-        return food;
     }
 
     public Terrain getTerrain () {
@@ -76,8 +60,8 @@ public class Tile {
         if(!rivers.contains(riverPosition))rivers.add(riverPosition);
     }
 
-    public ArrayList<Improvement> getImprovementsForUser (int userId) {
-        return improvements.get(userId);
+    public Improvement getImprovement () {
+        return improvement;
     }
 
     public String getVisibilityForUser (int userId) {
@@ -88,22 +72,6 @@ public class Tile {
         this.visibility.put(userId, visibility);
     }
 
-    public void addImprovementForUser(Improvement improvement, int userId) {
-        if(!improvements.containsKey(userId)) improvements.put(userId, new ArrayList<>());
-        improvements.get(userId).add(improvement);
-    }
-
-    public void setGold (int gold) {
-        this.gold = gold;
-    }
-
-    public void setProduction (int production) {
-        this.production = production;
-    }
-
-    public void setFood (int food) {
-        this.food = food;
-    }
 
     public int getMovementCost(){
         int movementCost = 0;
@@ -116,5 +84,19 @@ public class Tile {
             movementCost += this.getTerrain().getMovementCost();
         }
         return movementCost;
+    }
+
+    public int getFood(){
+        int food=terrain.getFood();
+        if(feature!=null){
+            food += feature.getFood();
+        }
+        if(resource!=null){
+            food+= resource.getFood();
+        }
+        if(improvement!=null){
+            food+=improvement.getFood();
+        }
+        return food;
     }
 }

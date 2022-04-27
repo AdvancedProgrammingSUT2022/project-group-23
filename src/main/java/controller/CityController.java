@@ -58,6 +58,10 @@ public class CityController extends GameController{
         {
             return "there is no workless citizen, you need to remove a citizen from a tile first";
         }
+        if(selectedCity.getTilesWithCitizen().contains(tile))
+        {
+            return "there is already a citizen working on this tile";
+        }
         selectedCity.addCitizenToTile(tile);
         return "citizen added to tile successfully";
     }

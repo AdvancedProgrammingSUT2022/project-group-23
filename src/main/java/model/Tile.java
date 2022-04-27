@@ -99,4 +99,18 @@ public class Tile {
         }
         return food;
     }
+
+    public int getProduction(){
+        int production=terrain.getProduction();
+        if(feature!=null){
+            production += feature.getProduction();
+        }
+        if(resource!=null){
+            production+= resource.getProduction();
+        }
+        if(improvement!=null){
+            production+=improvement.getProduction();
+        }
+        return production;
+    }
 }

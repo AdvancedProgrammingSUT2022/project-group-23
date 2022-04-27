@@ -83,5 +83,14 @@ public class City {
        return food;
    }
 
+    public int production(){
+        int production=capital.getProduction();
+        for (Tile tile : tilesWithCitizen) {
+            production += tile.getProduction();
+        }
+        production+=(countOfCitizens-tilesWithCitizen.size());
+        return production;
+    }
+
 
 }

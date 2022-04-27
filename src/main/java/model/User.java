@@ -88,6 +88,13 @@ public class User {
         technologies.add(technology);
     }
 
+    public boolean hasTechnology(String technologyName){
+        for(Technology technology : technologies){
+            if(technology.getName().equals(technologyName)) return true;
+        }
+        return false;
+    }
+
     public static ArrayList<User> getUsers () {
         return users;
     }

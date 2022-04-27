@@ -30,6 +30,7 @@ public class CivilizationController extends GameController{
                     tiles[i][j].setVisibilityForUser("fog of war", k);
                 }
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
+                TerrainDatabase.addRandomResourceToTile(tiles[i][j]);
             }
         }
 

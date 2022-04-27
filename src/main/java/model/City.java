@@ -92,5 +92,12 @@ public class City {
         return production;
     }
 
+    public int gold(){
+        int gold=capital.getGold();
+        for (Tile tile : tilesWithCitizen) {
+            gold += tile.getGold();
+        }
+        return gold;
+    }
 
 }

@@ -113,4 +113,19 @@ public class Tile {
         }
         return production;
     }
+
+    public int getGold(){
+        int gold=terrain.getGold();
+        if(feature!=null){
+            gold += feature.getGold();
+        }
+        if(resource!=null){
+            gold += resource.getGold();
+        }
+        if(improvement!=null){
+            gold+=improvement.getGold();
+        }
+        gold += rivers.size();
+        return gold;
+    }
 }

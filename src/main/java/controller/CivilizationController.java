@@ -10,6 +10,10 @@ public class CivilizationController extends GameController{
 
     private UnitController unitController;
     private CityController cityController;
+    
+    
+    
+    
 
     public CivilizationController(ArrayList<User> players) {
         GameController.players = players;

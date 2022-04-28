@@ -110,6 +110,7 @@ public class CityController extends GameController{
         if(currentPlayer.getGold()<price){
             return "you don't have enough gold to purchase this tile";
         }
+        currentPlayer.setGold(currentPlayer.getGold()-price);
         selectedCity.addTile(tile);
         return "tile purchased successfully";
     }

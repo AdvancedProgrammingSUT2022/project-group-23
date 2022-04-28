@@ -1,17 +1,18 @@
 package model;
 
 import com.google.gson.Gson;
+import database.TechnologyDatabase;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
     private String username;
     private String password;
     private String nickname;
     private int score;
-    private int cup;
     private int gold;
     private int happiness;
     private static ArrayList<User> users = new ArrayList<>();
@@ -20,6 +21,7 @@ public class User {
     private Technology currentStudy;
     private ArrayList<Technology> technologies;
     private static User userLogged;
+    private HashMap<String ,Integer> waitedTechnologies= new HashMap<>();
 
     public User(String username,String password,String nickname)
     {
@@ -47,10 +49,6 @@ public class User {
 
     public int getScore () {
         return score;
-    }
-
-    public int getCup () {
-        return cup;
     }
 
     public int getGold () {
@@ -125,7 +123,6 @@ public class User {
     }
 
     public void newGame(){
-        cup = 0;
         gold = 0;
         happiness = 0;
         units = new ArrayList<>();
@@ -165,5 +162,23 @@ public class User {
             cup += city.getCountOfCitizens();
         }
         return cup;
+    }
+
+    public void setCurrentStudy (Technology currentStudy) {
+        this.currentStudy = currentStudy;
+    }
+
+    public HashMap<String, Integer> getWaitedTechnologies () {
+        return waitedTechnologies;
+    }
+
+    public ArrayList<Technology> readyTechnologies(){
+        ArrayList<Technology> readyTechnology=new ArrayList<>();
+        for (Technology technology : TechnologyDatabase.getTechnologies()) {
+            if(technologies.containsAll(technology.getPrerequisiteTechnologies()) && !technologies.contains(technology) && !technology.getName().equals(currentStudy.getName())){
+                readyTechnology.add(technology);
+            }
+        }
+        return readyTechnology;
     }
 }

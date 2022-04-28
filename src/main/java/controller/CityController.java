@@ -78,11 +78,13 @@ public class CityController extends GameController{
     }
 
     public void nextTurn(){
-        currentPlayer.setGold(currentPlayer.getGold()+selectedCity.gold());
-        selectedCity.setFoodLeft(selectedCity.getFoodLeft()+selectedCity.totalFood());
-        if(selectedCity.getFoodLeft()>=(Math.pow(2,selectedCity.getCountOfCitizens()))){
-            selectedCity.setFoodLeft(0);
-            selectedCity.setCountOfCitizens(selectedCity.getCountOfCitizens()+1);
+        for (City city : currentPlayer.getCities()) {
+            currentPlayer.setGold(currentPlayer.getGold() + city.gold());
+            city.setFoodLeft(city.getFoodLeft() + city.totalFood());
+            if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens()))) {
+                city.setFoodLeft(0);
+                city.setCountOfCitizens(city.getCountOfCitizens() + 1);
+            }
         }
     }
 

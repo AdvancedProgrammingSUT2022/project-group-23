@@ -18,7 +18,7 @@ public class TerrainDatabase {
     private static HashMap<String, ArrayList<String>> possibleResourcesForFeatures = new HashMap<>();
 
     static {
-        terrains.add(new Terrain("Dessert" , 0, 0, 0, 1, -33,30));
+        terrains.add(new Terrain("Desert" , 0, 0, 0, 1, -33,30));
         terrains.add(new Terrain("Grassland" , 0, 2, 0, 1, -33,40));
         terrains.add(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
         terrains.add(new Terrain("Mountain" , 0, 0, 0, -1, 0,35));

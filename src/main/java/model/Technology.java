@@ -29,4 +29,8 @@ public class Technology {
     public void setCost (int cost) {
         this.cost = cost;
     }
+
+    public ArrayList<String> getPrerequisiteTechnologies () {
+        return prerequisiteTechnologies;
+    }
 }

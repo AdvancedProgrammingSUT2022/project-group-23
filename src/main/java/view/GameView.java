@@ -68,6 +68,7 @@ public class GameView {
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
+            else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("show units info")) showUnitsInfo(civilizationController.showUnitsInfo());
             else if(input.equals("show cities info")) showCitiesInfo(civilizationController.showCitiesInfo());
             else if(input.equals("show research info")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
@@ -181,10 +182,10 @@ public class GameView {
     private void showCurrentStudyInfo(Technology technology) {
         if (technology != null) {
             int turnsLeft;
-            if (technology.getCost() % civilizationController.getCurrentPlayer().getCup() == 0) {
-                turnsLeft =  technology.getCost() / civilizationController.getCurrentPlayer().getCup();
+            if (technology.getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
+                turnsLeft =  technology.getCost() / civilizationController.getCurrentPlayer().totalCup();
             } else {
-                turnsLeft = technology.getCost() / civilizationController.getCurrentPlayer().getCup() + 1;
+                turnsLeft = technology.getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
             }
             System.out.println("you are currently studying " + technology.getName() + " and there is " + turnsLeft + " turns left to unlock");
             System.out.println("resources that need this technology to be discovered:");
@@ -207,6 +208,29 @@ public class GameView {
             }
         }else {
             System.out.println("no current Studying");
+        }
+    }
+
+    private void chooseTechnologyMenu(User user,Scanner scanner){
+        System.out.println("you have earned these technologies:");
+        for (Technology technology : user.getTechnologies()) {
+            System.out.println(technology.getName());
+        }
+        System.out.println("you can choose one of these technology to study:");
+        ArrayList<Technology> readyTechnologies=user.readyTechnologies();
+        for(int i=0;i<readyTechnologies.size();i++){
+            int turnsLeft;
+            if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
+                turnsLeft =  readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup();
+            } else {
+                turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
+            }
+            System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
+        }
+        String whichTechnology=scanner.nextLine();
+        if(whichTechnology!="exit"){
+            civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
+            System.out.println("technology will be studied!");
         }
     }
 }

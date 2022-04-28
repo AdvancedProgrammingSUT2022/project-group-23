@@ -4,6 +4,7 @@ import database.TerrainDatabase;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class CivilizationController extends GameController{
@@ -66,6 +67,12 @@ public class CivilizationController extends GameController{
 
 
     public String nextTurn() {
+        currentPlayer.getWaitedTechnologies().put(currentPlayer.getCurrentStudy().getName(),currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName())-currentPlayer.totalCup());
+        if(currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName())<=0){
+            currentPlayer.addTechnology(currentPlayer.getCurrentStudy());
+            currentPlayer.setCurrentStudy(null);
+            currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
+        }
         //TODO check if unit needs action or ...
         String message;
         if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
@@ -117,4 +124,11 @@ public class CivilizationController extends GameController{
         return currentPlayer;
     }
 
+    public void studyTechnology(Technology technology){
+        currentPlayer.setCurrentStudy(technology);
+        HashMap<String,Integer> waitedTechnologies=currentPlayer.getWaitedTechnologies();
+        if(!waitedTechnologies.containsKey(technology.getName())){
+            waitedTechnologies.put(technology.getName(),technology.getCost());
+        }
+    }
 }

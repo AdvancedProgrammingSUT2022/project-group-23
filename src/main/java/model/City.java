@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class City {
     private static int countOfCities = 0;
 
-    private int foodLeft;
+    private int foodLeft=0;
     private int id;
     private Tile capital;
     private int countOfCitizens=1;

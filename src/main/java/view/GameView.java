@@ -87,6 +87,13 @@ public class GameView {
                 ArrayList<String> infos = new ArrayList<>();
                 if(tiles[i][j].getTerrain() != null)infos.add(tiles[i][j].getTerrain().getName());
                 if(tiles[i][j].getFeature() != null)infos.add(tiles[i][j].getFeature().getName());
+                if(tiles[i][j].getResource() != null){
+                    if(tiles[i][j].getResource().getNeededTechnology() == null)infos.add(tiles[i][j].getResource().getName());
+                    else {
+                        if(civilizationController.getCurrentPlayer().hasTechnology(tiles[i][j].getResource().getNeededTechnology()))
+                            infos.add(tiles[i][j].getResource().getName());
+                    }
+                }
                 if(unitController.getTileNonCombatUnit(i, j) != null)infos.add(unitController.getTileNonCombatUnit(i, j).getName());
                 if(unitController.getTileCombatUnit(i, j) != null)infos.add(unitController.getTileCombatUnit(i, j).getName());
 

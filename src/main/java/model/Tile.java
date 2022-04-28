@@ -52,6 +52,10 @@ public class Tile {
         return resource;
     }
 
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
     public ArrayList<Integer> getRivers () {
         return rivers;
     }

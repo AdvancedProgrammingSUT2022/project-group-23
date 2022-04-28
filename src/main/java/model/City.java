@@ -10,8 +10,8 @@ public class City {
     private int id;
     private Tile capital;
     private int countOfCitizens=1;
-    private ArrayList<Tile> tiles;
-    private ArrayList<Tile> tilesWithCitizen;
+    private ArrayList<Tile> tiles = new ArrayList<>();
+    private ArrayList<Tile> tilesWithCitizen = new ArrayList<>();
 
     public City(Tile capital)
     {

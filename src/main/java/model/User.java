@@ -15,6 +15,7 @@ public class User {
     private int score;
     private int gold;
     private int happiness;
+    private int isUnhappy=0;
     private static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
@@ -124,7 +125,7 @@ public class User {
 
     public void newGame(){
         gold = 0;
-        happiness = 0;
+        happiness = 20;
         units = new ArrayList<>();
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
@@ -159,7 +160,7 @@ public class User {
     public int totalCup(){
         int cup=0;
         for (City city : cities) {
-            cup++;
+            cup=+3;
             cup += city.getCountOfCitizens();
         }
         return cup;
@@ -196,5 +197,13 @@ public class User {
             }
         }
         return readyTechnology;
+    }
+
+    public int getIsUnhappy () {
+        return isUnhappy;
+    }
+
+    public void setIsUnhappy (int isUnhappy) {
+        this.isUnhappy = isUnhappy;
     }
 }

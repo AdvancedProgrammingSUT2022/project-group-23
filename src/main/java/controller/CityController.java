@@ -12,6 +12,7 @@ public class CityController extends GameController{
         if(getCityAtCoordinate(x, y) != null) return "this tile belongs to a city";
         City city = new City(tiles[x][y]);
         currentPlayer.addCity(city);
+        currentPlayer.setHappiness(currentPlayer.getHappiness()-5);
         Graph graph = createGraph();
         ArrayList<Tile> cityTiles = graph.getTilesAtDistance(coordinatesToNumber(x, y), 1);
         for(Tile tile : cityTiles){
@@ -81,7 +82,8 @@ public class CityController extends GameController{
         for (City city : currentPlayer.getCities()) {
             currentPlayer.setGold(currentPlayer.getGold() + city.gold());
             city.setFoodLeft(city.getFoodLeft() + city.totalFood());
-            if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens()))) {
+            if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens())) && currentPlayer.getIsUnhappy()==0) {
+                currentPlayer.setHappiness(currentPlayer.getHappiness()-3);
                 city.setFoodLeft(0);
                 city.setCountOfCitizens(city.getCountOfCitizens() + 1);
             }

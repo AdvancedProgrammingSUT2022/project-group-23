@@ -7,17 +7,19 @@ public class Resource {
     private int gold;
     private int food;
     private int production;
+    private int happiness;
 
     private String neededImprovement;
     private String neededTechnology;
 
-    public Resource(String name, int gold, int food, int production, String neededImprovement, String neededTechnology) {
+    public Resource(String name, int gold, int food, int production, String neededImprovement, String neededTechnology,int happiness) {
         this.name = name;
         this.gold = gold;
         this.food = food;
         this.production = production;
         this.neededImprovement = neededImprovement;
         this.neededTechnology = neededTechnology;
+        this.happiness=happiness;
     }
 
     public String getName () {
@@ -50,5 +52,9 @@ public class Resource {
 
     public String getNeededTechnology () {
         return neededTechnology;
+    }
+
+    public int getHappiness () {
+        return happiness;
     }
 }

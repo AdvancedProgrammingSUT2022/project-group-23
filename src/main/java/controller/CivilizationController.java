@@ -67,15 +67,21 @@ public class CivilizationController extends GameController{
 
 
     public String nextTurn() {
+
+
+        String message;
+        if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
+
+        if(currentPlayer.getCurrentStudy() == null)return "you have to choose a research";
         currentPlayer.getWaitedTechnologies().put(currentPlayer.getCurrentStudy().getName(),currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName())-currentPlayer.totalCup());
         if(currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName())<=0){
             currentPlayer.addTechnology(currentPlayer.getCurrentStudy());
             currentPlayer.setCurrentStudy(null);
             currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
         }
-        //TODO check if unit needs action or ...
-        String message;
-        if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
+
+
+
         turn = (turn + 1) % players.size();
         currentPlayer = players.get(turn);
 

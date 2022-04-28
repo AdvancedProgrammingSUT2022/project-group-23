@@ -21,7 +21,7 @@ public class User {
     private Technology currentStudy;
     private ArrayList<Technology> technologies;
     private static User userLogged;
-    private HashMap<String ,Integer> waitedTechnologies= new HashMap<>();
+    private HashMap<String ,Integer> waitedTechnologies;
 
     public User(String username,String password,String nickname)
     {
@@ -129,6 +129,7 @@ public class User {
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
         currentStudy = null;
+        waitedTechnologies = new HashMap<>();
         updateUsersInfo();
     }
 
@@ -175,7 +176,22 @@ public class User {
     public ArrayList<Technology> readyTechnologies(){
         ArrayList<Technology> readyTechnology=new ArrayList<>();
         for (Technology technology : TechnologyDatabase.getTechnologies()) {
-            if(technologies.containsAll(technology.getPrerequisiteTechnologies()) && !technologies.contains(technology) && !technology.getName().equals(currentStudy.getName())){
+            ArrayList<String> prerequisiteTechnologies = technology.getPrerequisiteTechnologies();
+            boolean hasAllPrerequisiteTechnologies = true;
+            for(String technologyName : prerequisiteTechnologies) {
+                boolean hasTechnology = false;
+                for (Technology technology1 : technologies) {
+                    if (technology1.getName().equals(technologyName)) {
+                        hasTechnology = true;
+                        break;
+                    }
+                }
+                if (!hasTechnology) {
+                    hasAllPrerequisiteTechnologies = false;
+                    break;
+                }
+            }
+            if(hasAllPrerequisiteTechnologies && !technologies.contains(technology) && !technology.getName().equals(currentStudy.getName())){
                 readyTechnology.add(technology);
             }
         }

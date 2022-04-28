@@ -1,6 +1,7 @@
 package database;
 
 import model.Feature;
+import model.Resource;
 import model.Terrain;
 import model.Tile;
 
@@ -17,7 +18,7 @@ public class TerrainDatabase {
     private static HashMap<String, ArrayList<String>> possibleResourcesForFeatures = new HashMap<>();
 
     static {
-        terrains.add(new Terrain("Dessert" , 0, 0, 0, 1, -33,10));
+        terrains.add(new Terrain("Desert" , 0, 0, 0, 1, -33,10));
         terrains.add(new Terrain("Grassland" , 0, 2, 0, 1, -33,20));
         terrains.add(new Terrain("Hill" , 0, 0, 2, 2, 25,15));
         terrains.add(new Terrain("Mountain" , 0, 0, 0, -1, 0,15));
@@ -86,5 +87,26 @@ public class TerrainDatabase {
         }
         tile.setTerrain(terrain);
         tile.setFeature(feature);
+    }
+    public static void addRandomResourceToTile(Tile tile){
+        Terrain terrain = tile.getTerrain();
+        Feature feature = tile.getFeature();
+        ArrayList<String> possibleResources = new ArrayList<>();
+        if(terrain != null){
+            possibleResources.addAll(possibleResourcesForTerrains.get(terrain.getName()));
+        }
+        if (feature != null){
+            possibleResources.addAll(possibleResourcesForFeatures.get(feature.getName()));
+        }
+        if(possibleResources.isEmpty())return;
+        if(random.nextInt(3) == 0) {
+            String resourceName = possibleResources.get(random.nextInt(possibleResources.size()));
+            for(Resource resource : ResourceDatabase.getResources()){
+                if (resource.getName().equals(resourceName)){
+                    tile.setResource(resource);
+                    return;
+                }
+            }
+        }
     }
 }

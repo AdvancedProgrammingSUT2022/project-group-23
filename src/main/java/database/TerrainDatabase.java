@@ -17,21 +17,21 @@ public class TerrainDatabase {
     private static HashMap<String, ArrayList<String>> possibleResourcesForFeatures = new HashMap<>();
 
     static {
-        terrains.add(new Terrain("Dessert" , 0, 0, 0, 1, -33));
-        terrains.add(new Terrain("Grassland" , 0, 2, 0, 1, -33));
-        terrains.add(new Terrain("Hill" , 0, 0, 2, 2, 25));
-        terrains.add(new Terrain("Mountain" , 0, 0, 0, -1, 0));
-        terrains.add(new Terrain("Ocean" , 0, 0, 0, -1, 0));
-        terrains.add(new Terrain("Plain" , 0, 1, 1, 1, -33));
-        terrains.add(new Terrain("Snow" , 0, 0, 0, 1, -33));
-        terrains.add(new Terrain("Tundra" , 0, 1, 0, 1, -33));
+        terrains.add(new Terrain("Dessert" , 0, 0, 0, 1, -33,10));
+        terrains.add(new Terrain("Grassland" , 0, 2, 0, 1, -33,20));
+        terrains.add(new Terrain("Hill" , 0, 0, 2, 2, 25,15));
+        terrains.add(new Terrain("Mountain" , 0, 0, 0, -1, 0,15));
+        terrains.add(new Terrain("Ocean" , 0, 0, 0, -1, 0,10));
+        terrains.add(new Terrain("Plain" , 0, 1, 1, 1, -33,15));
+        terrains.add(new Terrain("Snow" , 0, 0, 0, 1, -33,10));
+        terrains.add(new Terrain("Tundra" , 0, 1, 0, 1, -33,15));
 
-        features.add(new Feature("Flood Plain", 0, 2 ,0, 1, -33));
-        features.add(new Feature("Forest", 0, 1 ,1, 2, 25));
-        features.add(new Feature("Ice", 0, 0 ,0, -1, 0));
-        features.add(new Feature("Jungle", 0, 1 ,-1, 2, 25));
-        features.add(new Feature("Marsh", 0, -1 ,0, 2, -33));
-        features.add(new Feature("Oasis", 1, 3 ,0, 1, -33));
+        features.add(new Feature("Flood Plain", 0, 2 ,0, 1, -33,5));
+        features.add(new Feature("Forest", 0, 1 ,1, 2, 25,5));
+        features.add(new Feature("Ice", 0, 0 ,0, -1, 0,-5));
+        features.add(new Feature("Jungle", 0, 1 ,-1, 2, 25,-5));
+        features.add(new Feature("Marsh", 0, -1 ,0, 2, -33,0));
+        features.add(new Feature("Oasis", 1, 3 ,0, 1, -33,5));
 
         possibleFeaturesForTerrains.put("Desert",new ArrayList<>(){{add("Flood Plain"); add("Oasis");}});
         possibleFeaturesForTerrains.put("Grassland",new ArrayList<>(){{add("Forest"); add("Marsh");}});

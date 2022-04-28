@@ -76,4 +76,41 @@ public class CityController extends GameController{
         }
         return "this tile doesn't have any citizen";
     }
+
+    public void nextTurn(){
+        currentPlayer.setGold(currentPlayer.getGold()+selectedCity.gold());
+        selectedCity.setFoodLeft(selectedCity.getFoodLeft()+selectedCity.totalFood());
+        if(selectedCity.getFoodLeft()>=(Math.pow(2,selectedCity.getCountOfCitizens()))){
+            selectedCity.setFoodLeft(0);
+            selectedCity.setCountOfCitizens(selectedCity.getCountOfCitizens()+1);
+        }
+    }
+
+    public ArrayList<Tile> possibleTilesForPurchase(){
+        ArrayList<Tile> possibleTiles= new ArrayList<Tile>();
+        for (Tile tile : selectedCity.getTiles()) {
+            for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 1)) {
+                if(!possibleTiles.contains(tile1) && !selectedCity.getTiles().contains(tile1)){
+                    possibleTiles.add(tile1);
+                }
+            }
+        }
+        return possibleTiles;
+    }
+
+    public String purchaseTile(Tile tile){
+        ArrayList<Tile> possibleTiles=possibleTilesForPurchase();
+        if(!possibleTiles.contains(tile)){
+            return "you can't purchase this tile!";
+        }
+        int price=tile.getTerrain().getPrice();
+        if(tile.getFeature()!=null){
+            price += tile.getFeature().getPrice();
+        }
+        if(currentPlayer.getGold()<price){
+            return "you don't have enough gold to purchase this tile";
+        }
+        selectedCity.addTile(tile);
+        return "tile purchased successfully";
+    }
 }

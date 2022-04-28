@@ -138,4 +138,16 @@ public class User {
             System.out.println("ERROR");
         }
     }
+
+    public void setScore (int score) {
+        this.score = score;
+    }
+
+    public void setGold (int gold) {
+        this.gold = gold;
+    }
+
+    public void setHappiness (int happiness) {
+        this.happiness = happiness;
+    }
 }

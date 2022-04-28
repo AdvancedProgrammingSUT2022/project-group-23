@@ -6,17 +6,19 @@ public class Terrain {
     private String name;
     private int gold;
     private int food;
+    private int price;
     private int production;
     private int movementCost;
     private int combatPercentage;
 
-    public Terrain(String name, int gold, int food, int production, int movementCost, int combatPercentage) {
+    public Terrain(String name, int gold, int food, int production, int movementCost, int combatPercentage,int price) {
         this.name = name;
         this.gold = gold;
         this.food = food;
         this.production = production;
         this.movementCost = movementCost;
         this.combatPercentage = combatPercentage;
+        this.price=price;
     }
 
     public String getName () {
@@ -61,5 +63,9 @@ public class Terrain {
 
     public void setMovementCost (int movementCost) {
         this.movementCost = movementCost;
+    }
+
+    public int getPrice () {
+        return price;
     }
 }

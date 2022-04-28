@@ -72,7 +72,7 @@ public class CivilizationController extends GameController{
         String message;
         if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
 
-        if(currentPlayer.getCurrentStudy() == null)return "you have to choose a research";
+        if(currentPlayer.getCurrentStudy() == null)return "you have to choose a technology to research";
         currentPlayer.getWaitedTechnologies().put(currentPlayer.getCurrentStudy().getName(),currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName())-currentPlayer.totalCup());
         if(currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName())<=0){
             currentPlayer.addTechnology(currentPlayer.getCurrentStudy());

@@ -228,7 +228,7 @@ public class GameView {
             System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
         }
         String whichTechnology=scanner.nextLine();
-        if(whichTechnology!="exit"){
+        if(!whichTechnology.equals("exit")){
             civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
             System.out.println("technology will be studied!");
         }

@@ -110,6 +110,9 @@ public class CityController extends GameController{
         if(currentPlayer.getGold()<price){
             return "you don't have enough gold to purchase this tile";
         }
+        if(getCityAtCoordinate(tile.getX(),tile.getY())!=null){
+            return "this tile belongs to another civilization";
+        }
         currentPlayer.setGold(currentPlayer.getGold()-price);
         selectedCity.addTile(tile);
         return "tile purchased successfully";

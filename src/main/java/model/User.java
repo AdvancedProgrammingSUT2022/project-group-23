@@ -157,4 +157,13 @@ public class User {
     public void setHappiness (int happiness) {
         this.happiness = happiness;
     }
+
+    public int totalCup(){
+        int cup=0;
+        for (City city : cities) {
+            cup++;
+            cup += city.getCountOfCitizens();
+        }
+        return cup;
+    }
 }

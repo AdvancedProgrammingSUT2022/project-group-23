@@ -1,6 +1,5 @@
 package model;
 
-import jdk.jshell.execution.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +13,6 @@ public class Tile {
     private ArrayList<Integer> rivers;
     private Improvement improvement;
     private HashMap<Integer,String> visibility;
-    private int citizen;
 
     public Tile(int x,int y)
     {
@@ -91,7 +89,8 @@ public class Tile {
     }
 
     public int getFood(){
-        int food=terrain.getFood();
+        int food = 0;
+        if(terrain != null) food = terrain.getFood();
         if(feature!=null){
             food += feature.getFood();
         }
@@ -105,7 +104,8 @@ public class Tile {
     }
 
     public int getProduction(){
-        int production=terrain.getProduction();
+        int production = 0;
+        if(terrain != null)production = terrain.getProduction();
         if(feature!=null){
             production += feature.getProduction();
         }
@@ -119,7 +119,8 @@ public class Tile {
     }
 
     public int getGold(){
-        int gold=terrain.getGold();
+        int gold = 0;
+        if(terrain != null)gold = terrain.getGold();
         if(feature!=null){
             gold += feature.getGold();
         }

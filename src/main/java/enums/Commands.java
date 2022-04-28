@@ -16,7 +16,8 @@ public enum Commands {
             "--(?<option2>\\w+) (?<value2>\\w+)"),
     SELECT_COMBAT_UNIT("select combat unit (?<x>\\d+) (?<y>\\d+)"),
     SELECT_NONCOMBAT_UNIT("select noncombat unit (?<x>\\d+) (?<y>\\d+)"),
-    MOVE_UNIT("unit move to (?<x>\\d+) (?<y>\\d+)");
+    MOVE_UNIT("unit move to (?<x>\\d+) (?<y>\\d+)"),
+    SELECT_CITY("select city (?<x>\\d+) (?<y>\\d+)");
 
     private String regex;
 

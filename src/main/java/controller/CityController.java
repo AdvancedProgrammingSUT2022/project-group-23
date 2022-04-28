@@ -22,6 +22,16 @@ public class CityController extends GameController{
         return "city founded";
     }
 
+    public String selectCity(int x, int y){
+        if(!isCoordinateValid(x, y))return "invalid coordinate";
+        selectedCity = getCityAtCoordinate(x, y);
+        if(selectedCity == null)return "this tiles doesn't belong to any city";
+        if(getCityOwner(selectedCity) != currentPlayer){
+            selectedCity = null;
+            return "city doesn't belong to you";
+        }
+        return "city selected successfully";
+    }
     public City getCityAtCoordinate(int x, int y){
         for(User user : players){
             for(City city : user.getCities()){
@@ -32,9 +42,18 @@ public class CityController extends GameController{
         }
         return null;
     }
+    public User getCityOwner(City city){
+        for(User user : players){
+            for(City tempCity : user.getCities()){
+                if(tempCity.equals(city)) return user;
+            }
+        }
+        return null;
+    }
 
     public ArrayList<Tile> possibleTilesForCitizen(Tile tile)
     {
+        if(selectedCity == null) return null;
         ArrayList<Tile> possibleTiles=createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()),2);
         for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 1)) {
             possibleTiles.add(tile1);
@@ -50,6 +69,7 @@ public class CityController extends GameController{
 
     public String putCitizenToWork(Tile tile)
     {
+        if(selectedCity == null) return "no selected city";
         ArrayList<Tile> possibleTiles= possibleTilesForCitizen(selectedCity.getCapital());
         if(!possibleTiles.contains(tile))
         {
@@ -69,6 +89,7 @@ public class CityController extends GameController{
 
     public String removeCitizen(Tile tile)
     {
+        if(selectedCity == null) return "no selected city";
         for (Tile tile1 : selectedCity.getTilesWithCitizen()) {
             if(tile1.equals(tile)){
                 selectedCity.removeCitizenFromTile(tile);
@@ -91,6 +112,7 @@ public class CityController extends GameController{
     }
 
     public ArrayList<Tile> possibleTilesForPurchase(){
+        if(selectedCity == null) return null;
         ArrayList<Tile> possibleTiles= new ArrayList<Tile>();
         for (Tile tile : selectedCity.getTiles()) {
             for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 1)) {
@@ -103,6 +125,7 @@ public class CityController extends GameController{
     }
 
     public String purchaseTile(Tile tile){
+        if(selectedCity == null) return "no selected city";
         ArrayList<Tile> possibleTiles=possibleTilesForPurchase();
         if(!possibleTiles.contains(tile)){
             return "you can't purchase this tile!";

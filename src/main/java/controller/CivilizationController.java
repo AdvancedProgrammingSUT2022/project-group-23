@@ -123,6 +123,10 @@ public class CivilizationController extends GameController{
         return unitController;
     }
 
+    public CityController getCityController() {
+        return cityController;
+    }
+
     public int getTurn() {
         return turn;
     }

@@ -1,6 +1,7 @@
 package view;
 
 
+import controller.CityController;
 import controller.CivilizationController;
 import controller.UnitController;
 import database.ImprovementDatabase;
@@ -37,6 +38,7 @@ public class GameView {
     private CivilizationController civilizationController;
 
     private UnitController unitController;
+    private CityController cityController;
 
     public GameView(ArrayList<String> usernames){
         System.out.println(usernames);
@@ -53,6 +55,8 @@ public class GameView {
         }
         civilizationController = new CivilizationController(players);
         unitController = civilizationController.getUnitController();
+        cityController = civilizationController.getCityController();
+
     }
     public void run(Scanner scanner){
         String input;
@@ -64,6 +68,8 @@ public class GameView {
                 System.out.println(unitController.selectUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")), true));
             else if((matcher = Commands.getCommandMatcher(input, Commands.SELECT_NONCOMBAT_UNIT)) != null)
                 System.out.println(unitController.selectUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")), false));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.SELECT_CITY)) != null)
+                System.out.println(cityController.selectCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if((matcher = Commands.getCommandMatcher(input, Commands.MOVE_UNIT)) != null)
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());

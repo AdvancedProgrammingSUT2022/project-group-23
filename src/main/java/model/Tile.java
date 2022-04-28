@@ -95,7 +95,9 @@ public class Tile {
             food += feature.getFood();
         }
         if(resource!=null){
-            food+= resource.getFood();
+            if(resource.getNeededImprovement() == null ||
+                    (improvement != null && resource.getNeededImprovement().equals(improvement.getName())))
+                food += resource.getFood();
         }
         if(improvement!=null){
             food+=improvement.getFood();
@@ -110,7 +112,9 @@ public class Tile {
             production += feature.getProduction();
         }
         if(resource!=null){
-            production+= resource.getProduction();
+            if(resource.getNeededImprovement() == null ||
+                    (improvement != null && resource.getNeededImprovement().equals(improvement.getName())))
+                production+= resource.getProduction();
         }
         if(improvement!=null){
             production+=improvement.getProduction();
@@ -125,7 +129,9 @@ public class Tile {
             gold += feature.getGold();
         }
         if(resource!=null){
-            gold += resource.getGold();
+            if(resource.getNeededImprovement() == null ||
+                    (improvement != null && resource.getNeededImprovement().equals(improvement.getName())))
+                gold += resource.getGold();
         }
         if(improvement!=null){
             gold+=improvement.getGold();

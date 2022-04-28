@@ -7,10 +7,12 @@ import java.util.Random;
 
 public class UnitController extends GameController {
 
-
-    public UnitController() {
+    private CityController cityController;
+    public UnitController(CityController cityController) {
+        this.cityController = cityController;
         initializeUnits();
         checkVisibility();
+
     }
 
 
@@ -59,7 +61,6 @@ public class UnitController extends GameController {
         checkVisibility();
         return "ok";
     }
-
     public boolean isRiver(int x1, int y1, int x2, int y2){
         //return false;
         if(x1 - 1 == x2 && y1 == y2 && tiles[x1][y1].getRivers().contains(1))return true;
@@ -143,6 +144,24 @@ public class UnitController extends GameController {
         if(!(message = moveUnit(selectedUnit, x, y)).equals("ok")) return message;
         return "unit moved successfully";
 
+    }
+
+    public String foundCity(){
+        if(selectedUnit == null)return "no unit selected";
+        if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
+        if(!(selectedUnit instanceof SettlerUnit))return "unit is not Settler";
+        if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
+        String message = cityController.createCity(selectedUnit.getX(), selectedUnit.getY());
+        if(message.equals("city founded"))deleteSelectedUnit();
+        return message;
+
+    }
+    public String deleteSelectedUnit(){
+        if(selectedUnit == null)return "no unit selected";
+        if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
+        currentPlayer.removeUnit(selectedUnit);
+        //TODO check visibility
+        return "unit deleted successfully";
     }
     public User getUnitOwner(Unit unit){
         for(User user : players) {

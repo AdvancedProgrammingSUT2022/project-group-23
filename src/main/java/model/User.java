@@ -63,6 +63,9 @@ public class User {
     public ArrayList<Unit> getUnits () {
         return units;
     }
+    public void removeUnit(Unit unit){
+        units.remove(unit);
+    }
 
     public ArrayList<City> getCities () {
         return cities;

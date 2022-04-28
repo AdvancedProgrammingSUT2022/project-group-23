@@ -72,6 +72,7 @@ public class GameView {
                 System.out.println(cityController.selectCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if((matcher = Commands.getCommandMatcher(input, Commands.MOVE_UNIT)) != null)
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
+            else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
@@ -181,7 +182,7 @@ public class GameView {
 
     private void showCitiesInfo(ArrayList<City> cities){
         for(int i=0;i<cities.size();i++){
-            System.out.println((i+1)+"- capital: "+cities.get(i).getCapital()+" number of citizens: "+cities.get(i).getCountOfCitizens()+" number of tiles: "+cities.get(i).getTiles().size());
+            System.out.println((i+1)+"- capital: (" + cities.get(i).getCapital().getX() + "," + cities.get(i).getCapital().getY() + ") number of citizens: "+cities.get(i).getCountOfCitizens()+" number of tiles: "+cities.get(i).getTiles().size());
         }
     }
 

@@ -19,8 +19,8 @@ public class CivilizationController extends GameController{
         currentPlayer = players.get(0);
         initializeMap();
         turn = 0;
-        unitController = new UnitController();
         cityController = new CityController();
+        unitController = new UnitController(cityController);
     }
 
     public void initializeMap() {

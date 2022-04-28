@@ -54,6 +54,10 @@ public class Resource {
         return neededTechnology;
     }
 
+    public String getNeededImprovement() {
+        return neededImprovement;
+    }
+
     public int getHappiness () {
         return happiness;
     }

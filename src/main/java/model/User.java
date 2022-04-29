@@ -23,6 +23,7 @@ public class User {
     private ArrayList<Technology> technologies;
     private static User userLogged;
     private HashMap<String ,Integer> waitedTechnologies;
+    private ArrayList<String> luxuryResources;
 
     public User(String username,String password,String nickname)
     {
@@ -134,6 +135,7 @@ public class User {
         technologies = new ArrayList<>();
         currentStudy = null;
         waitedTechnologies = new HashMap<>();
+        luxuryResources= new ArrayList<>();
         updateUsersInfo();
     }
 
@@ -209,4 +211,13 @@ public class User {
     public void setIsUnhappy (int isUnhappy) {
         this.isUnhappy = isUnhappy;
     }
+
+    public ArrayList<String> getLuxuryResources () {
+        return luxuryResources;
+    }
+
+    public void addLuxuryResource(String name){
+        luxuryResources.add(name);
+    }
 }
+

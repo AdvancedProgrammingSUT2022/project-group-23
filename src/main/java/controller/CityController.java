@@ -101,6 +101,17 @@ public class CityController extends GameController{
 
     public void nextTurn(){
         for (City city : currentPlayer.getCities()) {
+            for (Tile tile : city.getTiles()) {
+                if(tile.getResource()!=null){
+                    if(tile.getResource().getNeededImprovement()==null ||
+                            (tile.getResource().getNeededImprovement()!=null && tile.getImprovement().getName().equals(tile.getResource().getNeededImprovement()))){
+                        if(tile.getResource().isLuxury() && !currentPlayer.getLuxuryResources().contains(tile.getResource().getName())){
+                            currentPlayer.addLuxuryResource(tile.getResource().getName());
+                            currentPlayer.setHappiness(currentPlayer.getHappiness()+4);
+                        }
+                    }
+                }
+            }
             currentPlayer.setGold(currentPlayer.getGold() + city.gold());
             city.setFoodLeft(city.getFoodLeft() + city.totalFood());
             if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens())) && currentPlayer.getIsUnhappy()==0) {
@@ -145,3 +156,4 @@ public class CityController extends GameController{
         return "tile purchased successfully";
     }
 }
+

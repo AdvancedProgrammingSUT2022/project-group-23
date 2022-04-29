@@ -24,6 +24,7 @@ public class User {
     private static User userLogged;
     private HashMap<String ,Integer> waitedTechnologies;
     private ArrayList<String> luxuryResources;
+    private HashMap<WorkerUnit,Integer> processingRoads;
 
     public User(String username,String password,String nickname)
     {
@@ -136,6 +137,7 @@ public class User {
         currentStudy = null;
         waitedTechnologies = new HashMap<>();
         luxuryResources= new ArrayList<>();
+        processingRoads = new HashMap<>();
         updateUsersInfo();
     }
 
@@ -218,6 +220,14 @@ public class User {
 
     public void addLuxuryResource(String name){
         luxuryResources.add(name);
+    }
+
+    public HashMap<WorkerUnit, Integer> getProcessingRoads () {
+        return processingRoads;
+    }
+
+    public void setProcessingRoads (HashMap<WorkerUnit, Integer> processingRoads) {
+        this.processingRoads = processingRoads;
     }
 }
 

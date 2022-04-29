@@ -3,6 +3,8 @@ package controller;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class UnitController extends GameController {
@@ -182,12 +184,42 @@ public class UnitController extends GameController {
                 }
             }
         }
+        HashMap<WorkerUnit,Integer> processingRoads=currentPlayer.getProcessingRoads();
+        HashMap<WorkerUnit,Integer> map=new HashMap<>();
+        if(processingRoads!=null) {
+            for (Map.Entry<WorkerUnit, Integer> entry : processingRoads.entrySet()) {
+                processingRoads.put(entry.getKey(),entry.getValue()-1);
+                if(processingRoads.get(entry.getKey())==0){
+                    tiles[entry.getKey().getX()][entry.getKey().getY()].setRoad(true);
+                    entry.getKey().setState("ready");
+                }else {
+                    map.put(entry.getKey(),entry.getValue());
+                }
+            }
+            currentPlayer.setProcessingRoads(map);
+        }
         for(Unit unit : currentPlayer.getUnits()) unit.setRemainingMoves(unit.getMovement());
         return "ok";
     }
 
     public String buildRoad(WorkerUnit unit){
-        return "";
+        for (Technology technology : currentPlayer.getTechnologies()) {
+            if(technology.getName().equals("Wheel")){
+                if(!tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Ice") &&
+                        !tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Mountain") && !tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Ocean")){
+                    if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
+                        return "this worker can't build right now!";
+                    }
+                    unit.setState("working");
+                    unit.setRemainingMoves(0);
+                    unit.setMoves(new ArrayList<>());
+                    HashMap<WorkerUnit,Integer> processingRoads=currentPlayer.getProcessingRoads();
+                    processingRoads.put(unit,3);
+                }
+                return "you can't build a road on this tile!";
+            }
+        }
+        return "you don't have the right technology to build road";
     }
 
     public Unit getSelectedUnit() {

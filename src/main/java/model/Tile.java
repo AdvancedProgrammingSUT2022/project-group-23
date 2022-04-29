@@ -13,6 +13,7 @@ public class Tile {
     private ArrayList<Integer> rivers;
     private Improvement improvement;
     private HashMap<Integer,String> visibility;
+    private boolean isRoad;
 
     public Tile(int x,int y)
     {
@@ -138,5 +139,13 @@ public class Tile {
         }
         gold += rivers.size();
         return gold;
+    }
+
+    public boolean isRoad () {
+        return isRoad;
+    }
+
+    public void setRoad (boolean road) {
+        isRoad = road;
     }
 }

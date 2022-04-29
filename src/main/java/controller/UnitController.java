@@ -186,6 +186,10 @@ public class UnitController extends GameController {
         return "ok";
     }
 
+    public String buildRoad(WorkerUnit unit){
+        return "";
+    }
+
     public Unit getSelectedUnit() {
         return selectedUnit;
     }

@@ -232,6 +232,7 @@ public class UnitController extends GameController {
                     if(processingRoads.get(tiles[unit.getX()][unit.getY()])!= null && improvingTiles.get(tiles[unit.getX()][unit.getY()])==null){
                         roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                     }else {
+                        improvingTiles.remove(tiles[unit.getX()][unit.getY()]);
                         processingRoads.put(tiles[unit.getX()][unit.getY()],3);
                         roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                     }
@@ -278,6 +279,15 @@ public class UnitController extends GameController {
             }
         }
         return "you don't have the right technology to improve this tile";
+    }
+
+    public String cancelActions(Unit unit){
+        unit.setMoves(new ArrayList<>());
+        unit.setState("ready");
+        if(unit.getName().equals("Worker")){
+            currentPlayer.getWorkingWorkers().remove(tiles[unit.getX()][unit.getY()]);
+        }
+        return "actions canceled successfully";
     }
 
     public Unit getSelectedUnit() {

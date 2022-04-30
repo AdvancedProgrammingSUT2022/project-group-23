@@ -212,7 +212,9 @@ public class UnitController extends GameController {
         return "ok";
     }
 
-    public String buildRoad(WorkerUnit unit){
+    public String buildRoad(){
+        if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
+        WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
             if(technology.getName().equals("Wheel")){
                 if(tiles[unit.getX()][unit.getY()].getTerrain().getMovementCost()!=-1 ||
@@ -244,7 +246,9 @@ public class UnitController extends GameController {
         return "you don't have the right technology to build road";
     }
 
-    public String improveTile(WorkerUnit unit,Improvement improvement){
+    public String improveTile(Improvement improvement){
+        if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
+        WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
             if(technology.getName().equals(improvement.getNeededTechnology())){
                 if(improvement.getPlacesItCanBeBuild().contains(tiles[unit.getX()][unit.getY()].getTerrain().getName()) ||
@@ -289,6 +293,8 @@ public class UnitController extends GameController {
         }
         return "actions canceled successfully";
     }
+
+
 
     public Unit getSelectedUnit() {
         return selectedUnit;

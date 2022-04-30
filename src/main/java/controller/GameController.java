@@ -47,4 +47,8 @@ public class GameController {
     protected static int coordinatesToNumber(int x, int y){
         return x * mapWidth + y;
     }
+
+    public static void setSelectedUnit(Unit selectedUnit) {
+        GameController.selectedUnit = selectedUnit;
+    }
 }

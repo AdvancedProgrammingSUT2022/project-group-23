@@ -32,9 +32,10 @@ public class TestUnitController extends GameController {
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
         }
-        assertEquals(unitController.buildRoad(unit),"you don't have the right technology to build road");
+        GameController.setSelectedUnit(unit);
+        assertEquals(unitController.buildRoad(),"you don't have the right technology to build road");
         currentPlayer.addTechnology(TechnologyDatabase.getTechnologies().get(8));
-        unitController.buildRoad(unit);
+        unitController.buildRoad();
         unitController.isTurnPossible();
         unitController.isTurnPossible();
         unitController.isTurnPossible();

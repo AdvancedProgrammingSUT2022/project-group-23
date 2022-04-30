@@ -34,6 +34,7 @@ public class User {
         this.password=password;
         this.nickname=nickname;
         users.add(this);
+        User.updateUsersInfo();
     }
 
     public static void setUsers (ArrayList<User> users) {

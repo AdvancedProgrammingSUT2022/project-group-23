@@ -42,7 +42,6 @@ public class RegisterController {
             }
         }
         new User(username,password,nickname);
-        User.updateUsersInfo();
         return "user created successfully!";
     }
     public String login(String username,String password)

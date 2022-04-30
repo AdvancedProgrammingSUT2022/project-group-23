@@ -15,7 +15,7 @@ public class TechnologyDatabase {
         technologies.add(new Technology("Masonry",55,new ArrayList<>(){{add("Mining");}}));
         technologies.add(new Technology("Mining",35,new ArrayList<>(){{add("Agriculture");}}));
         technologies.add(new Technology("Pottery",35,new ArrayList<>(){{add("Agriculture");}}));
-        technologies.add(new Technology("The Wheel",55,new ArrayList<>(){{add("Animal Husbandry");}}));
+        technologies.add(new Technology("Wheel",55,new ArrayList<>(){{add("Animal Husbandry");}}));
         technologies.add(new Technology("Trapping",55,new ArrayList<>(){{add("Animal Husbandry");}}));
         technologies.add(new Technology("Writing",55,new ArrayList<>(){{add("Pottery");}}));
         technologies.add(new Technology("Construction",100,new ArrayList<>(){{add("Masonry");}}));

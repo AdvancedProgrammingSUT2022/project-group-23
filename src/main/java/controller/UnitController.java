@@ -190,7 +190,7 @@ public class UnitController extends GameController {
         HashMap<Tile,Integer> map=new HashMap<>();
         if(processingTiles!=null) {
             for (Map.Entry<Tile, Integer> entry : processingTiles.entrySet()) {
-                processingTiles.put(entry.getKey(),entry.getValue()-1);
+                if(workingWorkers.get(entry.getKey())!=null) processingTiles.put(entry.getKey(),entry.getValue()-1);
                 if(processingTiles.get(entry.getKey())==0){
                     if(improvingTiles.get(entry.getKey())==null){
                         entry.getKey().setRoad(true);

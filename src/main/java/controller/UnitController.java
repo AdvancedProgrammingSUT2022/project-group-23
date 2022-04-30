@@ -228,8 +228,14 @@ public class UnitController extends GameController {
                     unit.setMoves(new ArrayList<>());
                     HashMap<Tile,Integer> processingRoads=currentPlayer.getProcessingTiles();
                     HashMap<Tile,WorkerUnit> roadWorkers=currentPlayer.getWorkingWorkers();
-                    processingRoads.put(tiles[unit.getX()][unit.getY()],3);
-                    roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+                    HashMap<Tile,Improvement> improvingTiles=currentPlayer.getImprovingTiles();
+                    if(processingRoads.get(tiles[unit.getX()][unit.getY()])!= null && improvingTiles.get(tiles[unit.getX()][unit.getY()])==null){
+                        roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+                    }else {
+                        processingRoads.put(tiles[unit.getX()][unit.getY()],3);
+                        roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+                    }
+                    return "starting to build a road!";
                 }
                 return "you can't build a road on this tile!";
             }
@@ -252,14 +258,19 @@ public class UnitController extends GameController {
                         HashMap<Tile,Integer>  processingTiles=currentPlayer.getProcessingTiles();
                         HashMap<Tile,WorkerUnit> workingWorkers= currentPlayer.getWorkingWorkers();
                         HashMap<Tile,Improvement> improvingTiles = currentPlayer.getImprovingTiles();
-                        processingTiles.put(tiles[unit.getX()][unit.getY()],6);
-                        workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
-                        improvingTiles.put(tiles[unit.getX()][unit.getY()],improvement);
-                        if(tiles[unit.getX()][unit.getY()].getFeature()!=null){
-                            if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle")) processingTiles.put(tiles[unit.getX()][unit.getY()],13);
-                            if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh")) processingTiles.put(tiles[unit.getX()][unit.getY()],12);
-                            if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest")) processingTiles.put(tiles[unit.getX()][unit.getY()],10);
+                        if(processingTiles.get(tiles[unit.getX()][unit.getY()])!=null && improvingTiles.get(tiles[unit.getX()][unit.getY()])!=null && improvement.getName().equals(improvingTiles.get(tiles[unit.getX()][unit.getY()]).getName())) {
+                            workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+                        }else {
+                            processingTiles.put(tiles[unit.getX()][unit.getY()], 6);
+                            if(tiles[unit.getX()][unit.getY()].getFeature()!=null){
+                                if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle")) processingTiles.put(tiles[unit.getX()][unit.getY()],13);
+                                if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh")) processingTiles.put(tiles[unit.getX()][unit.getY()],12);
+                                if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest")) processingTiles.put(tiles[unit.getX()][unit.getY()],10);
+                            }
+                            workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+                            improvingTiles.put(tiles[unit.getX()][unit.getY()],improvement);
                         }
+                        return "improving the tile!";
                     }
                     return "this tile is already improved";
                 }

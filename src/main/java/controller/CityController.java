@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class CityController extends GameController{
 
-    private City selectedCity;
+
 
     public String createCity(int x, int y){
         if(getCityAtCoordinate(x, y) != null) return "this tile belongs to a city";

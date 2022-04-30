@@ -1,9 +1,6 @@
 package controller;
 
-import model.Graph;
-import model.Tile;
-import model.Unit;
-import model.User;
+import model.*;
 
 import java.util.ArrayList;
 
@@ -15,6 +12,7 @@ public class GameController {
     protected static Tile[][] tiles;
 
     protected static Unit selectedUnit;
+    protected static City selectedCity;
     protected static int turn;
     protected static User currentPlayer;
 

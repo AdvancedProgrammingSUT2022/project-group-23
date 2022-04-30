@@ -184,14 +184,16 @@ public class UnitController extends GameController {
                 }
             }
         }
-        HashMap<WorkerUnit,Integer> processingRoads=currentPlayer.getProcessingRoads();
-        HashMap<WorkerUnit,Integer> map=new HashMap<>();
+        HashMap<Tile,Integer> processingRoads=currentPlayer.getProcessingRoads();
+        HashMap<Tile,WorkerUnit> workingWorkers=currentPlayer.getWorkingWorkers();
+        HashMap<Tile,Integer> map=new HashMap<>();
         if(processingRoads!=null) {
-            for (Map.Entry<WorkerUnit, Integer> entry : processingRoads.entrySet()) {
+            for (Map.Entry<Tile, Integer> entry : processingRoads.entrySet()) {
                 processingRoads.put(entry.getKey(),entry.getValue()-1);
                 if(processingRoads.get(entry.getKey())==0){
-                    tiles[entry.getKey().getX()][entry.getKey().getY()].setRoad(true);
-                    entry.getKey().setState("ready");
+                    entry.getKey().setRoad(true);
+                    workingWorkers.get(entry.getKey()).setState("ready");
+                    workingWorkers.remove(entry.getKey());
                 }else {
                     map.put(entry.getKey(),entry.getValue());
                 }
@@ -205,21 +207,39 @@ public class UnitController extends GameController {
     public String buildRoad(WorkerUnit unit){
         for (Technology technology : currentPlayer.getTechnologies()) {
             if(technology.getName().equals("Wheel")){
-                if(!tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Ice") &&
-                        !tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Mountain") && !tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Ocean")){
+                if(tiles[unit.getX()][unit.getY()].getTerrain().getMovementCost()!=-1 ||
+                        (tiles[unit.getX()][unit.getY()].getFeature()!=null && tiles[unit.getX()][unit.getY()].getFeature().getMovementCost()!=-1)){
                     if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
                         return "this worker can't build right now!";
+                    }
+                    if(tiles[unit.getX()][unit.getY()].isRoad()){
+                        return "this tile is already a road";
                     }
                     unit.setState("working");
                     unit.setRemainingMoves(0);
                     unit.setMoves(new ArrayList<>());
-                    HashMap<WorkerUnit,Integer> processingRoads=currentPlayer.getProcessingRoads();
-                    processingRoads.put(unit,3);
+                    HashMap<Tile,Integer> processingRoads=currentPlayer.getProcessingRoads();
+                    HashMap<Tile,WorkerUnit> roadWorkers=currentPlayer.getWorkingWorkers();
+                    processingRoads.put(tiles[unit.getX()][unit.getY()],3);
+                    roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                 }
                 return "you can't build a road on this tile!";
             }
         }
         return "you don't have the right technology to build road";
+    }
+
+    public String improveTile(WorkerUnit unit,Improvement improvement){
+        for (Technology technology : currentPlayer.getTechnologies()) {
+            if(technology.getName().equals(improvement.getNeededTechnology())){
+                if(improvement.getPlacesItCanBeBuild().contains(tiles[unit.getX()][unit.getY()].getTerrain().getName()) ||
+                        (tiles[unit.getX()][unit.getY()].getFeature()!=null && improvement.getPlacesItCanBeBuild().contains(tiles[unit.getX()][unit.getY()].getFeature().getName()))){
+
+                }
+                return "you can't do this improvement on this tile!";
+            }
+        }
+        return "you don't have the right technology to improve this tile";
     }
 
     public Unit getSelectedUnit() {

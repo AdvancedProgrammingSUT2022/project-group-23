@@ -19,9 +19,9 @@ public class TechnologyDatabase {
         technologies.add(new Technology("Trapping",55,new ArrayList<>(){{add("Animal Husbandry");}}));
         technologies.add(new Technology("Writing",55,new ArrayList<>(){{add("Pottery");}}));
         technologies.add(new Technology("Construction",100,new ArrayList<>(){{add("Masonry");}}));
-        technologies.add(new Technology("Horseback Riding",100,new ArrayList<>(){{add("The Wheel");}}));
+        technologies.add(new Technology("Horseback Riding",100,new ArrayList<>(){{add("Wheel");}}));
         technologies.add(new Technology("Iron Working",150,new ArrayList<>(){{add("Bronze Working");}}));
-        technologies.add(new Technology("Mathematics",100,new ArrayList<>(){{add("The Wheel");}{add("Archery");}}));
+        technologies.add(new Technology("Mathematics",100,new ArrayList<>(){{add("Wheel");}{add("Archery");}}));
         technologies.add(new Technology("Philosophy",100,new ArrayList<>(){{add("Writing");}}));
         technologies.add(new Technology("Chivalry",440,new ArrayList<>(){{add("Civil Service");}{add("Horseback Riding");}{add("Currency");}}));
         technologies.add(new Technology("Civil Service",400,new ArrayList<>(){{add("Philosophy");}{add("Trapping");}}));

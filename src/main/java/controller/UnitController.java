@@ -266,12 +266,15 @@ public class UnitController extends GameController {
                         if(processingTiles.get(tiles[unit.getX()][unit.getY()])!=null && improvingTiles.get(tiles[unit.getX()][unit.getY()])!=null && improvement.getName().equals(improvingTiles.get(tiles[unit.getX()][unit.getY()]).getName())) {
                             workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                         }else {
-                            processingTiles.put(tiles[unit.getX()][unit.getY()], 6);
-                            if(tiles[unit.getX()][unit.getY()].getFeature()!=null){
-                                if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle")) processingTiles.put(tiles[unit.getX()][unit.getY()],13);
-                                if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh")) processingTiles.put(tiles[unit.getX()][unit.getY()],12);
-                                if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest")) processingTiles.put(tiles[unit.getX()][unit.getY()],10);
-                            }
+                                processingTiles.put(tiles[unit.getX()][unit.getY()], 6);
+                                if (tiles[unit.getX()][unit.getY()].getFeature() != null) {
+                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle"))
+                                        processingTiles.put(tiles[unit.getX()][unit.getY()], 13);
+                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh"))
+                                        processingTiles.put(tiles[unit.getX()][unit.getY()], 12);
+                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest"))
+                                        processingTiles.put(tiles[unit.getX()][unit.getY()], 10);
+                                }
                             workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                             improvingTiles.put(tiles[unit.getX()][unit.getY()],improvement);
                         }
@@ -294,7 +297,45 @@ public class UnitController extends GameController {
         return "actions canceled successfully";
     }
 
+    public String lootTile(){
+        if(!(selectedUnit instanceof MilitaryUnit)) {
+            return "this unit can't loot";
+        }
+        if(!tiles[selectedUnit.getX()][selectedUnit.getY()].isRoad() && tiles[selectedUnit.getX()][selectedUnit.getY()].getImprovement()==null){
+            return "this tile has nothing to loot";
+        }
+        if(tiles[selectedUnit.getX()][selectedUnit.getY()].isRoad()){
+            tiles[selectedUnit.getX()][selectedUnit.getY()].setHasLooted(true);
+            tiles[selectedUnit.getX()][selectedUnit.getY()].setRoad(false);
+        }
+        if(tiles[selectedUnit.getX()][selectedUnit.getY()].getImprovement()!=null){
+            tiles[selectedUnit.getX()][selectedUnit.getY()].setLootedImprovement(tiles[selectedUnit.getX()][selectedUnit.getY()].getImprovement());
+            tiles[selectedUnit.getX()][selectedUnit.getY()].setImprovement(null);
+            tiles[selectedUnit.getX()][selectedUnit.getY()].setHasLooted(true);
+        }
+        return "looted!";
+    }
 
+    public String healTile(){
+        if(!(selectedUnit instanceof WorkerUnit)){
+            return "this unit can't heal this tile";
+        }
+        WorkerUnit unit = (WorkerUnit) selectedUnit;
+        if(!tiles[unit.getX()][unit.getY()].isHasLooted()){
+            return "this tile is not looted!";
+        }
+        tiles[unit.getX()][unit.getY()].setHasLooted(false);
+        HashMap<Tile,WorkerUnit> workingWorkers=currentPlayer.getWorkingWorkers();
+        HashMap<Tile,Integer> processingTiles=currentPlayer.getProcessingTiles();
+        HashMap<Tile,Improvement> improvingTiles=currentPlayer.getImprovingTiles();
+        if(tiles[unit.getX()][unit.getY()].getLootedImprovement()!=null){
+            improvingTiles.put(tiles[unit.getX()][unit.getY()],tiles[unit.getX()][unit.getY()].getLootedImprovement());
+            tiles[unit.getX()][unit.getY()].setLootedImprovement(null);
+        }
+        processingTiles.put(tiles[unit.getX()][unit.getY()],3);
+        workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+        return "healing!";
+    }
 
     public Unit getSelectedUnit() {
         return selectedUnit;

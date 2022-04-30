@@ -14,6 +14,8 @@ public class Tile {
     private Improvement improvement;
     private HashMap<Integer,String> visibility;
     private boolean isRoad;
+    private boolean hasLooted;
+    private Improvement lootedImprovement;
 
     public Tile(int x,int y)
     {
@@ -151,5 +153,21 @@ public class Tile {
 
     public void setImprovement (Improvement improvement) {
         this.improvement = improvement;
+    }
+
+    public Improvement getLootedImprovement () {
+        return lootedImprovement;
+    }
+
+    public void setLootedImprovement (Improvement lootedImprovement) {
+        this.lootedImprovement = lootedImprovement;
+    }
+
+    public boolean isHasLooted () {
+        return hasLooted;
+    }
+
+    public void setHasLooted (boolean hasLooted) {
+        this.hasLooted = hasLooted;
     }
 }

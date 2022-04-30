@@ -15,7 +15,7 @@ public class User {
     private int score;
     private int gold;
     private int happiness;
-    private int isUnhappy=0;
+    private int isUnhappy;
     private static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
@@ -132,6 +132,7 @@ public class User {
 
     public void newGame(){
         gold = 0;
+        isUnhappy = 0;
         happiness = 20;
         units = new ArrayList<>();
         cities = new ArrayList<>();
@@ -166,6 +167,8 @@ public class User {
 
     public void setHappiness (int happiness) {
         this.happiness = happiness;
+        if(this.happiness<0) setIsUnhappy(1);
+        if(this.happiness>=0) setIsUnhappy(0);
     }
 
     public int totalCup(){

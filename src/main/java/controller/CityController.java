@@ -1,8 +1,10 @@
 package controller;
 
+import database.UnitsDatabase;
 import model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CityController extends GameController{
 
@@ -113,13 +115,65 @@ public class CityController extends GameController{
                 }
             }
             currentPlayer.setGold(currentPlayer.getGold() + city.gold());
-            city.setFoodLeft(city.getFoodLeft() + city.totalFood());
+            if(currentPlayer.getIsUnhappy() == 0)city.setFoodLeft(city.getFoodLeft() + city.totalFood());
+            if(currentPlayer.getIsUnhappy() == 1)city.setFoodLeft(city.getFoodLeft() + city.totalFood() / 3);
+            if(selectedCity.getConstructingUnit().equals("Settler"))city.setFoodLeft(0);
             if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens())) && currentPlayer.getIsUnhappy()==0) {
                 currentPlayer.setHappiness(currentPlayer.getHappiness()-3);
                 city.setFoodLeft(0);
                 city.setCountOfCitizens(city.getCountOfCitizens() + 1);
             }
+            HashMap<String, Integer> waitedUnits = selectedCity.getWaitedUnits();
+            waitedUnits.put(selectedCity.getConstructingUnit(),waitedUnits.get(selectedCity.getConstructingUnit()) - selectedCity.production());
+            if(waitedUnits.get(selectedCity.getConstructingUnit()) <= 0){
+                createUnit(selectedCity.getConstructingUnit());
+                waitedUnits.remove(selectedCity.getConstructingUnit());
+                selectedCity.setConstructingUnit(null);
+            }
+
         }
+    }
+    public String constructUnit(String name){
+        if(selectedCity == null)return "no city selected";
+        HashMap<String, Integer> waitedUnits = selectedCity.getWaitedUnits();
+        selectedCity.setConstructingUnit(name);
+        if(!waitedUnits.containsKey(name)){
+            int cost = 0;
+            if(name.equals("Worker")) cost = 70;
+            else if(name.equals("Settler")){
+                if(selectedCity.getCountOfCitizens() < 2 )return "you can't build Settler in city with less than 2 citizens";
+                if(currentPlayer.getIsUnhappy() == 1)return "you can't build Settler when your civilization is unhappy";
+                cost = 89;
+            }
+            else {
+                for (Unit unit : UnitsDatabase.getUnits()) {
+                    if (unit.getName().equals(name)) {
+                        cost = unit.getCost();
+                        break;
+                    }
+                }
+            }
+            waitedUnits.put(name, cost);
+        }
+        return "unit is being constructed";
+
+    }
+    public void createUnit(String name){
+        if(name.equals("Settler"))currentPlayer.addUnit(new SettlerUnit(selectedCity.getCapital().getX(),selectedCity.getCapital().getY()));
+        else if(name.equals("Worker"))currentPlayer.addUnit(new WorkerUnit(selectedCity.getCapital().getX(),selectedCity.getCapital().getY()));
+        else {
+            for (Unit unit : UnitsDatabase.getUnits()) {
+                if (unit.getName().equals(name)) {
+                    MilitaryUnit militaryUnit = (MilitaryUnit)unit;
+                    MilitaryUnit newUnit = militaryUnit.getCopy();
+                    newUnit.setX(selectedCity.getCapital().getX());
+                    newUnit.setY(selectedCity.getCapital().getY());
+                    currentPlayer.addUnit(newUnit);
+                    break;
+                }
+            }
+        }
+
     }
 
     public ArrayList<Tile> possibleTilesForPurchase(){

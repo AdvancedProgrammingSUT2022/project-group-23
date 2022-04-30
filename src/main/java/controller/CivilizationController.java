@@ -79,8 +79,7 @@ public class CivilizationController extends GameController{
             currentPlayer.setCurrentStudy(null);
             currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
         }
-        if(currentPlayer.getHappiness()<0) currentPlayer.setIsUnhappy(1);
-        if(currentPlayer.getHappiness()>=0) currentPlayer.setIsUnhappy(0);
+
 
 
         turn = (turn + 1) % players.size();

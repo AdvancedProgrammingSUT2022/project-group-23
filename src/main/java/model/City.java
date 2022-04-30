@@ -13,6 +13,9 @@ public class City {
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Tile> tilesWithCitizen = new ArrayList<>();
 
+    private HashMap<String, Integer> waitedUnits = new HashMap<>();
+
+    private String constructingUnit = null;
     public City(Tile capital)
     {
         this.capital=capital;
@@ -72,6 +75,18 @@ public class City {
 
     public void setFoodLeft (int foodLeft) {
         this.foodLeft = foodLeft;
+    }
+
+    public HashMap<String, Integer> getWaitedUnits() {
+        return waitedUnits;
+    }
+
+    public String getConstructingUnit() {
+        return constructingUnit;
+    }
+
+    public void setConstructingUnit(String constructingUnit) {
+        this.constructingUnit = constructingUnit;
     }
 
     public int totalFood(){

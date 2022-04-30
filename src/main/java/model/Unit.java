@@ -87,4 +87,8 @@ public class Unit {
     public String getNeededTechnology () {
         return neededTechnology;
     }
+
+    public int getCost() {
+        return cost;
+    }
 }

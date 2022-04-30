@@ -15,5 +15,8 @@ public class MilitaryUnit extends Unit {
         this.rangeStrength = rangeStrength;
         this.combatType = combatType;
     }
+    public MilitaryUnit getCopy(){
+        return new MilitaryUnit(name, cost, combatType, movement, strength, rangeStrength, range, neededTechnology, neededResource);
+    }
 
 }

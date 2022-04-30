@@ -101,7 +101,10 @@ public class CityController extends GameController{
         return "this tile doesn't have any citizen";
     }
 
-    public void nextTurn(){
+    public String nextTurn(){
+        for (City city : currentPlayer.getCities()) {
+            if(city.getConstructingUnit() == null)return "you have to choose a production for cities";
+        }
         for (City city : currentPlayer.getCities()) {
             for (Tile tile : city.getTiles()) {
                 if(tile.getResource()!=null){
@@ -123,15 +126,16 @@ public class CityController extends GameController{
                 city.setFoodLeft(0);
                 city.setCountOfCitizens(city.getCountOfCitizens() + 1);
             }
-            HashMap<String, Integer> waitedUnits = selectedCity.getWaitedUnits();
-            waitedUnits.put(selectedCity.getConstructingUnit(),waitedUnits.get(selectedCity.getConstructingUnit()) - selectedCity.production());
-            if(waitedUnits.get(selectedCity.getConstructingUnit()) <= 0){
-                createUnit(selectedCity.getConstructingUnit());
-                waitedUnits.remove(selectedCity.getConstructingUnit());
-                selectedCity.setConstructingUnit(null);
+            HashMap<String, Integer> waitedUnits = city.getWaitedUnits();
+            waitedUnits.put(city.getConstructingUnit(),waitedUnits.get(city.getConstructingUnit()) - city.production());
+            if(waitedUnits.get(city.getConstructingUnit()) <= 0){
+                createUnit(city.getConstructingUnit(), city);
+                waitedUnits.remove(city.getConstructingUnit());
+                city.setConstructingUnit(null);
             }
 
         }
+        return "ok";
     }
     public String constructUnit(String name){
         if(selectedCity == null)return "no city selected";
@@ -158,16 +162,16 @@ public class CityController extends GameController{
         return "unit is being constructed";
 
     }
-    public void createUnit(String name){
-        if(name.equals("Settler"))currentPlayer.addUnit(new SettlerUnit(selectedCity.getCapital().getX(),selectedCity.getCapital().getY()));
-        else if(name.equals("Worker"))currentPlayer.addUnit(new WorkerUnit(selectedCity.getCapital().getX(),selectedCity.getCapital().getY()));
+    public void createUnit(String name, City city){
+        if(name.equals("Settler"))currentPlayer.addUnit(new SettlerUnit(city.getCapital().getX(),city.getCapital().getY()));
+        else if(name.equals("Worker"))currentPlayer.addUnit(new WorkerUnit(city.getCapital().getX(),city.getCapital().getY()));
         else {
             for (Unit unit : UnitsDatabase.getUnits()) {
                 if (unit.getName().equals(name)) {
                     MilitaryUnit militaryUnit = (MilitaryUnit)unit;
                     MilitaryUnit newUnit = militaryUnit.getCopy();
-                    newUnit.setX(selectedCity.getCapital().getX());
-                    newUnit.setY(selectedCity.getCapital().getY());
+                    newUnit.setX(city.getCapital().getX());
+                    newUnit.setY(city.getCapital().getY());
                     currentPlayer.addUnit(newUnit);
                     break;
                 }

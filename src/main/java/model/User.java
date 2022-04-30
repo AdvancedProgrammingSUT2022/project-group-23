@@ -27,6 +27,7 @@ public class User {
     private HashMap<Tile,Integer> processingTiles;
     private HashMap<Tile,WorkerUnit> workingWorkers;
     private HashMap<Tile,Improvement> improvingTiles;
+    private ArrayList<Tile> eliminatingFeatures;
 
     public User(String username,String password,String nickname)
     {
@@ -248,6 +249,10 @@ public class User {
 
     public void setImprovingTiles (HashMap<Tile, Improvement> improvingTiles) {
         this.improvingTiles = improvingTiles;
+    }
+
+    public ArrayList<Tile> getEliminatingFeatures () {
+        return eliminatingFeatures;
     }
 }
 

@@ -188,16 +188,28 @@ public class UnitController extends GameController {
         HashMap<Tile,WorkerUnit> workingWorkers=currentPlayer.getWorkingWorkers();
         HashMap<Tile,Improvement> improvingTiles=currentPlayer.getImprovingTiles();
         HashMap<Tile,Integer> map=new HashMap<>();
+        ArrayList<Tile> eliminatingFeatures=currentPlayer.getEliminatingFeatures();
         if(processingTiles!=null) {
             for (Map.Entry<Tile, Integer> entry : processingTiles.entrySet()) {
                 if(workingWorkers.get(entry.getKey())!=null) processingTiles.put(entry.getKey(),entry.getValue()-1);
                 if(processingTiles.get(entry.getKey())==0){
                     if(improvingTiles.get(entry.getKey())==null){
-                        entry.getKey().setRoad(true);
-                        workingWorkers.get(entry.getKey()).setState("ready");
-                        workingWorkers.remove(entry.getKey());
+                        if(eliminatingFeatures.contains(entry.getKey())){
+                            eliminatingFeatures.remove(entry.getKey());
+                            entry.getKey().setFeature(null);
+                            workingWorkers.get(entry.getKey()).setState("ready");
+                            workingWorkers.remove(entry.getKey());
+                        }else {
+                            entry.getKey().setRoad(true);
+                            workingWorkers.get(entry.getKey()).setState("ready");
+                            workingWorkers.remove(entry.getKey());
+                        }
                     }else {
                         entry.getKey().setImprovement(improvingTiles.get(entry.getKey()));
+                        if(eliminatingFeatures.contains(entry.getKey())){
+                            entry.getKey().setFeature(null);
+                            eliminatingFeatures.remove(entry.getKey());
+                        }
                         workingWorkers.get(entry.getKey()).setState("ready");
                         workingWorkers.remove(entry.getKey());
                         improvingTiles.remove(entry.getKey());
@@ -263,17 +275,24 @@ public class UnitController extends GameController {
                         HashMap<Tile,Integer>  processingTiles=currentPlayer.getProcessingTiles();
                         HashMap<Tile,WorkerUnit> workingWorkers= currentPlayer.getWorkingWorkers();
                         HashMap<Tile,Improvement> improvingTiles = currentPlayer.getImprovingTiles();
+                        ArrayList<Tile> eliminatingFeatures=currentPlayer.getEliminatingFeatures();
                         if(processingTiles.get(tiles[unit.getX()][unit.getY()])!=null && improvingTiles.get(tiles[unit.getX()][unit.getY()])!=null && improvement.getName().equals(improvingTiles.get(tiles[unit.getX()][unit.getY()]).getName())) {
                             workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                         }else {
                                 processingTiles.put(tiles[unit.getX()][unit.getY()], 6);
                                 if (tiles[unit.getX()][unit.getY()].getFeature() != null) {
-                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle"))
+                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle")) {
                                         processingTiles.put(tiles[unit.getX()][unit.getY()], 13);
-                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh"))
+                                        eliminatingFeatures.add(tiles[unit.getX()][unit.getY()]);
+                                    }
+                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh")) {
                                         processingTiles.put(tiles[unit.getX()][unit.getY()], 12);
-                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest"))
+                                        eliminatingFeatures.add(tiles[unit.getX()][unit.getY()]);
+                                    }
+                                    if (tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest")) {
                                         processingTiles.put(tiles[unit.getX()][unit.getY()], 10);
+                                        eliminatingFeatures.add(tiles[unit.getX()][unit.getY()]);
+                                    }
                                 }
                             workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                             improvingTiles.put(tiles[unit.getX()][unit.getY()],improvement);
@@ -286,6 +305,35 @@ public class UnitController extends GameController {
             }
         }
         return "you don't have the right technology to improve this tile";
+    }
+
+    public String eliminateFeature(){
+        if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
+        WorkerUnit unit = (WorkerUnit) selectedUnit;
+        if(tiles[unit.getX()][unit.getY()].getFeature()==null){
+            return "this tile doesn't have any feature!";
+        }
+        if(!tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest") && !tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle") && !tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh")){
+            return "you can't eliminate this feature";
+        }
+        if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
+            return "this worker can't improve right now!";
+        }
+        ArrayList<Tile> eliminatingFeatures=currentPlayer.getEliminatingFeatures();
+        HashMap<Tile,WorkerUnit> workingWorkers=currentPlayer.getWorkingWorkers();
+        HashMap<Tile,Integer> processingTiles=currentPlayer.getProcessingTiles();
+        if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Forest")){
+            processingTiles.put(tiles[unit.getX()][unit.getY()],4);
+        }
+        if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Jungle")){
+            processingTiles.put(tiles[unit.getX()][unit.getY()],7);
+        }
+        if(tiles[unit.getX()][unit.getY()].getFeature().getName().equals("Marsh")){
+            processingTiles.put(tiles[unit.getX()][unit.getY()],6);
+        }
+        workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+        eliminatingFeatures.add(tiles[unit.getX()][unit.getY()]);
+        return "eliminating this feature!";
     }
 
     public String cancelActions(Unit unit){

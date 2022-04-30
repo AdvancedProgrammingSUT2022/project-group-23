@@ -148,4 +148,8 @@ public class Tile {
     public void setRoad (boolean road) {
         isRoad = road;
     }
+
+    public void setImprovement (Improvement improvement) {
+        this.improvement = improvement;
+    }
 }

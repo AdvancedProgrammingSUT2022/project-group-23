@@ -51,4 +51,8 @@ public class Improvement {
     public String getNeededTechnology () {
         return neededTechnology;
     }
+
+    public ArrayList<String> getPlacesItCanBeBuild () {
+        return placesItCanBeBuild;
+    }
 }

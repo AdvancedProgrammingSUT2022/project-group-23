@@ -24,8 +24,9 @@ public class User {
     private static User userLogged;
     private HashMap<String ,Integer> waitedTechnologies;
     private ArrayList<String> luxuryResources;
-    private HashMap<Tile,Integer> processingRoads;
+    private HashMap<Tile,Integer> processingTiles;
     private HashMap<Tile,WorkerUnit> workingWorkers;
+    private HashMap<Tile,Improvement> improvingTiles;
 
     public User(String username,String password,String nickname)
     {
@@ -138,8 +139,9 @@ public class User {
         currentStudy = null;
         waitedTechnologies = new HashMap<>();
         luxuryResources= new ArrayList<>();
-        processingRoads = new HashMap<>();
+        processingTiles = new HashMap<>();
         workingWorkers = new HashMap<>();
+        improvingTiles = new HashMap<>();
         updateUsersInfo();
     }
 
@@ -224,20 +226,24 @@ public class User {
         luxuryResources.add(name);
     }
 
-    public HashMap<Tile, Integer> getProcessingRoads () {
-        return processingRoads;
+    public HashMap<Tile, Integer> getProcessingTiles () {
+        return processingTiles;
     }
 
-    public void setProcessingRoads (HashMap<Tile, Integer> processingRoads) {
-        this.processingRoads = processingRoads;
+    public void setProcessingTiles (HashMap<Tile, Integer> processingTiles) {
+        this.processingTiles = processingTiles;
     }
 
     public HashMap<Tile, WorkerUnit> getWorkingWorkers () {
         return workingWorkers;
     }
 
-    public void setWorkingWorkers (HashMap<Tile, WorkerUnit> workingWorkers) {
-        this.workingWorkers = workingWorkers;
+    public HashMap<Tile, Improvement> getImprovingTiles () {
+        return improvingTiles;
+    }
+
+    public void setImprovingTiles (HashMap<Tile, Improvement> improvingTiles) {
+        this.improvingTiles = improvingTiles;
     }
 }
 

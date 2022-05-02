@@ -268,7 +268,7 @@ public class UnitController extends GameController {
             if(technology.getName().equals(improvement.getNeededTechnology())){
                 if(improvement.getPlacesItCanBeBuild().contains(tiles[unit.getX()][unit.getY()].getTerrain().getName()) ||
                         (tiles[unit.getX()][unit.getY()].getFeature()!=null && improvement.getPlacesItCanBeBuild().contains(tiles[unit.getX()][unit.getY()].getFeature().getName()))){
-                    if(tiles[unit.getX()][unit.getY()].getImprovement()!=null){
+                    if(tiles[unit.getX()][unit.getY()].getImprovement()==null){
                         if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
                             return "this worker can't improve right now!";
                         }

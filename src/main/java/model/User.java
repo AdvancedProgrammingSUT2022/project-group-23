@@ -145,6 +145,7 @@ public class User {
         processingTiles = new HashMap<>();
         workingWorkers = new HashMap<>();
         improvingTiles = new HashMap<>();
+        eliminatingFeatures = new ArrayList<>();
         updateUsersInfo();
     }
 

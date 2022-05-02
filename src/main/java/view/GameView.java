@@ -242,7 +242,8 @@ public class GameView {
         ArrayList<Technology> readyTechnologies=user.readyTechnologies();
         for(int i=0;i<readyTechnologies.size();i++){
             int turnsLeft;
-            if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
+            if(civilizationController.getCurrentPlayer().totalCup() == 0)turnsLeft = -1;
+            else if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
                 turnsLeft =  readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup();
             } else {
                 turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;

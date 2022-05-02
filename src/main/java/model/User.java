@@ -209,7 +209,7 @@ public class User {
                     break;
                 }
             }
-            if(hasAllPrerequisiteTechnologies && !technologies.contains(technology) && !technology.getName().equals(currentStudy.getName())){
+            if(hasAllPrerequisiteTechnologies && !technologies.contains(technology) && (currentStudy == null || !technology.getName().equals(currentStudy.getName()))){
                 readyTechnology.add(technology);
             }
         }

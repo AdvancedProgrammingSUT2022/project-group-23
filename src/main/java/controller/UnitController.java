@@ -319,6 +319,9 @@ public class UnitController extends GameController {
         if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
             return "this worker can't improve right now!";
         }
+        unit.setState("working");
+        unit.setRemainingMoves(0);
+        unit.setMoves(new ArrayList<>());
         ArrayList<Tile> eliminatingFeatures=currentPlayer.getEliminatingFeatures();
         HashMap<Tile,WorkerUnit> workingWorkers=currentPlayer.getWorkingWorkers();
         HashMap<Tile,Integer> processingTiles=currentPlayer.getProcessingTiles();
@@ -334,6 +337,21 @@ public class UnitController extends GameController {
         workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
         eliminatingFeatures.add(tiles[unit.getX()][unit.getY()]);
         return "eliminating this feature!";
+    }
+
+    public String eliminateRoad(){
+        if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
+        WorkerUnit unit = (WorkerUnit) selectedUnit;
+        if(!tiles[unit.getX()][unit.getY()].isRoad()){
+            return "this is not a road to eliminate";
+        }
+        if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
+            return "this worker can't improve right now!";
+        }
+        tiles[unit.getX()][unit.getY()].setRoad(false);
+        unit.setMoves(new ArrayList<>());
+        unit.setRemainingMoves(0);
+        return "road eliminated!";
     }
 
     public String cancelActions(Unit unit){

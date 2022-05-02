@@ -76,6 +76,7 @@ public class GameView {
                 unitBuild(matcher.group("name"));
             else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null)
                 unitRemove(matcher.group("name"));
+            else if(input.equals("unit repair")) System.out.println(unitController.healTile());
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
@@ -185,8 +186,18 @@ public class GameView {
     }
 
     private void showCitiesInfo(ArrayList<City> cities){
-        for(int i=0;i<cities.size();i++){
-            System.out.println((i+1)+"- capital: (" + cities.get(i).getCapital().getX() + "," + cities.get(i).getCapital().getY() + ") number of citizens: "+cities.get(i).getCountOfCitizens()+" number of tiles: "+cities.get(i).getTiles().size());
+        for(City city : cities){
+            System.out.println("city id : " + city.getId() + " - capital: (" + city.getCapital().getX() + "," + city.getCapital().getY() + ") number of citizens: "+city.getCountOfCitizens()+" number of tiles: "+city.getTiles().size());
+            System.out.println("city output for each turn - gold : " + city.gold() + " - food : " + city.totalFood() + " - production : " + city.production());
+            System.out.println("tile coordinates : ");
+            for(Tile tile : city.getTiles()){
+                System.out.print("(" + tile.getX() + " , " + tile.getY() + ") - ");
+            }
+            System.out.println("tiles with citizen : ");
+            for(Tile tile : city.getTilesWithCitizen()){
+                System.out.print("(" + tile.getX() + " , " + tile.getY() + ") - ");
+            }
+            System.out.println("-------------------------------------------------------------------");
         }
     }
 

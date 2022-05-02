@@ -139,9 +139,9 @@ public class UnitController extends GameController {
     }
     public String moveSelectedUnit(int x, int y){
         if(!isCoordinateValid(x, y))return "invalid coordinate";
-        if(selectedUnit == null)return "no unit selected";
-        if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
+        cancelActions();
         String message = null;
         if(!(message = moveUnit(selectedUnit, x, y)).equals("ok")) return message;
         return "unit is moving";
@@ -225,7 +225,7 @@ public class UnitController extends GameController {
     }
 
     public String buildRoad(){
-        if(selectedUnit == null)return "no unit selected";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
@@ -238,6 +238,7 @@ public class UnitController extends GameController {
                     if(tiles[unit.getX()][unit.getY()].isRoad()){
                         return "this tile is already a road";
                     }
+                    cancelActions();
                     unit.setState("working");
                     unit.setRemainingMoves(0);
                     unit.setMoves(new ArrayList<>());
@@ -260,7 +261,7 @@ public class UnitController extends GameController {
     }
 
     public String improveTile(Improvement improvement){
-        if(selectedUnit == null)return "no unit selected";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
@@ -271,6 +272,7 @@ public class UnitController extends GameController {
                         if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
                             return "this worker can't improve right now!";
                         }
+                        cancelActions();
                         unit.setState("working");
                         unit.setMoves(new ArrayList<>());
                         unit.setRemainingMoves(0);
@@ -310,7 +312,7 @@ public class UnitController extends GameController {
     }
 
     public String eliminateFeature(){
-        if(selectedUnit == null)return "no unit selected";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         if(tiles[unit.getX()][unit.getY()].getFeature()==null){
@@ -322,6 +324,7 @@ public class UnitController extends GameController {
         if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
             return "this worker can't improve right now!";
         }
+        cancelActions();
         unit.setState("working");
         unit.setRemainingMoves(0);
         unit.setMoves(new ArrayList<>());
@@ -341,9 +344,8 @@ public class UnitController extends GameController {
         eliminatingFeatures.add(tiles[unit.getX()][unit.getY()]);
         return "eliminating this feature!";
     }
-
     public String eliminateRoad(){
-        if(selectedUnit == null)return "no unit selected";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         if(!tiles[unit.getX()][unit.getY()].isRoad()){
@@ -352,17 +354,24 @@ public class UnitController extends GameController {
         if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
             return "this worker can't improve right now!";
         }
+        cancelActions();
         tiles[unit.getX()][unit.getY()].setRoad(false);
         unit.setMoves(new ArrayList<>());
         unit.setRemainingMoves(0);
         return "road eliminated!";
     }
 
-    public String cancelActions(Unit unit){
-        unit.setMoves(new ArrayList<>());
-        unit.setState("ready");
-        if(unit.getName().equals("Worker")){
-            currentPlayer.getWorkingWorkers().remove(tiles[unit.getX()][unit.getY()]);
+    public String checkSelectedUnit(){
+        if(selectedUnit == null)return "no unit selected";
+        if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
+        return "ok";
+    }
+    public String cancelActions(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        selectedUnit.setMoves(new ArrayList<>());
+        selectedUnit.setState("ready");
+        if(selectedUnit.getName().equals("Worker")){
+            currentPlayer.getWorkingWorkers().remove(tiles[selectedUnit.getX()][selectedUnit.getY()]);
         }
         return "actions canceled successfully";
     }
@@ -389,6 +398,7 @@ public class UnitController extends GameController {
 
     public String healTile(){
         if(selectedUnit == null)return "no unit selected";
+        if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         if(!(selectedUnit instanceof WorkerUnit)){
             return "this unit can't heal this tile";
         }

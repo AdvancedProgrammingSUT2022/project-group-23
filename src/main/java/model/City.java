@@ -73,6 +73,10 @@ public class City {
         return foodLeft;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public void setFoodLeft (int foodLeft) {
         this.foodLeft = foodLeft;
     }

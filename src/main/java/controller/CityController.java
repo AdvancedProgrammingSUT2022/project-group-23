@@ -32,7 +32,7 @@ public class CityController extends GameController{
             selectedCity = null;
             return "city doesn't belong to you";
         }
-        return "city selected successfully";
+        return "city id : " + selectedCity.getId() + " - capital: (" + selectedCity.getCapital().getX() + "," + selectedCity.getCapital().getY() + ") number of citizens: "+selectedCity.getCountOfCitizens()+" number of tiles: "+selectedCity.getTiles().size();
     }
     public City getCityAtCoordinate(int x, int y){
         for(User user : players){

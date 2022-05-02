@@ -91,4 +91,8 @@ public class Unit {
     public int getCost() {
         return cost;
     }
+
+    public void setHealth (int health) {
+        this.health = health;
+    }
 }

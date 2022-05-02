@@ -19,4 +19,19 @@ public class MilitaryUnit extends Unit {
         return new MilitaryUnit(name, cost, combatType, movement, strength, rangeStrength, range, neededTechnology, neededResource);
     }
 
+    public int getRange () {
+        return range;
+    }
+
+    public int getStrength () {
+        return strength;
+    }
+
+    public int getRangeStrength () {
+        return rangeStrength;
+    }
+
+    public String getCombatType () {
+        return combatType;
+    }
 }

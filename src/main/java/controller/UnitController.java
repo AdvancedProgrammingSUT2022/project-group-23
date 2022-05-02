@@ -111,6 +111,7 @@ public class UnitController extends GameController {
         }
         return null;
     }
+
     public Unit getTileNonCombatUnit(int x, int y){
         for(User user : players){
             for(Unit unit : user.getUnits()){
@@ -121,7 +122,6 @@ public class UnitController extends GameController {
         }
         return null;
     }
-
 
     public String selectUnit(int x, int y, boolean isMilitary){
         if(!isCoordinateValid(x, y))return "invalid coordinate";
@@ -134,9 +134,8 @@ public class UnitController extends GameController {
             if(selectedUnit == null)return "no noncombat unit in coordinate";
         }
         return "unit selected - name: " + selectedUnit.getName() + " - belongs to : " + getUnitOwner(selectedUnit).getUsername() + " - remaining movement: " + selectedUnit.getRemainingMoves() + " - health: " + selectedUnit.getHealth();
-
-
     }
+
     public String moveSelectedUnit(int x, int y){
         if(!isCoordinateValid(x, y))return "invalid coordinate";
         if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
@@ -158,6 +157,7 @@ public class UnitController extends GameController {
         return message;
 
     }
+
     public String deleteSelectedUnit(){
         if(selectedUnit == null)return "no unit selected";
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
@@ -165,6 +165,7 @@ public class UnitController extends GameController {
         //TODO check visibility
         return "unit deleted successfully";
     }
+
     public User getUnitOwner(Unit unit){
         for(User user : players) {
             for (Unit tempUnit : user.getUnits()) {
@@ -175,6 +176,7 @@ public class UnitController extends GameController {
         }
         return null;
     }
+
     public String isTurnPossible(){
         for(Unit unit : currentPlayer.getUnits()){
             if(unit.getRemainingMoves() > 0 && unit.getState().equals("ready")){
@@ -417,6 +419,66 @@ public class UnitController extends GameController {
         processingTiles.put(tiles[unit.getX()][unit.getY()],3);
         workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
         return "healing!";
+    }
+
+    public ArrayList<Unit> reachableUnits(){
+        MilitaryUnit unit = (MilitaryUnit) selectedUnit;
+        ArrayList<Unit> reachableUnits = new ArrayList<>();
+        ArrayList<Tile> reachableTiles = new ArrayList<>();
+        if(unit.getRange()==-1){
+            reachableTiles=createGraph().getTilesAtDistance(coordinatesToNumber(unit.getX(), unit.getY()),1);
+        }else {
+            for (int i=1;i<=unit.getRange();i++){
+                reachableTiles.addAll(createGraph().getTilesAtDistance(coordinatesToNumber(unit.getX(), unit.getY()),i));
+            }
+        }
+        for (User player : players) {
+            if(!player.equals(currentPlayer)){
+                for (Unit playerUnit : player.getUnits()) {
+                    if(reachableTiles.contains(tiles[playerUnit.getX()][playerUnit.getY()])){
+                        reachableUnits.add(playerUnit);
+                    }
+                }
+            }
+        }
+        return reachableUnits;
+    }
+
+    public String attackUnit(Unit unit){
+        MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
+        cancelActions();
+        if(unit instanceof MilitaryUnit) {
+            MilitaryUnit unit1 = (MilitaryUnit) unit;
+            int strength;
+            if (militaryUnit.getRange() == -1) {
+                strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength();
+            } else {
+                strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
+            }
+            unit1.setHealth(unit1.getHealth() - strength);
+            if (militaryUnit.getRange() == -1) {
+                militaryUnit.setHealth(militaryUnit.getHealth() - (1-(getUnitOwner(unit).getIsUnhappy()/4))*unit1.getStrength());
+            }
+            if(militaryUnit.getHealth()<=0){
+                currentPlayer.getUnits().remove(militaryUnit);
+            }
+            if(unit1.getHealth()<=0){
+                User user=getUnitOwner(unit1);
+                user.getUnits().remove(unit1);
+                if(militaryUnit.getHealth()>0 && militaryUnit.getRange()==-1){
+                    moveSelectedUnit(unit1.getX(), unit1.getY());
+                }
+                return "you killed the unit";
+            }else {
+                return "you have attacked the unit, but its still alive!";
+            }
+        }else {
+            User user=getUnitOwner(unit);
+            user.getUnits().remove(unit);
+            WorkerUnit unit1 = (WorkerUnit) unit;
+            currentPlayer.addUnit(unit1);
+            return "you slaved this unit!";
+        }
     }
 
     public Unit getSelectedUnit() {

@@ -4,6 +4,7 @@ import controller.GameController;
 import controller.UnitController;
 import database.ImprovementDatabase;
 import database.TechnologyDatabase;
+import database.UnitsDatabase;
 import model.*;
 import org.junit.After;
 import org.junit.Test;
@@ -142,6 +143,31 @@ public class TestUnitController extends GameController {
             unitController.isTurnPossible();
         }
         assertEquals(tiles[9][9].getImprovement().getName(),improvement.getName());
+    }
+
+    @Test
+    public void testMoveUnit(){
+        players=new ArrayList<>();
+        User user=new User("omid","123","omid123");
+        players.add(user);
+        CivilizationController civilizationController=new CivilizationController(players);
+        CityController cityController=new CityController();
+        UnitController unitController=new UnitController(cityController);
+        Unit unit=UnitsDatabase.getUnits().get(0);
+        unit.setX(2);
+        unit.setY(2);
+        user.addUnit(unit);
+        for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
+            currentPlayerUnit.setState("no");
+        }
+        GameController.setSelectedUnit(unit);
+        unitController.moveSelectedUnit(6,6);
+        int size=unit.getMoves().size();
+        System.out.println(size);
+        for(int i=0;i<100;i++){
+            unitController.isTurnPossible();
+        }
+        System.out.println(unit.getX());
     }
 
     @After

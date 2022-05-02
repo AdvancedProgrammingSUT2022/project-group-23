@@ -144,7 +144,7 @@ public class UnitController extends GameController {
         if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
         String message = null;
         if(!(message = moveUnit(selectedUnit, x, y)).equals("ok")) return message;
-        return "unit moved successfully";
+        return "unit is moving";
 
     }
 
@@ -225,6 +225,7 @@ public class UnitController extends GameController {
     }
 
     public String buildRoad(){
+        if(selectedUnit == null)return "no unit selected";
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
@@ -259,6 +260,7 @@ public class UnitController extends GameController {
     }
 
     public String improveTile(Improvement improvement){
+        if(selectedUnit == null)return "no unit selected";
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
@@ -308,6 +310,7 @@ public class UnitController extends GameController {
     }
 
     public String eliminateFeature(){
+        if(selectedUnit == null)return "no unit selected";
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         if(tiles[unit.getX()][unit.getY()].getFeature()==null){
@@ -340,6 +343,7 @@ public class UnitController extends GameController {
     }
 
     public String eliminateRoad(){
+        if(selectedUnit == null)return "no unit selected";
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         if(!tiles[unit.getX()][unit.getY()].isRoad()){
@@ -364,6 +368,7 @@ public class UnitController extends GameController {
     }
 
     public String lootTile(){
+        if(selectedUnit == null)return "no unit selected";
         if(!(selectedUnit instanceof MilitaryUnit)) {
             return "this unit can't loot";
         }
@@ -383,6 +388,7 @@ public class UnitController extends GameController {
     }
 
     public String healTile(){
+        if(selectedUnit == null)return "no unit selected";
         if(!(selectedUnit instanceof WorkerUnit)){
             return "this unit can't heal this tile";
         }

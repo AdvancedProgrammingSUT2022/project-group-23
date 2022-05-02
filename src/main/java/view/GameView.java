@@ -72,6 +72,10 @@ public class GameView {
                 System.out.println(cityController.selectCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if((matcher = Commands.getCommandMatcher(input, Commands.MOVE_UNIT)) != null)
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_BUILD)) != null)
+                unitBuild(matcher.group("name"));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null)
+                unitRemove(matcher.group("name"));
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
@@ -239,5 +243,23 @@ public class GameView {
             civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
             System.out.println("technology will be studied!");
         }
+    }
+    public void unitBuild(String name){
+        //TODO railroad building
+        if (name.equals("Road")) System.out.println(unitController.buildRoad());
+        else{
+            for(Improvement improvement : ImprovementDatabase.getImprovements()){
+                if(improvement.getName().equals(name)){
+                    System.out.println(unitController.improveTile(improvement));
+                    return;
+                }
+            }
+            System.out.println("there is no such improvement");
+        }
+    }
+    public void unitRemove(String name){
+        //TODO railroad removing
+        if (name.equals("Road")) System.out.println(unitController.eliminateRoad());
+        else System.out.println(unitController.eliminateFeature());
     }
 }

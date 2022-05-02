@@ -87,6 +87,7 @@ public class GameView {
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("attack unit")) attackUnit(scanner);
             else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
+            else if(input.equals("production menu")) chooseProductionMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("show units panel")) showUnitsInfo(civilizationController.showUnitsInfo());
             else if(input.equals("show military overview")) militaryOverview(civilizationController.showUnitsInfo());
             else if(input.equals("show cities panel")) showCitiesInfo(civilizationController.showCitiesInfo());
@@ -287,6 +288,28 @@ public class GameView {
         if(!whichTechnology.equals("exit")){
             civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
             System.out.println("technology will be studied!");
+        }
+    }
+
+    private void chooseProductionMenu(User user,Scanner scanner){
+        if(GameController.getSelectedCity() == null){
+            System.out.println("no city selected");
+            return;
+        }
+        System.out.println("you can choose one of these units to build:");
+        ArrayList<Unit> units = unitController.getConstructableUnits();
+        for(int i=0;i<units.size();i++){
+            int turnsLeft;
+            if (units.get(i).getCost() % GameController.getSelectedCity().production() == 0) {
+                turnsLeft =  units.get(i).getCost() / GameController.getSelectedCity().production();
+            } else {
+                turnsLeft = units.get(i).getCost() / GameController.getSelectedCity().production() + 1;
+            }
+            System.out.println((i+1)+"- "+units.get(i).getName()+", it needs "+turnsLeft+" turns to be built");
+        }
+        String whichTechnology=scanner.nextLine();
+        if(!whichTechnology.equals("exit")){
+            System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichTechnology)-1).getName()));
         }
     }
     public void unitBuild(String name){

@@ -50,4 +50,7 @@ public class GameController {
         GameController.selectedUnit = selectedUnit;
     }
 
+    public static City getSelectedCity() {
+        return selectedCity;
+    }
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import database.UnitsDatabase;
 import model.*;
 
 import java.util.ArrayList;
@@ -442,6 +443,17 @@ public class UnitController extends GameController {
             }
         }
         return reachableUnits;
+    }
+
+    public ArrayList<Unit> getConstructableUnits(){
+        ArrayList<Unit> constructableUnits = new ArrayList<>();
+        for(Unit unit : UnitsDatabase.getUnits()){
+            if (currentPlayer.hasTechnology(unit.getNeededTechnology()) &&
+                    currentPlayer.hasResource(unit.getNeededResource())) constructableUnits.add(unit);
+        }
+        constructableUnits.add(new SettlerUnit(-1, -1));
+        constructableUnits.add(new WorkerUnit(-1, -1));
+        return constructableUnits;
     }
 
     public String attackUnit(Unit unit){

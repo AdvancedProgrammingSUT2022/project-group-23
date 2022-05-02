@@ -102,6 +102,14 @@ public class User {
         }
         return false;
     }
+    public boolean hasResource(String resourceName){
+        for(City city : cities){
+            for(Tile tile : city.getTiles()){
+                if(tile.getResource() != null && tile.getResource().getName().equals(resourceName))return true;
+            }
+        }
+        return false;
+    }
 
     public static ArrayList<User> getUsers () {
         return users;

@@ -103,7 +103,7 @@ public class CityController extends GameController{
 
     public String nextTurn(){
         for (City city : currentPlayer.getCities()) {
-            if(city.getConstructingUnit() == null)return "you have to choose a production for cities";
+            if(city.getConstructingUnit() == null)return "you have to choose a production for city : " + city.getId();
         }
         for (City city : currentPlayer.getCities()) {
             for (Tile tile : city.getTiles()) {
@@ -213,5 +213,6 @@ public class CityController extends GameController{
         selectedCity.addTile(tile);
         return "tile purchased successfully";
     }
+
 }
 

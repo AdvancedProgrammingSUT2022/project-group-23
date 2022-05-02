@@ -19,8 +19,9 @@ public enum Commands {
     MOVE_UNIT("unit move to (?<x>\\d+) (?<y>\\d+)"),
     SELECT_CITY("select city (?<x>\\d+) (?<y>\\d+)"),
     UNIT_BUILD("unit build (?<name>\\.+)"),
-    UNIT_REMOVE("unit remove (?<name>\\.+)");
-
+    UNIT_REMOVE("unit remove (?<name>\\.+)"),
+    ADD_CITIZEN_TO_TILE("add citizen to tile (?<x>\\d+) (?<y>\\d+)"),
+    REMOVE_CITIZEN_FROM_TILE("remove citizen from tile (?<x>\\d+) (?<y>\\d+)");
     private String regex;
 
     Commands(String regex) {

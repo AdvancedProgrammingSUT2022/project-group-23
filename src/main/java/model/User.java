@@ -140,6 +140,10 @@ public class User {
         this.nickname = nickname;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void newGame(){
         gold = 0;
         isUnhappy = 0;

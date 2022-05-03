@@ -106,6 +106,7 @@ public class CityController extends GameController{
             if(city.getConstructingUnit() == null)return "you have to choose a production for city : " + city.getId();
         }
         for (City city : currentPlayer.getCities()) {
+            if(city.getHealth()<20) city.setHealth(city.getHealth()+1);
             for (Tile tile : city.getTiles()) {
                 if(tile.getResource()!=null){
                     if(tile.getResource().getNeededImprovement()==null ||

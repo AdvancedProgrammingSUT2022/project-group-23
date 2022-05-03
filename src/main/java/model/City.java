@@ -10,6 +10,7 @@ public class City {
     private int id;
     private Tile capital;
     private int countOfCitizens=1;
+    private int health=20;
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Tile> tilesWithCitizen = new ArrayList<>();
 
@@ -119,5 +120,22 @@ public class City {
         return gold;
     }
 
+    public int getHealth () {
+        return health;
+    }
 
+    public void setHealth (int health) {
+        this.health = health;
+    }
+
+    public int strength(){
+        int strength=0;
+        strength += tiles.size()*3;
+        for (Tile tile : tiles) {
+            if(tile.getTerrain().getName().equals("Hill")){
+                strength += 3;
+            }
+        }
+        return strength;
+    }
 }

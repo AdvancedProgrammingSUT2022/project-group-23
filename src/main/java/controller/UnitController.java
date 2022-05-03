@@ -456,6 +456,31 @@ public class UnitController extends GameController {
         return constructableUnits;
     }
 
+    public ArrayList<City> reachableCities(){
+        MilitaryUnit unit = (MilitaryUnit) selectedUnit;
+        ArrayList<City> reachableCities = new ArrayList<>();
+        ArrayList<Tile> reachableTiles = new ArrayList<>();
+        if(unit.getRange()==-1){
+            reachableTiles=createGraph().getTilesAtDistance(coordinatesToNumber(unit.getX(), unit.getY()),1);
+        }else {
+            for (int i=1;i<=unit.getRange();i++){
+                reachableTiles.addAll(createGraph().getTilesAtDistance(coordinatesToNumber(unit.getX(), unit.getY()),i));
+            }
+        }
+        for (User player : players) {
+            if(!player.equals(currentPlayer)){
+                for (City city : player.getCities()) {
+                    for (Tile tile : city.getTiles()) {
+                        if(reachableTiles.contains(tile)){
+                            reachableCities.add(city);
+                    }
+                }
+                }
+            }
+        }
+        return reachableCities;
+    }
+
     public String attackUnit(Unit unit){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
         cancelActions();
@@ -491,7 +516,7 @@ public class UnitController extends GameController {
                 if(isRiver(militaryUnit.getX(),militaryUnit.getY(),unit1.getX(), unit1.getY())){
                     bonusAttacker -= 25;
                 }
-                strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength();
+                strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength()*(1-(((10-militaryUnit.getHealth())/2)/10));
             } else {
                 strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
             }
@@ -506,18 +531,22 @@ public class UnitController extends GameController {
                     &&!militaryUnit.getName().equals("Lancer")&&!militaryUnit.getName().equals("Panzer")&&!militaryUnit.getName().equals("Tank")){
                 militaryUnit.setRemainingMoves(0);
             }
-            if(militaryUnit.getHealth()<=0){
-                currentPlayer.getUnits().remove(militaryUnit);
-            }
-            if(unit1.getHealth()<=0){
-                User user=getUnitOwner(unit1);
-                user.getUnits().remove(unit1);
-                if(militaryUnit.getHealth()>0 && militaryUnit.getRange()==-1){
-                    moveSelectedUnit(unit1.getX(), unit1.getY());
+            if(militaryUnit.getHealth()<=0 || unit1.getHealth()<=0){
+                if(unit1.getHealth()>militaryUnit.getHealth()) {
+                    unit1.setHealth(unit1.getHealth()-militaryUnit.getHealth());
+                    currentPlayer.getUnits().remove(militaryUnit);
+                    return "your unit died!";
+                }else {
+                    User user = getUnitOwner(unit1);
+                    militaryUnit.setHealth(militaryUnit.getHealth()-unit1.getHealth());
+                    user.getUnits().remove(unit1);
+                    if (militaryUnit.getRange() == -1) {
+                        moveSelectedUnit(unit1.getX(), unit1.getY());
+                    }
+                    return "you killed the unit";
                 }
-                return "you killed the unit";
             }else {
-                return "you have attacked the unit, but its still alive!";
+                return "you have attacked the unit, but you and the unit are still alive!";
             }
         }else {
             User user=getUnitOwner(unit);
@@ -528,7 +557,46 @@ public class UnitController extends GameController {
         }
     }
 
-
+    public String attackCity(City city){
+        MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
+        int strength;
+        int bonus=0;
+        if(!militaryUnit.getName().equals("Scout"))
+            bonus += tiles[militaryUnit.getX()][militaryUnit.getY()].getTerrain().getCombatPercentage();
+        if(tiles[militaryUnit.getX()][militaryUnit.getY()].getFeature()!=null && !militaryUnit.getName().equals("Scout")){
+            bonus += tiles[militaryUnit.getX()][militaryUnit.getY()].getFeature().getCombatPercentage();
+        }
+        if(tiles[militaryUnit.getX()][militaryUnit.getY()].getTerrain().getName().equals("Hill")){
+            bonus += 25;
+        }
+        if(militaryUnit.getName().equals("Catapult") || militaryUnit.getName().equals("Trebuchet") || militaryUnit.getName().equals("Canon") || militaryUnit.getName().equals("Artillery") || militaryUnit.getName().equals("Tank")){
+            bonus += 10;
+        }
+        if (militaryUnit.getRange() == -1) {
+            strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength()*(1-(((10-militaryUnit.getHealth())/2)/10));
+        } else {
+            strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
+        }
+        strength += strength*(bonus/100);
+        city.setHealth(city.getHealth()-strength);
+        if(militaryUnit.getRange()==-1){
+            militaryUnit.setHealth(militaryUnit.getHealth()-city.strength());
+        }else {
+            if(city.getHealth()<1)city.setHealth(1);
+        }
+        if(city.getHealth()<=0 || militaryUnit.getHealth()<=0){
+            if(militaryUnit.getHealth()> city.getHealth()){
+                militaryUnit.setHealth(militaryUnit.getHealth()-city.getHealth());
+                return "dominated";
+            }else {
+                city.setHealth(city.getHealth()-militaryUnit.getHealth());
+                currentPlayer.getUnits().remove(militaryUnit);
+                return "your unit died!";
+            }
+        }else {
+            return "you attacked the city, but you are alive and the city is still ok!";
+        }
+    }
 
     public Unit getSelectedUnit() {
         return selectedUnit;

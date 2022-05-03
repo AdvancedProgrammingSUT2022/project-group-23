@@ -49,4 +49,8 @@ public class GameController {
     public static void setSelectedUnit(Unit selectedUnit) {
         GameController.selectedUnit = selectedUnit;
     }
+
+    public static City getSelectedCity() {
+        return selectedCity;
+    }
 }

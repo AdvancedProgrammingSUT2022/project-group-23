@@ -69,8 +69,8 @@ public class CityController extends GameController{
         return possibleTiles;
     }
 
-    public String putCitizenToWork(Tile tile)
-    {
+    public String putCitizenToWork(int x, int y) {
+        Tile tile = tiles[x][y];
         if(selectedCity == null) return "no selected city";
         ArrayList<Tile> possibleTiles= possibleTilesForCitizen(selectedCity.getCapital());
         if(!possibleTiles.contains(tile))
@@ -89,8 +89,8 @@ public class CityController extends GameController{
         return "citizen added to tile successfully";
     }
 
-    public String removeCitizen(Tile tile)
-    {
+    public String removeCitizen(int x, int y) {
+        Tile tile = tiles[x][y];
         if(selectedCity == null) return "no selected city";
         for (Tile tile1 : selectedCity.getTilesWithCitizen()) {
             if(tile1.equals(tile)){
@@ -103,7 +103,7 @@ public class CityController extends GameController{
 
     public String nextTurn(){
         for (City city : currentPlayer.getCities()) {
-            if(city.getConstructingUnit() == null)return "you have to choose a production for cities";
+            if(city.getConstructingUnit() == null)return "you have to choose a production for city : " + city.getId();
         }
         for (City city : currentPlayer.getCities()) {
             for (Tile tile : city.getTiles()) {
@@ -213,5 +213,6 @@ public class CityController extends GameController{
         selectedCity.addTile(tile);
         return "tile purchased successfully";
     }
+
 }
 

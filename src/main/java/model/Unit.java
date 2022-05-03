@@ -95,4 +95,8 @@ public class Unit {
     public void setHealth (int health) {
         this.health = health;
     }
+
+    public String getNeededResource() {
+        return neededResource;
+    }
 }

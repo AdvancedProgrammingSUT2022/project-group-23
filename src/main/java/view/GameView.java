@@ -73,6 +73,10 @@ public class GameView {
                 System.out.println(cityController.selectCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if((matcher = Commands.getCommandMatcher(input, Commands.MOVE_UNIT)) != null)
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.ADD_CITIZEN_TO_TILE)) != null)
+                System.out.println(cityController.putCitizenToWork(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.REMOVE_CITIZEN_FROM_TILE)) != null)
+                System.out.println(cityController.removeCitizen(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
             else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_BUILD)) != null)
                 unitBuild(matcher.group("name"));
             else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null)
@@ -83,9 +87,12 @@ public class GameView {
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("attack unit")) attackUnit(scanner);
             else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
-            else if(input.equals("show units info")) showUnitsInfo(civilizationController.showUnitsInfo());
-            else if(input.equals("show cities info")) showCitiesInfo(civilizationController.showCitiesInfo());
-            else if(input.equals("show research info")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
+            else if(input.equals("production menu")) chooseProductionMenu(civilizationController.getCurrentPlayer(),scanner);
+            else if(input.equals("show units panel")) showUnitsInfo(civilizationController.showUnitsInfo());
+            else if(input.equals("show military overview")) militaryOverview(civilizationController.showUnitsInfo());
+            else if(input.equals("show cities panel")) showCitiesInfo(civilizationController.showCitiesInfo());
+            else if(input.equals("show research panel")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
+            else if(input.equals("show demographic panel"))demographicPanel();
             else if(input.equals("menu exit"))break;
             else System.out.println("invalid command");
         }
@@ -186,6 +193,13 @@ public class GameView {
             System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves());
         }
     }
+    private void militaryOverview(ArrayList<Unit> units){
+        for(int i=0;i<units.size();i++){
+            if(!(units.get(i) instanceof MilitaryUnit))continue;
+            MilitaryUnit militaryUnit = (MilitaryUnit)units.get(i);
+            System.out.println((i+1)+"- name: "+militaryUnit.getName()+" current tile: ("+militaryUnit.getX()+","+militaryUnit.getY()+") remaining move: "+ militaryUnit.getRemainingMoves() + " combat type : " + militaryUnit.getCombatType() + " health : " + militaryUnit.getHealth());
+        }
+    }
 
     private void showCitiesInfo(ArrayList<City> cities){
         for(City city : cities){
@@ -201,6 +215,21 @@ public class GameView {
             }
             System.out.println("-------------------------------------------------------------------");
         }
+    }
+
+    private void demographicPanel(){
+        int population = 0;
+        int tileCount = 0;
+        for(City city : civilizationController.showCitiesInfo()){
+            population += city.getCountOfCitizens();
+            tileCount += city.getTiles().size();
+        }
+        int happiness = civilizationController.getCurrentPlayer().getHappiness();
+        int countOfMilitaryUnits = 0;
+        for(Unit unit : civilizationController.showUnitsInfo()){
+            if(unit instanceof MilitaryUnit) countOfMilitaryUnits++;
+        }
+        System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " count of military units : " + countOfMilitaryUnits);
     }
 
     private void showCurrentStudyInfo(Technology technology) {
@@ -236,6 +265,10 @@ public class GameView {
     }
 
     private void chooseTechnologyMenu(User user,Scanner scanner){
+        if(civilizationController.getCurrentPlayer().getCities().isEmpty()){
+            System.out.println("you need to build a city first");
+            return;
+        }
         System.out.println("you have earned these technologies:");
         for (Technology technology : user.getTechnologies()) {
             System.out.println(technology.getName());
@@ -244,8 +277,7 @@ public class GameView {
         ArrayList<Technology> readyTechnologies=user.readyTechnologies();
         for(int i=0;i<readyTechnologies.size();i++){
             int turnsLeft;
-            if(civilizationController.getCurrentPlayer().totalCup() == 0)turnsLeft = -1;
-            else if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
+            if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
                 turnsLeft =  readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup();
             } else {
                 turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
@@ -256,6 +288,28 @@ public class GameView {
         if(!whichTechnology.equals("exit")){
             civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
             System.out.println("technology will be studied!");
+        }
+    }
+
+    private void chooseProductionMenu(User user,Scanner scanner){
+        if(GameController.getSelectedCity() == null){
+            System.out.println("no city selected");
+            return;
+        }
+        System.out.println("you can choose one of these units to build:");
+        ArrayList<Unit> units = unitController.getConstructableUnits();
+        for(int i=0;i<units.size();i++){
+            int turnsLeft;
+            if (units.get(i).getCost() % GameController.getSelectedCity().production() == 0) {
+                turnsLeft =  units.get(i).getCost() / GameController.getSelectedCity().production();
+            } else {
+                turnsLeft = units.get(i).getCost() / GameController.getSelectedCity().production() + 1;
+            }
+            System.out.println((i+1)+"- "+units.get(i).getName()+", it needs "+turnsLeft+" turns to be built");
+        }
+        String whichTechnology=scanner.nextLine();
+        if(!whichTechnology.equals("exit")){
+            System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichTechnology)-1).getName()));
         }
     }
     public void unitBuild(String name){

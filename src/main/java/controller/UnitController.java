@@ -559,6 +559,7 @@ public class UnitController extends GameController {
 
     public String attackCity(City city){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
+        cancelActions();
         int strength;
         int bonus=0;
         if(!militaryUnit.getName().equals("Scout"))

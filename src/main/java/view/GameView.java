@@ -85,8 +85,9 @@ public class GameView {
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
-            else if(input.equals("attack unit")) attackUnit(scanner);
+            else if(input.equals("attack unit by unit")) attackUnit(scanner);
             else if(input.equals("attack city")) attackCity(scanner);
+            else if(input.equals("attack unit by city")) attackUnitFromCity(scanner);
             else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("production menu")) chooseProductionMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("show units panel")) showUnitsInfo(civilizationController.showUnitsInfo());
@@ -366,7 +367,7 @@ public class GameView {
         if(reachableCities.size()>0){
             System.out.println("cities that you can reach to attack:");
             for(int i=0;i<reachableCities.size();i++){
-                System.out.println((i+1)+"- "+reachableCities.get(i));
+                System.out.println((i+1)+"- health:"+reachableCities.get(i).getHealth());
             }
             String whichCity=scanner.nextLine();
             if(!whichCity.equals("exit")){
@@ -391,6 +392,23 @@ public class GameView {
             }
         }else {
             System.out.println("you have move closer to a city to attack!");
+        }
+    }
+
+    public void attackUnitFromCity(Scanner scanner){
+        if(GameController.getSelectedCity()==null) System.out.println("select a city first!");
+        ArrayList<Unit> reachableUnits=cityController.reachableUnits();
+        if(reachableUnits.size()>0){
+            System.out.println("units that you can reach to attack:");
+            for(int i=0;i<reachableUnits.size();i++){
+                System.out.println((i+1)+"- name: "+reachableUnits.get(i).getName()+" location: ("+reachableUnits.get(i).getX()+","+reachableUnits.get(i).getY()+")");
+            }
+            String whichUnit=scanner.nextLine();
+            if(!whichUnit.equals("exit")){
+                System.out.println(cityController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit)-1)));
+            }
+        }else {
+            System.out.println("there is no units in your range!");
         }
     }
 }

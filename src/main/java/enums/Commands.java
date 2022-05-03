@@ -5,17 +5,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum Commands {
-    CREATE_USER("user create --(?<option1>\\w+) (?<value1>\\w+) " +
-            "--(?<option2>\\w+) (?<value2>\\w+) " +
-            "--(?<option3>\\w+) (?<value3>\\w+)"),
-    LOGIN_USER("user login --(?<option1>\\w+) (?<value1>\\w+) " +
-            "--(?<option2>\\w+) (?<value2>\\w+)"),
+    CREATE_USER("user create --?(?<option1>\\w+) (?<value1>\\w+) " +
+            "--?(?<option2>\\w+) (?<value2>\\w+) " +
+            "--?(?<option3>\\w+) (?<value3>\\w+)"),
+    LOGIN_USER("user login --?(?<option1>\\w+) (?<value1>\\w+) " +
+            "--?(?<option2>\\w+) (?<value2>\\w+)"),
     ENTER_MENU("menu enter (?<menuName>.+)"),
-    CHANGE_NICKNAME("profile change --nickname (?<nickname>\\w+)"),
+    CHANGE_NICKNAME("profile change --?nickname (?<nickname>\\w+)"),
 
-    CHANGE_USERNAME("profile change --username (?<username>\\w+)"),
-    CHANGE_PASSWORD("profile change --password --(?<option1>\\w+) (?<value1>\\w+) " +
-            "--(?<option2>\\w+) (?<value2>\\w+)"),
+    CHANGE_USERNAME("profile change --?username (?<username>\\w+)"),
+    CHANGE_PASSWORD("profile change --?password --?(?<option1>\\w+) (?<value1>\\w+) " +
+            "--?(?<option2>\\w+) (?<value2>\\w+)"),
     SELECT_COMBAT_UNIT("select combat unit (?<x>\\d+) (?<y>\\d+)"),
     SELECT_NONCOMBAT_UNIT("select noncombat unit (?<x>\\d+) (?<y>\\d+)"),
     MOVE_UNIT("unit move to (?<x>\\d+) (?<y>\\d+)"),
@@ -38,8 +38,13 @@ public enum Commands {
     public static HashMap<String, String> getOptions(Matcher matcher, int countOfOptions) {
         HashMap<String, String> options = new HashMap<>();
         for (int i = 1; i <= countOfOptions; i++) {
-            options.put(matcher.group("option" + i), matcher.group("value" + i));
-
+            if(matcher.group("option" + i).equals("u"))
+                options.put("username", matcher.group("value" + i));
+            else if(matcher.group("option" + i).equals("n"))
+                options.put("nickname", matcher.group("value" + i));
+            else if (matcher.group("option" + i).equals("p"))
+                options.put("password", matcher.group("value" + i));
+            else options.put(matcher.group("option" + i), matcher.group("value" + i));
         }
         return options;
     }

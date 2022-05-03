@@ -449,15 +449,50 @@ public class UnitController extends GameController {
         cancelActions();
         if(unit instanceof MilitaryUnit) {
             MilitaryUnit unit1 = (MilitaryUnit) unit;
-            int strength;
-            if (militaryUnit.getRange() == -1) {
-                strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength();
-            } else {
-                strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
+            int strengthAttacker;
+            int strengthDefender;
+            int bonusAttacker=0;
+            int bonusDefender=0;
+            if(!militaryUnit.getName().equals("Scout"))
+            bonusAttacker += tiles[militaryUnit.getX()][militaryUnit.getY()].getTerrain().getCombatPercentage();
+            if(!unit1.getName().equals("Scout"))
+            bonusDefender += tiles[unit1.getX()][unit1.getY()].getTerrain().getCombatPercentage();
+            if(tiles[militaryUnit.getX()][militaryUnit.getY()].getFeature()!=null && !militaryUnit.getName().equals("Scout")){
+                bonusAttacker += tiles[militaryUnit.getX()][militaryUnit.getY()].getFeature().getCombatPercentage();
             }
-            unit1.setHealth(unit1.getHealth() - strength);
+            if(tiles[unit1.getX()][unit1.getY()].getFeature()!=null && !unit1.getName().equals("Scout")){
+                bonusDefender += tiles[unit1.getX()][unit1.getY()].getFeature().getCombatPercentage();
+            }
+            if(tiles[militaryUnit.getX()][militaryUnit.getY()].getTerrain().getName().equals("Hill")){
+                bonusAttacker += 25;
+            }
+            if(unit1.getState().equals("fortify")){
+                bonusDefender += 25;
+            }
+            if((militaryUnit.getName().equals("Spearman") || militaryUnit.getName().equals("Pikeman")) && unit1.getCombatType().equals("Mounted")){
+                bonusAttacker += 100;
+            }
+            if(militaryUnit.getName().equals("Anti-Tank Gun") && unit1.getName().equals("Tank")){
+                bonusAttacker += 10;
+            }
             if (militaryUnit.getRange() == -1) {
-                militaryUnit.setHealth(militaryUnit.getHealth() - (1-(getUnitOwner(unit).getIsUnhappy()/4))*unit1.getStrength());
+                if(isRiver(militaryUnit.getX(),militaryUnit.getY(),unit1.getX(), unit1.getY())){
+                    bonusAttacker -= 25;
+                }
+                strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength();
+            } else {
+                strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
+            }
+            strengthAttacker += strengthAttacker*(bonusAttacker/100);
+            strengthDefender=(1-(getUnitOwner(unit).getIsUnhappy()/4))*unit1.getStrength();
+            strengthDefender += strengthDefender*(bonusDefender/100);
+            unit1.setHealth(unit1.getHealth() - strengthAttacker);
+            if (militaryUnit.getRange() == -1) {
+                militaryUnit.setHealth(militaryUnit.getHealth() - strengthDefender);
+            }
+            if(!militaryUnit.getName().equals("Horseman") && !militaryUnit.getName().equals("Knight") &&!militaryUnit.getName().equals("Cavalry")
+                    &&!militaryUnit.getName().equals("Lancer")&&!militaryUnit.getName().equals("Panzer")&&!militaryUnit.getName().equals("Tank")){
+                militaryUnit.setRemainingMoves(0);
             }
             if(militaryUnit.getHealth()<=0){
                 currentPlayer.getUnits().remove(militaryUnit);
@@ -480,6 +515,8 @@ public class UnitController extends GameController {
             return "you slaved this unit!";
         }
     }
+
+
 
     public Unit getSelectedUnit() {
         return selectedUnit;

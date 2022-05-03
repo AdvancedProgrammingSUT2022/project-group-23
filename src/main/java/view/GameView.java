@@ -338,77 +338,92 @@ public class GameView {
         if(!unitController.checkSelectedUnit().equals("ok")){
             System.out.println(unitController.checkSelectedUnit());
         }
-        if(!(unitController.getSelectedUnit() instanceof MilitaryUnit)){
-            System.out.println("this unit can't attack another unit");
-        }
-        ArrayList<Unit> reachableUnits=unitController.reachableUnits();
-        if(reachableUnits.size()>0) {
-            System.out.println("units that you can reach to attack:");
-            for (int i = 0; i < reachableUnits.size(); i++) {
-                System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ")");
+        else {
+            if (!(unitController.getSelectedUnit() instanceof MilitaryUnit)) {
+                System.out.println("this unit can't attack another unit");
+            }else {
+                if(unitController.getSelectedUnit().getRemainingMoves()==0){
+                    System.out.println("this unit can't attack now!");
+                }else {
+                    ArrayList<Unit> reachableUnits = unitController.reachableUnits();
+                    if (reachableUnits.size() > 0) {
+                        System.out.println("units that you can reach to attack:");
+                        for (int i = 0; i < reachableUnits.size(); i++) {
+                            System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ")");
+                        }
+                        String whichUnit = scanner.nextLine();
+                        if (!whichUnit.equals("exit")) {
+                            System.out.println(unitController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit) - 1)));
+                        }
+                    } else {
+                        System.out.println("you can't reach any unit to attack");
+                    }
+                }
             }
-            String whichUnit=scanner.nextLine();
-            if(!whichUnit.equals("exit")){
-                System.out.println(unitController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit)-1)));
-            }
-        }else {
-            System.out.println("you can't reach any unit to attack");
         }
     }
 
     public void attackCity(Scanner scanner){
         if(!unitController.checkSelectedUnit().equals("ok")){
             System.out.println(unitController.checkSelectedUnit());
-        }
-        if(!(unitController.getSelectedUnit() instanceof MilitaryUnit)){
-            System.out.println("this unit can't attack another unit");
-        }
-        ArrayList<City> reachableCities=unitController.reachableCities();
-        if(reachableCities.size()>0){
-            System.out.println("cities that you can reach to attack:");
-            for(int i=0;i<reachableCities.size();i++){
-                System.out.println((i+1)+"- health:"+reachableCities.get(i).getHealth());
-            }
-            String whichCity=scanner.nextLine();
-            if(!whichCity.equals("exit")){
-                String output=unitController.attackCity(reachableCities.get(Integer.parseInt(whichCity)-1));
-                if(!output.equals("dominated")){
-                    System.out.println(output);
+        }else {
+            if (!(unitController.getSelectedUnit() instanceof MilitaryUnit)) {
+                System.out.println("this unit can't attack another unit");
+            }else {
+                if (unitController.getSelectedUnit().getRemainingMoves() == 0) {
+                    System.out.println("this unit can't attack now!");
                 }else {
-                    System.out.println("you dominated this city, do you want to eliminate it or annex it?");
-                    String which=scanner.nextLine();
-                    if(which.equals("eliminate")){
-                        cityController.getCityOwner(reachableCities.get(Integer.parseInt(whichCity)-1)).getCities().remove(reachableCities.get(Integer.parseInt(whichCity)-1));
-                        System.out.println("city eliminated!");
-                    }
-                    if(which.equals("annex")){
-                        cityController.getCityOwner(reachableCities.get(Integer.parseInt(whichCity)-1)).getCities().remove(reachableCities.get(Integer.parseInt(whichCity)-1));
-                        reachableCities.get(Integer.parseInt(whichCity)-1).setHealth(20);
-                        civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness()-5);
-                        civilizationController.getCurrentPlayer().getCities().add(reachableCities.get(Integer.parseInt(whichCity)-1));
-                        System.out.println("you annexed this city to your cities!");
+                    ArrayList<City> reachableCities = unitController.reachableCities();
+                    if (reachableCities.size() > 0) {
+                        System.out.println("cities that you can reach to attack:");
+                        for (int i = 0; i < reachableCities.size(); i++) {
+                            System.out.println((i + 1) + "- health:" + reachableCities.get(i).getHealth());
+                        }
+                        String whichCity = scanner.nextLine();
+                        if (!whichCity.equals("exit")) {
+                            String output = unitController.attackCity(reachableCities.get(Integer.parseInt(whichCity) - 1));
+                            if (!output.equals("dominated")) {
+                                System.out.println(output);
+                            } else {
+                                System.out.println("you dominated this city, do you want to eliminate it or annex it?");
+                                String which = scanner.nextLine();
+                                if (which.equals("eliminate")) {
+                                    cityController.getCityOwner(reachableCities.get(Integer.parseInt(whichCity) - 1)).getCities().remove(reachableCities.get(Integer.parseInt(whichCity) - 1));
+                                    System.out.println("city eliminated!");
+                                }
+                                if (which.equals("annex")) {
+                                    cityController.getCityOwner(reachableCities.get(Integer.parseInt(whichCity) - 1)).getCities().remove(reachableCities.get(Integer.parseInt(whichCity) - 1));
+                                    reachableCities.get(Integer.parseInt(whichCity) - 1).setHealth(20);
+                                    civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness() - 5);
+                                    civilizationController.getCurrentPlayer().getCities().add(reachableCities.get(Integer.parseInt(whichCity) - 1));
+                                    System.out.println("you annexed this city to your cities!");
+                                }
+                            }
+                        }
+                    } else {
+                        System.out.println("you have move closer to a city to attack!");
                     }
                 }
             }
-        }else {
-            System.out.println("you have move closer to a city to attack!");
         }
     }
 
     public void attackUnitFromCity(Scanner scanner){
         if(GameController.getSelectedCity()==null) System.out.println("select a city first!");
-        ArrayList<Unit> reachableUnits=cityController.reachableUnits();
-        if(reachableUnits.size()>0){
-            System.out.println("units that you can reach to attack:");
-            for(int i=0;i<reachableUnits.size();i++){
-                System.out.println((i+1)+"- name: "+reachableUnits.get(i).getName()+" location: ("+reachableUnits.get(i).getX()+","+reachableUnits.get(i).getY()+")");
+        else {
+            ArrayList<Unit> reachableUnits = cityController.reachableUnits();
+            if (reachableUnits.size() > 0) {
+                System.out.println("units that you can reach to attack:");
+                for (int i = 0; i < reachableUnits.size(); i++) {
+                    System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ")");
+                }
+                String whichUnit = scanner.nextLine();
+                if (!whichUnit.equals("exit")) {
+                    System.out.println(cityController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit) - 1)));
+                }
+            } else {
+                System.out.println("there is no units in your range!");
             }
-            String whichUnit=scanner.nextLine();
-            if(!whichUnit.equals("exit")){
-                System.out.println(cityController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit)-1)));
-            }
-        }else {
-            System.out.println("there is no units in your range!");
         }
     }
 }

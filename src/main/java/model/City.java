@@ -11,6 +11,7 @@ public class City {
     private Tile capital;
     private int countOfCitizens=1;
     private int health=20;
+    private boolean canAttack=true;
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Tile> tilesWithCitizen = new ArrayList<>();
 
@@ -137,5 +138,13 @@ public class City {
             }
         }
         return strength;
+    }
+
+    public boolean isCanAttack () {
+        return canAttack;
+    }
+
+    public void setCanAttack (boolean canAttack) {
+        this.canAttack = canAttack;
     }
 }

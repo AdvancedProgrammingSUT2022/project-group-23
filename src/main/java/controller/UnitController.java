@@ -396,6 +396,7 @@ public class UnitController extends GameController {
             tiles[selectedUnit.getX()][selectedUnit.getY()].setImprovement(null);
             tiles[selectedUnit.getX()][selectedUnit.getY()].setHasLooted(true);
         }
+        selectedUnit.setRemainingMoves(0);
         return "looted!";
     }
 
@@ -417,6 +418,7 @@ public class UnitController extends GameController {
             improvingTiles.put(tiles[unit.getX()][unit.getY()],tiles[unit.getX()][unit.getY()].getLootedImprovement());
             tiles[unit.getX()][unit.getY()].setLootedImprovement(null);
         }
+        selectedUnit.setRemainingMoves(0);
         processingTiles.put(tiles[unit.getX()][unit.getY()],3);
         workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
         return "healing!";
@@ -484,6 +486,7 @@ public class UnitController extends GameController {
     public String attackUnit(Unit unit){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
         cancelActions();
+        militaryUnit.setRemainingMoves(0);
         if(unit instanceof MilitaryUnit) {
             MilitaryUnit unit1 = (MilitaryUnit) unit;
             int strengthAttacker;
@@ -516,13 +519,13 @@ public class UnitController extends GameController {
                 if(isRiver(militaryUnit.getX(),militaryUnit.getY(),unit1.getX(), unit1.getY())){
                     bonusAttacker -= 25;
                 }
-                strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength()*(1-(((10-militaryUnit.getHealth())/2)/10));
+                strengthAttacker = ((100-(currentPlayer.getIsUnhappy()*25))*militaryUnit.getStrength()*(50+(militaryUnit.getHealth()*5)))/10000;
             } else {
-                strengthAttacker = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
+                strengthAttacker = ((100-(currentPlayer.getIsUnhappy()*25))*militaryUnit.getRangeStrength()*(50+(militaryUnit.getHealth()*5)))/10000;
             }
-            strengthAttacker += strengthAttacker*(bonusAttacker/100);
-            strengthDefender=(1-(getUnitOwner(unit).getIsUnhappy()/4))*unit1.getStrength();
-            strengthDefender += strengthDefender*(bonusDefender/100);
+            strengthAttacker += strengthAttacker*(bonusAttacker)/100;
+            strengthDefender=(100-(getUnitOwner(unit).getIsUnhappy()*25))*unit1.getStrength()/100;
+            strengthDefender += strengthDefender*(bonusDefender)/100;
             unit1.setHealth(unit1.getHealth() - strengthAttacker);
             if (militaryUnit.getRange() == -1) {
                 militaryUnit.setHealth(militaryUnit.getHealth() - strengthDefender);
@@ -560,6 +563,7 @@ public class UnitController extends GameController {
     public String attackCity(City city){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
         cancelActions();
+        militaryUnit.setRemainingMoves(0);
         int strength;
         int bonus=0;
         if(!militaryUnit.getName().equals("Scout"))
@@ -574,16 +578,20 @@ public class UnitController extends GameController {
             bonus += 10;
         }
         if (militaryUnit.getRange() == -1) {
-            strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getStrength()*(1-(((10-militaryUnit.getHealth())/2)/10));
+            strength = ((100-(currentPlayer.getIsUnhappy()*25))*militaryUnit.getStrength()*(50+(militaryUnit.getHealth()*5)))/10000;
         } else {
-            strength = (1-(currentPlayer.getIsUnhappy()/4))*militaryUnit.getRangeStrength();
+            strength = ((100-(currentPlayer.getIsUnhappy()*25))*militaryUnit.getRangeStrength()*(50+(militaryUnit.getHealth()*5)))/10000;
         }
-        strength += strength*(bonus/100);
+        strength += strength*bonus/100;
         city.setHealth(city.getHealth()-strength);
         if(militaryUnit.getRange()==-1){
             militaryUnit.setHealth(militaryUnit.getHealth()-city.strength());
         }else {
             if(city.getHealth()<1)city.setHealth(1);
+        }
+        if(!militaryUnit.getName().equals("Horseman") && !militaryUnit.getName().equals("Knight") &&!militaryUnit.getName().equals("Cavalry")
+                &&!militaryUnit.getName().equals("Lancer")&&!militaryUnit.getName().equals("Panzer")&&!militaryUnit.getName().equals("Tank")){
+            militaryUnit.setRemainingMoves(0);
         }
         if(city.getHealth()<=0 || militaryUnit.getHealth()<=0){
             if(militaryUnit.getHealth()> city.getHealth()){

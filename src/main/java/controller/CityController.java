@@ -106,6 +106,7 @@ public class CityController extends GameController{
             if(city.getConstructingUnit() == null)return "you have to choose a production for city : " + city.getId();
         }
         for (City city : currentPlayer.getCities()) {
+            city.setCanAttack(true);
             if(city.getHealth()<20) city.setHealth(city.getHealth()+1);
             for (Tile tile : city.getTiles()) {
                 if(tile.getResource()!=null){
@@ -243,8 +244,12 @@ public class CityController extends GameController{
     }
 
     public String attackUnit(Unit unit){
+        if(!selectedCity.isCanAttack()){
+            return "you already have attacked with this city";
+        }
         MilitaryUnit militaryUnit = (MilitaryUnit) unit;
         militaryUnit.setHealth(militaryUnit.getHealth()-selectedCity.strength());
+        selectedCity.setCanAttack(false);
         if(militaryUnit.getHealth()<=0){
             for (User player : players) {
                 if (player.getUnits().contains(militaryUnit)){
@@ -253,7 +258,7 @@ public class CityController extends GameController{
             }
             return "you killed the unit!";
         }else {
-            return "you attached the unit, but its still alive!";
+            return "you attacked the unit, but its still alive!";
         }
     }
 }

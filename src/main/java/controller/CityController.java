@@ -215,5 +215,46 @@ public class CityController extends GameController{
         return "tile purchased successfully";
     }
 
+    public ArrayList<Unit> reachableUnits(){
+        ArrayList<Tile> reachableTiles=new ArrayList<>();
+        ArrayList<Unit> reachableUnits=new ArrayList<>();
+        for (Tile tile : selectedCity.getTiles()) {
+            for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 1)) {
+                if(!reachableTiles.contains(tile1) && !selectedCity.getTiles().contains(tile1)){
+                    reachableTiles.add(tile1);
+                }
+            }
+            for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 2)) {
+                if(!reachableTiles.contains(tile1) && !selectedCity.getTiles().contains(tile1)){
+                    reachableTiles.add(tile1);
+                }
+            }
+        }
+        for (User player : players) {
+            if(!player.equals(currentPlayer)){
+                for (Unit unit : player.getUnits()) {
+                    if(reachableTiles.contains(tiles[unit.getX()][unit.getY()]) && (unit instanceof  MilitaryUnit)){
+                        reachableUnits.add(unit);
+                    }
+                }
+            }
+        }
+        return reachableUnits;
+    }
+
+    public String attackUnit(Unit unit){
+        MilitaryUnit militaryUnit = (MilitaryUnit) unit;
+        militaryUnit.setHealth(militaryUnit.getHealth()-selectedCity.strength());
+        if(militaryUnit.getHealth()<=0){
+            for (User player : players) {
+                if (player.getUnits().contains(militaryUnit)){
+                    player.getUnits().remove(militaryUnit);
+                }
+            }
+            return "you killed the unit!";
+        }else {
+            return "you attached the unit, but its still alive!";
+        }
+    }
 }
 

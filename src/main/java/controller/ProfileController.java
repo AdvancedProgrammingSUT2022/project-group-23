@@ -25,7 +25,7 @@ public class ProfileController {
     public String changeNickname(String nickname)
     {
         for (User user : User.getUsers()) {
-            if(user.getNickname().equals(nickname))
+            if(user.getNickname().equals(nickname) && !user.equals(User.getUserLogged()))
             {
                 return "user with nickname "+nickname+" already exists";
             }
@@ -33,6 +33,17 @@ public class ProfileController {
         User.getUserLogged().setNickname(nickname);
         User.updateUsersInfo();
         return "nickname changed successfully!";
+    }
+
+    public String changeUsername(String username){
+        for (User user : User.getUsers()){
+            if(user.getUsername().equals(username) && !user.equals(User.getUserLogged())){
+                return "user with username " + username + " already exists";
+            }
+        }
+        User.getUserLogged().setUsername(username);
+        User.updateUsersInfo();
+        return "username change successfully";
     }
 
     public String changePassword(String currentPassword, String newPassword)

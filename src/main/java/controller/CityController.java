@@ -201,10 +201,7 @@ public class CityController extends GameController{
         if(!possibleTiles.contains(tile)){
             return "you can't purchase this tile!";
         }
-        int price=tile.getTerrain().getPrice();
-        if(tile.getFeature()!=null){
-            price += tile.getFeature().getPrice();
-        }
+        int price = tile.getPrice();
         if(currentPlayer.getGold()<price){
             return "you don't have enough gold to purchase this tile";
         }

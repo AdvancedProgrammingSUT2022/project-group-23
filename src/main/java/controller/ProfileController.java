@@ -43,7 +43,7 @@ public class ProfileController {
         }
         User.getUserLogged().setUsername(username);
         User.updateUsersInfo();
-        return "username change successfully";
+        return "username changed successfully";
     }
 
     public String changePassword(String currentPassword, String newPassword)

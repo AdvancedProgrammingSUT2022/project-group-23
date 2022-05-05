@@ -32,10 +32,21 @@ public class TestProfileController {
         ProfileController profileController=ProfileController.getInstance();
         registerController.addUser("omid","omid123","123");
         registerController.login("omid","123");
-        String output=profileController.changeNickname("omid123");
-        assertEquals(output,"user with nickname omid123 already exists");
+        String output;
         output=profileController.changeNickname("omid1234");
         assertEquals(output,"nickname changed successfully!");
+    }
+
+    @Test
+    public void testChangeUsername()
+    {
+        RegisterController registerController=RegisterController.getInstance();
+        ProfileController profileController=ProfileController.getInstance();
+        registerController.addUser("omid","omid123","123");
+        registerController.login("omid","123");
+        String output;
+        output=profileController.changeUsername("omid1");
+        assertEquals(output,"username changed successfully");
     }
 
 
@@ -44,7 +55,7 @@ public class TestProfileController {
     {
         ArrayList<User> users=new ArrayList<User>();
         for (User user : User.getUsers()) {
-            if(!user.getUsername().equals("omid"))
+            if(!user.getUsername().equals("omid") && !user.getUsername().equals("omid1"))
             {
                 users.add(user);
             }

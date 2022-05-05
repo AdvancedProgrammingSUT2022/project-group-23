@@ -418,7 +418,7 @@ public class UnitController extends GameController {
             improvingTiles.put(tiles[unit.getX()][unit.getY()],tiles[unit.getX()][unit.getY()].getLootedImprovement());
             tiles[unit.getX()][unit.getY()].setLootedImprovement(null);
         }
-        selectedUnit.setRemainingMoves(0);
+        unit.setRemainingMoves(0);
         processingTiles.put(tiles[unit.getX()][unit.getY()],3);
         workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
         return "healing!";
@@ -598,7 +598,6 @@ public class UnitController extends GameController {
                 militaryUnit.setHealth(militaryUnit.getHealth()-city.getHealth());
                 return "dominated";
             }else {
-                city.setHealth(city.getHealth()-militaryUnit.getHealth());
                 currentPlayer.getUnits().remove(militaryUnit);
                 return "your unit died!";
             }

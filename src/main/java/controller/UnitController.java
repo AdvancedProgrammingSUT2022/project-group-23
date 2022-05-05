@@ -100,7 +100,7 @@ public class UnitController extends GameController {
             for(Tile tile : city.getTiles()){
                 tile.setVisibilityForUser("visible", turn);
             }
-            ArrayList<Tile> viewableTiles = cityController.possibleTilesForPurchase();
+            ArrayList<Tile> viewableTiles = cityController.possibleTilesForPurchase(city);
             for(Tile tile : viewableTiles){
                 tile.setVisibilityForUser("visible", turn);
             }
@@ -169,6 +169,7 @@ public class UnitController extends GameController {
         if(selectedUnit == null)return "no unit selected";
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         currentPlayer.removeUnit(selectedUnit);
+        selectedUnit = null;
         checkVisibility();
         return "unit deleted successfully";
     }

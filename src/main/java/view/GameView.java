@@ -118,8 +118,16 @@ public class GameView {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 ArrayList<String> infos = new ArrayList<>();
-                if(tiles[i][j].getTerrain() != null)infos.add(tiles[i][j].getTerrain().getName());
-                if(tiles[i][j].getFeature() != null)infos.add(tiles[i][j].getFeature().getName());
+                City city = cityController.getCityAtCoordinate(i, j);
+                if(city == null)infos.add("nl");
+                else {
+                    if(city.getCapital().getX() != i || city.getCapital().getY() != j)
+                        infos.add("bg:" + cityController.getCityAtCoordinate(i, j).getId());
+                    else infos.add("cp:" + cityController.getCityAtCoordinate(i, j).getId());
+                }
+                StringBuilder terrainFeatureName = new StringBuilder(tiles[i][j].getTerrain().getName().substring(0,3) + "-");
+                if(tiles[i][j].getFeature() != null) terrainFeatureName.append(tiles[i][j].getFeature().getName().substring(0,3));
+                infos.add(String.valueOf(terrainFeatureName));
                 if(tiles[i][j].getResource() != null){
                     if(tiles[i][j].getResource().getNeededTechnology() == null)infos.add(tiles[i][j].getResource().getName());
                     else {
@@ -127,8 +135,12 @@ public class GameView {
                             infos.add(tiles[i][j].getResource().getName());
                     }
                 }
-                if(unitController.getTileNonCombatUnit(i, j) != null)infos.add(unitController.getTileNonCombatUnit(i, j).getName());
-                if(unitController.getTileCombatUnit(i, j) != null)infos.add(unitController.getTileCombatUnit(i, j).getName());
+
+                StringBuilder unitsName = new StringBuilder("");
+                if(unitController.getTileNonCombatUnit(i, j) != null)
+                    unitsName.append(unitController.getTileNonCombatUnit(i, j).getName().substring(0, 3)).append("-");
+                if(unitController.getTileCombatUnit(i, j) != null)unitsName.append(unitController.getTileCombatUnit(i, j).getName().substring(0,3));
+                infos.add(String.valueOf(unitsName));
 
                 String background = ANSI_CYAN_BACKGROUND;
                 if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("visible"))background = ANSI_YELLOW_BACKGROUND;
@@ -243,7 +255,7 @@ public class GameView {
         System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " count of military units : " + countOfMilitaryUnits);
     }
     private void purchaseTile(Scanner scanner){
-        ArrayList<Tile> possibleTiles = cityController.possibleTilesForPurchase();
+        ArrayList<Tile> possibleTiles = cityController.possibleTilesForPurchase(GameController.getSelectedCity());
         int id = 1;
         System.out.println("purchasable tiles : ");
         for(Tile tile : possibleTiles){

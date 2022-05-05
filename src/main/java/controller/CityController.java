@@ -180,12 +180,12 @@ public class CityController extends GameController{
 
     }
 
-    public ArrayList<Tile> possibleTilesForPurchase(){
-        if(selectedCity == null) return null;
+    public ArrayList<Tile> possibleTilesForPurchase(City city){
+        if(city == null) return null;
         ArrayList<Tile> possibleTiles= new ArrayList<Tile>();
-        for (Tile tile : selectedCity.getTiles()) {
+        for (Tile tile : city.getTiles()) {
             for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 1)) {
-                if(!possibleTiles.contains(tile1) && !selectedCity.getTiles().contains(tile1)){
+                if(!possibleTiles.contains(tile1) && !city.getTiles().contains(tile1)){
                     possibleTiles.add(tile1);
                 }
             }
@@ -195,7 +195,7 @@ public class CityController extends GameController{
 
     public String purchaseTile(Tile tile){
         if(selectedCity == null) return "no selected city";
-        ArrayList<Tile> possibleTiles=possibleTilesForPurchase();
+        ArrayList<Tile> possibleTiles=possibleTilesForPurchase(selectedCity);
         if(!possibleTiles.contains(tile)){
             return "you can't purchase this tile!";
         }

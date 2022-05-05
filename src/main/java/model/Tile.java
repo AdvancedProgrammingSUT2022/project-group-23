@@ -91,6 +91,14 @@ public class Tile {
         return movementCost;
     }
 
+    public int getPrice(){
+        int price=terrain.getPrice();
+        if(feature!=null){
+            price += feature.getPrice();
+        }
+        return price;
+    }
+
     public int getFood(){
         int food = 0;
         if(terrain != null) food = terrain.getFood();

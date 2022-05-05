@@ -95,6 +95,7 @@ public class GameView {
             else if(input.equals("show cities panel")) showCitiesInfo(civilizationController.showCitiesInfo());
             else if(input.equals("show research panel")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
             else if(input.equals("show demographic panel"))demographicPanel();
+            else if(input.equals("purchase tile"))purchaseTile(scanner);
             else if(input.equals("menu exit"))break;
             else System.out.println("invalid command");
         }
@@ -233,6 +234,21 @@ public class GameView {
         }
         System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " count of military units : " + countOfMilitaryUnits);
     }
+    private void purchaseTile(Scanner scanner){
+        ArrayList<Tile> possibleTiles = cityController.possibleTilesForPurchase();
+        int id = 1;
+        System.out.println("purchasable tiles : ");
+        for(Tile tile : possibleTiles){
+            System.out.println(id + "- ("  + tile.getX() + " , " + tile.getY() + ") price : " +tile.getPrice());
+            id++;
+        }
+        String tileNumber = scanner.nextLine();
+        if(tileNumber.equals("exit"))return;
+        if(Integer.parseInt(tileNumber) > possibleTiles.size() || Integer.parseInt(tileNumber) < 1){
+            System.out.println("invalid number");
+        }
+        System.out.println(cityController.purchaseTile(possibleTiles.get(Integer.parseInt(tileNumber) - 1)));
+    }
 
     private void showCurrentStudyInfo(Technology technology) {
         if (technology != null) {
@@ -287,6 +303,9 @@ public class GameView {
             System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
         }
         String whichTechnology=scanner.nextLine();
+        if(Integer.parseInt(whichTechnology) > readyTechnologies.size() || Integer.parseInt(whichTechnology) < 1){
+            System.out.println("invalid number");
+        }
         if(!whichTechnology.equals("exit")){
             civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
             System.out.println("technology will be studied!");
@@ -309,9 +328,12 @@ public class GameView {
             }
             System.out.println((i+1)+"- "+units.get(i).getName()+", it needs "+turnsLeft+" turns to be built");
         }
-        String whichTechnology=scanner.nextLine();
-        if(!whichTechnology.equals("exit")){
-            System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichTechnology)-1).getName()));
+        String whichProduction=scanner.nextLine();
+        if(Integer.parseInt(whichProduction) > units.size() || Integer.parseInt(whichProduction) < 1){
+            System.out.println("invalid number");
+        }
+        if(!whichProduction.equals("exit")){
+            System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichProduction)-1).getName()));
         }
     }
     public void unitBuild(String name){

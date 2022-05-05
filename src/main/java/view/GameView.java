@@ -88,6 +88,7 @@ public class GameView {
             else if(input.equals("unit wake")) System.out.println(unitController.wake());
             else if(input.equals("unit fortify")) System.out.println(unitController.fortify());
             else if(input.equals("unit alert")) System.out.println(unitController.alert());
+            else if(input.equals("unit garrison")) System.out.println(unitController.garrison());
             else if(input.equals("unit range attack setup")) System.out.println(unitController.rangeSetup());
             else if(input.equals("unit cancel action")) System.out.println(unitController.cancelActions());
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());

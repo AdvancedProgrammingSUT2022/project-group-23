@@ -205,6 +205,16 @@ public class UnitController extends GameController {
         return "unit is fortified";
     }
 
+    public String garrison(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        if(!(selectedUnit instanceof MilitaryUnit))return "unit is not military";
+        City city = cityController.getCityAtCoordinate(selectedUnit.getX(), selectedUnit.getY());
+        if(city == null || city.getCapital().getX() != selectedUnit.getX() ||
+                city.getCapital().getY() != selectedUnit.getY()) return "unit can't be garrisoned here";
+        cancelActions();
+        selectedUnit.setState("garrison");
+        return "unit is garrisoned";
+    }
     public String alert(){
         if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof MilitaryUnit))return "unit is not military";

@@ -212,30 +212,38 @@ public class GameView {
     }
 
     private void showUnitsInfo(ArrayList<Unit> units){
+        System.out.println("number of units : " + units.size());
         for(int i=0;i<units.size();i++){
             System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves());
         }
     }
     private void militaryOverview(ArrayList<Unit> units){
-        for(int i=0;i<units.size();i++){
-            if(!(units.get(i) instanceof MilitaryUnit))continue;
-            MilitaryUnit militaryUnit = (MilitaryUnit)units.get(i);
-            System.out.println((i+1)+"- name: "+militaryUnit.getName()+" current tile: ("+militaryUnit.getX()+","+militaryUnit.getY()+") remaining move: "+ militaryUnit.getRemainingMoves() + " combat type : " + militaryUnit.getCombatType() + " health : " + militaryUnit.getHealth());
+        int id = 1;
+        for(Unit unit : units){
+            if(!(unit instanceof MilitaryUnit))continue;
+            MilitaryUnit militaryUnit = (MilitaryUnit)unit;
+            System.out.println((id)+"- name: "+militaryUnit.getName()+" current tile: ("+militaryUnit.getX()+","+militaryUnit.getY()+") remaining move: "+ militaryUnit.getRemainingMoves() + " combat type : " + militaryUnit.getCombatType() + " health : " + militaryUnit.getHealth());
+            id++;
         }
+        if(id == 1) System.out.println("you have no military units");
+
     }
 
     private void showCitiesInfo(ArrayList<City> cities){
         for(City city : cities){
             System.out.println("city id : " + city.getId() + " - capital: (" + city.getCapital().getX() + "," + city.getCapital().getY() + ") number of citizens: "+city.getCountOfCitizens()+" number of tiles: "+city.getTiles().size());
             System.out.println("city output for each turn - gold : " + city.gold() + " - food : " + city.totalFood() + " - production : " + city.production());
+            System.out.println("number of unemployed citizens : " + (city.getCountOfCitizens() - city.getTilesWithCitizen().size()));
             System.out.println("tile coordinates : ");
             for(Tile tile : city.getTiles()){
                 System.out.print("(" + tile.getX() + " , " + tile.getY() + ") - ");
             }
+            System.out.println();
             System.out.println("tiles with citizen : ");
             for(Tile tile : city.getTilesWithCitizen()){
                 System.out.print("(" + tile.getX() + " , " + tile.getY() + ") - ");
             }
+            System.out.println();
             System.out.println("-------------------------------------------------------------------");
         }
     }
@@ -252,7 +260,7 @@ public class GameView {
         for(Unit unit : civilizationController.showUnitsInfo()){
             if(unit instanceof MilitaryUnit) countOfMilitaryUnits++;
         }
-        System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " count of military units : " + countOfMilitaryUnits);
+        System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " gold : " + civilizationController.getCurrentPlayer().getGold() + " count of military units : " + countOfMilitaryUnits);
     }
     private void purchaseTile(Scanner scanner){
         ArrayList<Tile> possibleTiles = cityController.possibleTilesForPurchase(GameController.getSelectedCity());
@@ -281,18 +289,21 @@ public class GameView {
             System.out.println("you are currently studying " + technology.getName() + " and there is " + turnsLeft + " turns left to unlock");
             System.out.println("resources that need this technology to be discovered:");
             for (Resource resource : ResourceDatabase.getResources()) {
+                if(resource.getNeededTechnology() == null)continue;
                 if (resource.getNeededTechnology().equals(technology.getName())) {
                     System.out.println(resource.getName());
                 }
             }
             System.out.println("units that need this technology to be build:");
             for (Unit unit : UnitsDatabase.getUnits()) {
+                if(unit.getNeededTechnology() == null)continue;
                 if (unit.getNeededTechnology().equals(technology.getName())) {
                     System.out.println(unit.getName());
                 }
             }
             System.out.println("improvements that need this technology:");
             for (Improvement improvement : ImprovementDatabase.getImprovements()) {
+                if(improvement.getNeededTechnology() == null)continue;
                 if (improvement.getNeededTechnology().equals(technology.getName())) {
                     System.out.println(improvement.getName());
                 }

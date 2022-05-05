@@ -150,6 +150,7 @@ public class UnitController extends GameController {
         cancelActions();
         String message = null;
         if(!(message = moveUnit(selectedUnit, x, y)).equals("ok")) return message;
+        selectedUnit.setState("ready");
         return "unit is moving";
 
     }
@@ -522,8 +523,8 @@ public class UnitController extends GameController {
     public ArrayList<Unit> getConstructableUnits(){
         ArrayList<Unit> constructableUnits = new ArrayList<>();
         for(Unit unit : UnitsDatabase.getUnits()){
-            if (currentPlayer.hasTechnology(unit.getNeededTechnology()) &&
-                    currentPlayer.hasResource(unit.getNeededResource())) constructableUnits.add(unit);
+            if ((unit.getNeededTechnology() == null || currentPlayer.hasTechnology(unit.getNeededTechnology())) &&
+                    (unit.getNeededResource() == null || currentPlayer.hasResource(unit.getNeededResource()))) constructableUnits.add(unit);
         }
         constructableUnits.add(new SettlerUnit(-1, -1));
         constructableUnits.add(new WorkerUnit(-1, -1));

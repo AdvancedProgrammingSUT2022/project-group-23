@@ -77,8 +77,8 @@ public class CivilizationController extends GameController{
             currentPlayer.getWaitedTechnologies().put(currentPlayer.getCurrentStudy().getName(), currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName()) - currentPlayer.totalCup());
             if (currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName()) <= 0) {
                 currentPlayer.addTechnology(currentPlayer.getCurrentStudy());
-                currentPlayer.setCurrentStudy(null);
                 currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
+                currentPlayer.setCurrentStudy(null);
             }
         }
 

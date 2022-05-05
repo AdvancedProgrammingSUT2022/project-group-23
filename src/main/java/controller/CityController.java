@@ -56,14 +56,15 @@ public class CityController extends GameController{
     public ArrayList<Tile> possibleTilesForCitizen(Tile tile)
     {
         if(selectedCity == null) return null;
+        ArrayList<Tile> possibleTilesFinal=new ArrayList<>();
         ArrayList<Tile> possibleTiles=createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()),2);
         for (Tile tile1 : createGraph().getTilesAtDistance(coordinatesToNumber(tile.getX(), tile.getY()), 1)) {
             possibleTiles.add(tile1);
         }
         for (Tile possibleTile : possibleTiles) {
-            if(!selectedCity.getTiles().contains(possibleTile))
+            if(selectedCity.getTiles().contains(possibleTile))
             {
-                possibleTiles.remove(possibleTile);
+                possibleTilesFinal.add(possibleTile);
             }
         }
         return possibleTiles;
@@ -73,16 +74,13 @@ public class CityController extends GameController{
         Tile tile = tiles[x][y];
         if(selectedCity == null) return "no selected city";
         ArrayList<Tile> possibleTiles= possibleTilesForCitizen(selectedCity.getCapital());
-        if(!possibleTiles.contains(tile))
-        {
+        if(!possibleTiles.contains(tile)) {
             return "citizens can't work on this tile";
         }
-        if(selectedCity.getCountOfCitizens()-selectedCity.getTilesWithCitizen().size()==0)
-        {
+        if(selectedCity.getCountOfCitizens()-selectedCity.getTilesWithCitizen().size()==0) {
             return "there is no workless citizen, you need to remove a citizen from a tile first";
         }
-        if(selectedCity.getTilesWithCitizen().contains(tile))
-        {
+        if(selectedCity.getTilesWithCitizen().contains(tile)) {
             return "there is already a citizen working on this tile";
         }
         selectedCity.addCitizenToTile(tile);
@@ -111,7 +109,7 @@ public class CityController extends GameController{
             for (Tile tile : city.getTiles()) {
                 if(tile.getResource()!=null){
                     if(tile.getResource().getNeededImprovement()==null ||
-                            (tile.getResource().getNeededImprovement()!=null && tile.getImprovement().getName().equals(tile.getResource().getNeededImprovement()))){
+                            (tile.getResource().getNeededImprovement()!=null && tile.getImprovement()!=null && tile.getImprovement().getName().equals(tile.getResource().getNeededImprovement()))){
                         if(tile.getResource().isLuxury() && !currentPlayer.getLuxuryResources().contains(tile.getResource().getName())){
                             currentPlayer.addLuxuryResource(tile.getResource().getName());
                             currentPlayer.setHappiness(currentPlayer.getHappiness()+4);
@@ -241,6 +239,7 @@ public class CityController extends GameController{
     }
 
     public String attackUnit(Unit unit){
+        if(selectedCity == null) return "no selected city";
         if(!selectedCity.isCanAttack()){
             return "you already have attacked with this city";
         }

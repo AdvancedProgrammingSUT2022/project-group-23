@@ -62,6 +62,7 @@ public class City {
             if(tile1.equals(tile))
             {
                 tilesWithCitizen.remove(tile);
+                break;
             }
         }
     }

@@ -88,6 +88,7 @@ public class Tile {
             if(this.getTerrain().getMovementCost() == -1)return -1;
             movementCost += this.getTerrain().getMovementCost();
         }
+        if(isRoad)return 1;
         return movementCost;
     }
 

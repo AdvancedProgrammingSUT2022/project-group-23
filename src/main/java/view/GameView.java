@@ -81,8 +81,15 @@ public class GameView {
                 unitBuild(matcher.group("name"));
             else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null)
                 unitRemove(matcher.group("name"));
-            else if(input.equals("unit repair")) System.out.println(unitController.healTile());
+            else if(input.equals("unit repair tile")) System.out.println(unitController.healTile());
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
+            else if(input.equals("unit delete")) System.out.println(unitController.deleteSelectedUnit());
+            else if(input.equals("unit sleep")) System.out.println(unitController.sleep());
+            else if(input.equals("unit wake")) System.out.println(unitController.wake());
+            else if(input.equals("unit fortify")) System.out.println(unitController.fortify());
+            else if(input.equals("unit alert")) System.out.println(unitController.alert());
+            else if(input.equals("unit range attack setup")) System.out.println(unitController.rangeSetup());
+            else if(input.equals("unit cancel action")) System.out.println(unitController.cancelActions());
             else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
             else if(input.equals("attack unit by unit")) attackUnit(scanner);

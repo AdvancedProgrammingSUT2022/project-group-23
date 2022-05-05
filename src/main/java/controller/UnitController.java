@@ -96,10 +96,16 @@ public class UnitController extends GameController {
                 tile.setVisibilityForUser("visible", turn);
             }
         }
-        //TODO check visibility for tiles because of cities
+        for(City city : currentPlayer.getCities()){
+            for(Tile tile : city.getTiles()){
+                tile.setVisibilityForUser("visible", turn);
+            }
+            ArrayList<Tile> viewableTiles = cityController.possibleTilesForPurchase();
+            for(Tile tile : viewableTiles){
+                tile.setVisibilityForUser("visible", turn);
+            }
+        }
     }
-
-
 
 
     public Unit getTileCombatUnit(int x, int y){
@@ -163,7 +169,7 @@ public class UnitController extends GameController {
         if(selectedUnit == null)return "no unit selected";
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         currentPlayer.removeUnit(selectedUnit);
-        //TODO check visibility
+        checkVisibility();
         return "unit deleted successfully";
     }
 
@@ -178,8 +184,58 @@ public class UnitController extends GameController {
         return null;
     }
 
+    public String sleep(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        cancelActions();
+        selectedUnit.setState("sleep");
+        return "unit is asleep";
+    }
+    public String wake(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        cancelActions();
+        selectedUnit.setState("ready");
+        return "unit is awake";
+    }
+
+    public String fortify(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        if(!(selectedUnit instanceof MilitaryUnit))return "unit is not military";
+        cancelActions();
+        selectedUnit.setState("fortify");
+        return "unit is fortified";
+    }
+
+    public String alert(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        if(!(selectedUnit instanceof MilitaryUnit))return "unit is not military";
+        cancelActions();
+        selectedUnit.setState("alert");
+        return "unit is on alert";
+    }
+    public String rangeSetup(){
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
+        if(!(selectedUnit instanceof MilitaryUnit))return "unit is not military";
+        MilitaryUnit militaryUnit = (MilitaryUnit)selectedUnit;
+        if(!militaryUnit.getCombatType().equals("Siege"))return "unit type is not Siege";
+        if(selectedUnit.getRemainingMoves() == 0)return "no moves left";
+        cancelActions();
+        selectedUnit.setState("range setup");
+        selectedUnit.setRemainingMoves(selectedUnit.getRemainingMoves() - 1);
+        return "unit is set up";
+    }
     public String isTurnPossible(){
         for(Unit unit : currentPlayer.getUnits()){
+            if(unit.getState().equals("alert")){
+                Graph graph = createGraph();
+                ArrayList<Tile> visibleTiles = graph.getVisibleTiles(coordinatesToNumber(unit.getX(), unit.getY()), 2);
+                for(Tile tile : visibleTiles){
+                    Unit dangerUnit = getTileCombatUnit(tile.getX(), tile.getY());
+                    if(!getUnitOwner(dangerUnit).equals(currentPlayer)){
+                        unit.setState("ready");
+                        break;
+                    }
+                }
+            }
             if(unit.getRemainingMoves() > 0 && unit.getState().equals("ready")){
                 moveUnit(unit, -1, -1);
                 if(unit.getRemainingMoves() > 0){
@@ -361,6 +417,7 @@ public class UnitController extends GameController {
         tiles[unit.getX()][unit.getY()].setRoad(false);
         unit.setMoves(new ArrayList<>());
         unit.setRemainingMoves(0);
+        unit.setState("ready");
         return "road eliminated!";
     }
 
@@ -380,13 +437,14 @@ public class UnitController extends GameController {
     }
 
     public String lootTile(){
-        if(selectedUnit == null)return "no unit selected";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof MilitaryUnit)) {
             return "this unit can't loot";
         }
         if(!tiles[selectedUnit.getX()][selectedUnit.getY()].isRoad() && tiles[selectedUnit.getX()][selectedUnit.getY()].getImprovement()==null){
             return "this tile has nothing to loot";
         }
+        cancelActions();
         if(tiles[selectedUnit.getX()][selectedUnit.getY()].isRoad()){
             tiles[selectedUnit.getX()][selectedUnit.getY()].setHasLooted(true);
             tiles[selectedUnit.getX()][selectedUnit.getY()].setRoad(false);
@@ -397,12 +455,12 @@ public class UnitController extends GameController {
             tiles[selectedUnit.getX()][selectedUnit.getY()].setHasLooted(true);
         }
         selectedUnit.setRemainingMoves(0);
+        selectedUnit.setState("ready");
         return "looted!";
     }
 
     public String healTile(){
-        if(selectedUnit == null)return "no unit selected";
-        if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
+        if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof WorkerUnit)){
             return "this unit can't heal this tile";
         }
@@ -410,6 +468,7 @@ public class UnitController extends GameController {
         if(!tiles[unit.getX()][unit.getY()].isHasLooted()){
             return "this tile is not looted!";
         }
+        cancelActions();
         tiles[unit.getX()][unit.getY()].setHasLooted(false);
         HashMap<Tile,WorkerUnit> workingWorkers=currentPlayer.getWorkingWorkers();
         HashMap<Tile,Integer> processingTiles=currentPlayer.getProcessingTiles();
@@ -421,6 +480,7 @@ public class UnitController extends GameController {
         unit.setRemainingMoves(0);
         processingTiles.put(tiles[unit.getX()][unit.getY()],3);
         workingWorkers.put(tiles[unit.getX()][unit.getY()],unit);
+        unit.setState("working");
         return "healing!";
     }
 
@@ -486,6 +546,8 @@ public class UnitController extends GameController {
     public String attackUnit(Unit unit){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
         cancelActions();
+        militaryUnit.setState("ready");
+        unit.setState("ready");
         militaryUnit.setRemainingMoves(0);
         if(unit instanceof MilitaryUnit) {
             MilitaryUnit unit1 = (MilitaryUnit) unit;
@@ -494,9 +556,9 @@ public class UnitController extends GameController {
             int bonusAttacker=0;
             int bonusDefender=0;
             if(!militaryUnit.getName().equals("Scout"))
-            bonusAttacker += tiles[militaryUnit.getX()][militaryUnit.getY()].getTerrain().getCombatPercentage();
+                bonusAttacker += tiles[militaryUnit.getX()][militaryUnit.getY()].getTerrain().getCombatPercentage();
             if(!unit1.getName().equals("Scout"))
-            bonusDefender += tiles[unit1.getX()][unit1.getY()].getTerrain().getCombatPercentage();
+                bonusDefender += tiles[unit1.getX()][unit1.getY()].getTerrain().getCombatPercentage();
             if(tiles[militaryUnit.getX()][militaryUnit.getY()].getFeature()!=null && !militaryUnit.getName().equals("Scout")){
                 bonusAttacker += tiles[militaryUnit.getX()][militaryUnit.getY()].getFeature().getCombatPercentage();
             }
@@ -563,6 +625,7 @@ public class UnitController extends GameController {
     public String attackCity(City city){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
         cancelActions();
+        militaryUnit.setState("ready");
         militaryUnit.setRemainingMoves(0);
         int strength;
         int bonus=0;

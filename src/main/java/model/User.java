@@ -192,6 +192,11 @@ public class User {
             cup=+3;
             cup += city.getCountOfCitizens();
         }
+        if(gold<0){
+            cup += gold;
+            if(cup<0) cup=0;
+            gold=0;
+        }
         return cup;
     }
 

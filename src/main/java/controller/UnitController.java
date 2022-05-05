@@ -259,6 +259,7 @@ public class UnitController extends GameController {
                             workingWorkers.get(entry.getKey()).setState("ready");
                             workingWorkers.remove(entry.getKey());
                         }else {
+                            currentPlayer.setGold(currentPlayer.getGold()-2);
                             entry.getKey().setRoad(true);
                             workingWorkers.get(entry.getKey()).setState("ready");
                             workingWorkers.remove(entry.getKey());
@@ -646,9 +647,16 @@ public class UnitController extends GameController {
             strength = ((100-(currentPlayer.getIsUnhappy()*25))*militaryUnit.getRangeStrength()*(50+(militaryUnit.getHealth()*5)))/10000;
         }
         strength += strength*bonus/100;
+        int cityStrength=city.strength();
+        if(getTileCombatUnit(city.getCapital().getX(),city.getCapital().getY())!=null){
+            MilitaryUnit unit = (MilitaryUnit) getTileCombatUnit(city.getCapital().getX(),city.getCapital().getY());
+            if(unit.getState().equals("garrison")){
+                cityStrength += unit.getStrength()*5/4;
+            }
+        }
         city.setHealth(city.getHealth()-strength);
         if(militaryUnit.getRange()==-1){
-            militaryUnit.setHealth(militaryUnit.getHealth()-city.strength());
+            militaryUnit.setHealth(militaryUnit.getHealth()-cityStrength);
         }else {
             if(city.getHealth()<1)city.setHealth(1);
         }
@@ -659,6 +667,8 @@ public class UnitController extends GameController {
         if(city.getHealth()<=0 || militaryUnit.getHealth()<=0){
             if(militaryUnit.getHealth()> city.getHealth()){
                 militaryUnit.setHealth(militaryUnit.getHealth()-city.getHealth());
+                cityController.getCityOwner(city).setGold(cityController.getCityOwner(city).getGold()-5);
+                currentPlayer.setGold(currentPlayer.getGold()+4);
                 return "dominated";
             }else {
                 currentPlayer.getUnits().remove(militaryUnit);

@@ -36,14 +36,15 @@ public class ProfileController {
     }
 
     public String changeUsername(String username){
-        for (User user : User.getUsers()){
+        return "can't change your username";
+       /* for (User user : User.getUsers()){
             if(user.getUsername().equals(username) && !user.equals(User.getUserLogged())){
                 return "user with username " + username + " already exists";
             }
         }
         User.getUserLogged().setUsername(username);
         User.updateUsersInfo();
-        return "username changed successfully";
+        return "username changed successfully";*/
     }
 
     public String changePassword(String currentPassword, String newPassword)

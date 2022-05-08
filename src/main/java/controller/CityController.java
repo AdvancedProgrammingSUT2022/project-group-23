@@ -126,6 +126,15 @@ public class CityController extends GameController{
                 city.setFoodLeft(0);
                 city.setCountOfCitizens(city.getCountOfCitizens() + 1);
             }
+            if(city.getFoodLeft()<=-5){
+                if((city.getCountOfCitizens()-city.getTilesWithCitizen().size())>0){
+                    city.setCountOfCitizens(city.getCountOfCitizens()-1);
+                }else {
+                    city.setCountOfCitizens(city.getCountOfCitizens()-1);
+                    city.getTilesWithCitizen().remove(0);
+                }
+                city.setFoodLeft(0);
+            }
             HashMap<String, Integer> waitedUnits = city.getWaitedUnits();
             waitedUnits.put(city.getConstructingUnit(),waitedUnits.get(city.getConstructingUnit()) - city.production());
             if(waitedUnits.get(city.getConstructingUnit()) <= 0){

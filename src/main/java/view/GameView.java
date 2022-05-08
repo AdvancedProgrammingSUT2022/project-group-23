@@ -368,7 +368,6 @@ public class GameView {
         }
     }
     public void unitBuild(String name){
-        //TODO railroad building
         if (name.equals("Road")) System.out.println(unitController.buildRoad());
         else{
             for(Improvement improvement : ImprovementDatabase.getImprovements()){
@@ -382,7 +381,6 @@ public class GameView {
     }
 
     public void unitRemove(String name){
-        //TODO railroad removing
         if (name.equals("Road")) System.out.println(unitController.eliminateRoad());
         else System.out.println(unitController.eliminateFeature());
     }

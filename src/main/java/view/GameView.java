@@ -311,6 +311,10 @@ public class GameView {
         System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " gold : " + civilizationController.getCurrentPlayer().getGold() + " count of military units : " + countOfMilitaryUnits);
     }
     private void purchaseTile(Scanner scanner){
+        if(GameController.getSelectedCity() == null){
+            System.out.println("no city selected");
+            return;
+        }
         ArrayList<Tile> possibleTiles = cityController.possibleTilesForPurchase(GameController.getSelectedCity());
         int id = 1;
         System.out.println("purchasable tiles : ");
@@ -329,10 +333,10 @@ public class GameView {
     private void showCurrentStudyInfo(Technology technology) {
         if (technology != null) {
             int turnsLeft;
-            if (technology.getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
-                turnsLeft =  technology.getCost() / civilizationController.getCurrentPlayer().totalCup();
+            if (civilizationController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) % civilizationController.getCurrentPlayer().totalCup() == 0) {
+                turnsLeft =  civilizationController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) / civilizationController.getCurrentPlayer().totalCup();
             } else {
-                turnsLeft = technology.getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
+                turnsLeft = civilizationController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) / civilizationController.getCurrentPlayer().totalCup() + 1;
             }
             System.out.println("you are currently studying " + technology.getName() + " and there is " + turnsLeft + " turns left to unlock");
             System.out.println("resources that need this technology to be discovered:");
@@ -374,10 +378,14 @@ public class GameView {
         ArrayList<Technology> readyTechnologies=user.readyTechnologies();
         for(int i=0;i<readyTechnologies.size();i++){
             int turnsLeft;
-            if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
-                turnsLeft =  readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup();
-            } else {
-                turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
+            if(civilizationController.getCurrentPlayer().totalCup()==0){
+                turnsLeft=-1;
+            }else {
+                if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
+                    turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup();
+                } else {
+                    turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
+                }
             }
             System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
         }
@@ -400,16 +408,25 @@ public class GameView {
         ArrayList<Unit> units = unitController.getConstructableUnits();
         for(int i=0;i<units.size();i++){
             int turnsLeft;
+            if(GameController.getSelectedCity().production()==0){
+                turnsLeft=-1;
+            }else {
             if (units.get(i).getCost() % GameController.getSelectedCity().production() == 0) {
                 turnsLeft =  units.get(i).getCost() / GameController.getSelectedCity().production();
             } else {
                 turnsLeft = units.get(i).getCost() / GameController.getSelectedCity().production() + 1;
             }
+            }
             System.out.println((i+1)+"- "+units.get(i).getName()+", it needs "+turnsLeft+" turns to be built");
         }
         String whichProduction=scanner.nextLine();
+        if(whichProduction.equals("exit"))
+        {
+            return;
+        }
         if(Integer.parseInt(whichProduction) > units.size() || Integer.parseInt(whichProduction) < 1){
             System.out.println("invalid number");
+            return;
         }
         if(!whichProduction.equals("exit")){
             System.out.println("do you want to purchase this unit with gold");
@@ -419,6 +436,8 @@ public class GameView {
         }
     }
     public void unitBuild(String name){
+        if(unitController.getSelectedUnit()==null) System.out.println("you need to choose a worker unit first!");
+        if(!(unitController.getSelectedUnit() instanceof WorkerUnit)) System.out.println("this unit is not a worker unit");
         if (name.equals("Road")) System.out.println(unitController.buildRoad());
         else{
             for(Improvement improvement : ImprovementDatabase.getImprovements()){

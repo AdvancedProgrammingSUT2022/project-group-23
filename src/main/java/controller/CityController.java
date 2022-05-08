@@ -120,7 +120,7 @@ public class CityController extends GameController{
             currentPlayer.setGold(currentPlayer.getGold() + city.gold());
             if(currentPlayer.getIsUnhappy() == 0)city.setFoodLeft(city.getFoodLeft() + city.totalFood());
             if(currentPlayer.getIsUnhappy() == 1)city.setFoodLeft(city.getFoodLeft() + city.totalFood() / 3);
-            if(selectedCity.getConstructingUnit().equals("Settler"))city.setFoodLeft(0);
+            if(city.getConstructingUnit().equals("Settler"))city.setFoodLeft(0);
             if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens())) && currentPlayer.getIsUnhappy()==0) {
                 currentPlayer.setHappiness(currentPlayer.getHappiness()-3);
                 city.setFoodLeft(0);

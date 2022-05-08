@@ -20,7 +20,7 @@ public class TestCityController extends GameController {
         User user=new User("omid","123","omid123");
         players.add(user);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
+        CityController cityController=civilizationController.getCityController();
         cityController.createCity(3,3);
         String output=cityController.putCitizenToWork(8,8);
         assertEquals(output,"no selected city");
@@ -43,7 +43,7 @@ public class TestCityController extends GameController {
         User user=new User("omid","123","omid123");
         players.add(user);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
+        CityController cityController=civilizationController.getCityController();
         cityController.createCity(3,3);
         user.setGold(0);
         String output=cityController.purchaseTile(tiles[3][4]);
@@ -67,8 +67,8 @@ public class TestCityController extends GameController {
         User user1=new User("omid1","123","omid1231");
         players.add(user1);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController=civilizationController.getCityController();
+        UnitController unitController= civilizationController.getUnitController();
         tiles[9][9].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
         tiles[9][9].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
         MilitaryUnit unit=new MilitaryUnit("Warrior", 40, "Melee", 2, 6, -1, -1, null, null);
@@ -92,8 +92,8 @@ public class TestCityController extends GameController {
         User user=new User("omid","123","omid123");
         players.add(user);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController=civilizationController.getCityController();
+        UnitController unitController= civilizationController.getUnitController();
         cityController.createCity(4,4);
         cityController.selectCity(4,4);
         String output=cityController.constructUnit("Scout");

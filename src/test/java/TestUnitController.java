@@ -25,8 +25,8 @@ public class TestUnitController extends GameController {
         players.add(user);
         WorkerUnit unit=new WorkerUnit(9,9);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         currentPlayer.getUnits().add(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
@@ -48,8 +48,8 @@ public class TestUnitController extends GameController {
         players.add(user);
         WorkerUnit unit=new WorkerUnit(9,9);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         currentPlayer.getUnits().add(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
@@ -73,8 +73,8 @@ public class TestUnitController extends GameController {
         players.add(user);
         WorkerUnit unit=new WorkerUnit(9,9);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         currentPlayer.getUnits().add(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
@@ -96,8 +96,8 @@ public class TestUnitController extends GameController {
         players.add(user);
         WorkerUnit unit=new WorkerUnit(9,9);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         currentPlayer.getUnits().add(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
@@ -122,8 +122,8 @@ public class TestUnitController extends GameController {
         players.add(user);
         WorkerUnit unit=new WorkerUnit(9,9);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         currentPlayer.getUnits().add(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
@@ -138,6 +138,7 @@ public class TestUnitController extends GameController {
             unitController.isTurnPossible();
         }
         MilitaryUnit unit1=new MilitaryUnit("Archer", 70, "Archery", 2, 4, 6, 2, "Archery", null);
+        currentPlayer.getUnits().add(unit1);
         unit1.setX(9);
         unit1.setY(9);
         GameController.setSelectedUnit(unit1);
@@ -160,20 +161,26 @@ public class TestUnitController extends GameController {
         User user=new User("omid","123","omid123");
         players.add(user);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         WorkerUnit unit=new WorkerUnit(2,2);
+        tiles[2][2].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
+        tiles[2][2].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
+        tiles[3][3].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
+        tiles[3][3].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
+        tiles[4][4].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
+        tiles[4][4].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
         user.addUnit(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
         }
         GameController.setSelectedUnit(unit);
-        unitController.moveSelectedUnit(6,6);
+        unitController.moveSelectedUnit(4,4);
         int size=unit.getMoves().size();
-        for(int i=0;i<size;i++){
+        for(int i=0;i<=size;i++){
             unitController.isTurnPossible();
         }
-        assertEquals(unit.getX(),6);
+        assertEquals(unit.getX(),4);
     }
 
     @Test
@@ -184,12 +191,14 @@ public class TestUnitController extends GameController {
         User user1=new User("omid1","123","omid1231");
         players.add(user1);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         tiles[9][9].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
         tiles[9][9].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
         tiles[8][9].setTerrain(new Terrain("Grassland" , 0, 2, 0, 1, -33,40));
         tiles[8][9].setFeature(null);
+        tiles[9][9].getRivers().clear();
+        tiles[8][9].getRivers().clear();
         MilitaryUnit unit=new MilitaryUnit("Warrior", 40, "Melee", 2, 6, -1, -1, null, null);
         unit.setX(9);
         unit.setY(9);
@@ -217,8 +226,8 @@ public class TestUnitController extends GameController {
         User user1=new User("omid1","123","omid1231");
         players.add(user1);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         tiles[9][9].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
         tiles[9][9].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
         MilitaryUnit unit=new MilitaryUnit("Warrior", 40, "Melee", 2, 6, -1, -1, null, null);

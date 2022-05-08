@@ -25,8 +25,8 @@ public class TestCivilizationController extends GameController {
         User user1=new User("omid1","123","omid1231");
         players.add(user1);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         currentPlayer=user;
         String output=civilizationController.nextTurn();
         assertEquals(output,"unit needs action");
@@ -43,8 +43,8 @@ public class TestCivilizationController extends GameController {
         User user=new User("omid","123","omid123");
         players.add(user);
         CivilizationController civilizationController=new CivilizationController(players);
-        CityController cityController=new CityController();
-        UnitController unitController=new UnitController(cityController);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
         civilizationController.getCurrentPlayer();
         civilizationController.getCityController();
         civilizationController.getUnitController();

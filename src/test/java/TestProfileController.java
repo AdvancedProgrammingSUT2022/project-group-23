@@ -46,7 +46,7 @@ public class TestProfileController {
         registerController.login("omid","123");
         String output;
         output=profileController.changeUsername("omid1");
-        assertEquals(output,"username changed successfully");
+        assertEquals(output,"username can't be changed");
     }
 
 

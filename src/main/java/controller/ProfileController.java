@@ -36,7 +36,7 @@ public class ProfileController {
     }
 
     public String changeUsername(String username){
-        return "can't change your username";
+        return "username can't be changed";
        /* for (User user : User.getUsers()){
             if(user.getUsername().equals(username) && !user.equals(User.getUserLogged())){
                 return "user with username " + username + " already exists";

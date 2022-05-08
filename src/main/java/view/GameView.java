@@ -390,10 +390,10 @@ public class GameView {
             System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
         }
         String whichTechnology=scanner.nextLine();
-        if(Integer.parseInt(whichTechnology) > readyTechnologies.size() || Integer.parseInt(whichTechnology) < 1){
-            System.out.println("invalid number");
-        }
         if(!whichTechnology.equals("exit")){
+            if(Integer.parseInt(whichTechnology) > readyTechnologies.size() || Integer.parseInt(whichTechnology) < 1){
+                System.out.println("invalid number");
+            }
             civilizationController.studyTechnology(readyTechnologies.get(Integer.parseInt(whichTechnology)-1));
             System.out.println("technology will be studied!");
         }
@@ -411,24 +411,20 @@ public class GameView {
             if(GameController.getSelectedCity().production()==0){
                 turnsLeft=-1;
             }else {
-            if (units.get(i).getCost() % GameController.getSelectedCity().production() == 0) {
-                turnsLeft =  units.get(i).getCost() / GameController.getSelectedCity().production();
-            } else {
-                turnsLeft = units.get(i).getCost() / GameController.getSelectedCity().production() + 1;
-            }
+                if (units.get(i).getCost() % GameController.getSelectedCity().production() == 0) {
+                    turnsLeft =  units.get(i).getCost() / GameController.getSelectedCity().production();
+                } else {
+                    turnsLeft = units.get(i).getCost() / GameController.getSelectedCity().production() + 1;
+                }
             }
             System.out.println((i+1)+"- "+units.get(i).getName()+", it needs "+turnsLeft+" turns to be built");
         }
         String whichProduction=scanner.nextLine();
-        if(whichProduction.equals("exit"))
-        {
-            return;
-        }
-        if(Integer.parseInt(whichProduction) > units.size() || Integer.parseInt(whichProduction) < 1){
-            System.out.println("invalid number");
-            return;
-        }
         if(!whichProduction.equals("exit")){
+            if(Integer.parseInt(whichProduction) > units.size() || Integer.parseInt(whichProduction) < 1){
+                System.out.println("invalid number");
+                return;
+            }
             System.out.println("do you want to purchase this unit with gold");
             String answer = scanner.nextLine();
             if(answer.equals("no")) System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichProduction)-1).getName()));

@@ -238,22 +238,21 @@ public class UnitController extends GameController {
     public boolean hasTwoUnitsInSameTile(Tile tile){
         int x = tile.getX();
         int y = tile.getY();
-        int flag1 = 1;
         Unit unit = getTileCombatUnit(x, y);
         if(unit != null) {
             for (Unit unit1 : currentPlayer.getUnits()) {
                 if (unit1 instanceof MilitaryUnit && unit1.getX() == x &&
-                        unit1.getY() == y && !unit1.equals(unit)) return false;
+                        unit1.getY() == y && !unit1.equals(unit)) return true;
             }
         }
         unit = getTileNonCombatUnit(x, y);
         if(unit != null) {
             for (Unit unit1 : currentPlayer.getUnits()) {
                 if (!(unit1 instanceof MilitaryUnit) && unit1.getX() == x &&
-                        unit1.getY() == y && !unit1.equals(unit)) return false;
+                        unit1.getY() == y && !unit1.equals(unit)) return true;
             }
         }
-        return true;
+        return false;
     }
     public String isTurnPossible(){
         for(City city : currentPlayer.getCities()){

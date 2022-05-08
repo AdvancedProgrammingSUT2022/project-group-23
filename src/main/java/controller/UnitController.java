@@ -558,6 +558,7 @@ public class UnitController extends GameController {
 
     public String attackUnit(Unit unit){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
+        if(militaryUnit.getCombatType().equals("Siege") && !militaryUnit.getState().equals("range setup")) return "you need to setup this unit first";
         cancelActions();
         militaryUnit.setState("ready");
         unit.setState("ready");

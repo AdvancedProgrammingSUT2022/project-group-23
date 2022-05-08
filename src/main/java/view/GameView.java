@@ -81,6 +81,54 @@ public class GameView {
                 unitBuild(matcher.group("name"));
             else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null)
                 unitRemove(matcher.group("name"));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_GOLD)) != null)
+                civilizationController.getCurrentPlayer().setGold(civilizationController.getCurrentPlayer().getGold()+Integer.parseInt(matcher.group("amount")));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_TURN)) != null){
+                for(int i=0;i<Integer.parseInt(matcher.group("amount"));i++){
+                    civilizationController.nextTurn();
+                }
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_HAPPINESS)) != null)
+                civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness()+Integer.parseInt(matcher.group("amount")));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_UNIT_FULL_HEALTH)) != null){
+                for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
+                    unit.setHealth(10);
+                }
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CITY_FULL_HEALTH)) != null){
+                for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                    city.setHealth(20);
+                }
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_CITIZEN)) != null){
+                for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                   if(city.getId()==Integer.parseInt(matcher.group("id"))){
+                       city.setCountOfCitizens(city.getCountOfCitizens()+Integer.parseInt(matcher.group("amount")));
+                       break;
+                   }
+                }
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null)
+                civilizationController.getTiles()[Integer.parseInt(matcher.group("x"))][Integer.parseInt(matcher.group("y"))].setRoad(true);
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null){
+                for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
+                    unit.setRemainingMoves(unit.getRemainingMoves()+Integer.parseInt(matcher.group("amount")));
+                }
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CREATE_CITY)) != null)
+                cityController.createCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_FINISH_STUDY)) != null){
+                civilizationController.getCurrentPlayer().addTechnology(civilizationController.getCurrentPlayer().getCurrentStudy());
+                civilizationController.getCurrentPlayer().getWaitedTechnologies().remove(civilizationController.getCurrentPlayer().getCurrentStudy().getName());
+                civilizationController.getCurrentPlayer().setCurrentStudy(null);
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_UNIT)) != null){
+                for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                    if(city.getId()==Integer.parseInt(matcher.group("id"))){
+                        cityController.createUnit(matcher.group("name"),city);
+                    }
+                }
+            }
             else if(input.equals("unit repair tile")) System.out.println(unitController.healTile());
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
             else if(input.equals("unit delete")) System.out.println(unitController.deleteSelectedUnit());

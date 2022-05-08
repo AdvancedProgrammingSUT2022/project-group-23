@@ -235,7 +235,31 @@ public class UnitController extends GameController {
         selectedUnit.setRemainingMoves(selectedUnit.getRemainingMoves() - 1);
         return "unit is set up";
     }
+    public boolean hasTwoUnitsInSameTile(Tile tile){
+        int x = tile.getX();
+        int y = tile.getY();
+        int flag1 = 1;
+        Unit unit = getTileCombatUnit(x, y);
+        if(unit != null) {
+            for (Unit unit1 : currentPlayer.getUnits()) {
+                if (unit1 instanceof MilitaryUnit && unit1.getX() == x &&
+                        unit1.getY() == y && !unit1.equals(unit)) return false;
+            }
+        }
+        unit = getTileNonCombatUnit(x, y);
+        if(unit != null) {
+            for (Unit unit1 : currentPlayer.getUnits()) {
+                if (!(unit1 instanceof MilitaryUnit) && unit1.getX() == x &&
+                        unit1.getY() == y && !unit1.equals(unit)) return false;
+            }
+        }
+        return true;
+    }
     public String isTurnPossible(){
+        for(City city : currentPlayer.getCities()){
+            if(hasTwoUnitsInSameTile(city.getCapital()))
+                return "you have more than 1 military or non-military unit in your city";
+        }
         for(Unit unit : currentPlayer.getUnits()){
             if(unit.getState().equals("alert")){
                 Graph graph = createGraph();
@@ -559,9 +583,8 @@ public class UnitController extends GameController {
     public String attackUnit(Unit unit){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
         if(militaryUnit.getCombatType().equals("Siege") && !militaryUnit.getState().equals("range setup")) return "you need to setup this unit first";
-        cancelActions();
         militaryUnit.setState("ready");
-        unit.setState("ready");
+        cancelActions();
         militaryUnit.setRemainingMoves(0);
         if(unit instanceof MilitaryUnit) {
             MilitaryUnit unit1 = (MilitaryUnit) unit;
@@ -638,8 +661,8 @@ public class UnitController extends GameController {
 
     public String attackCity(City city){
         MilitaryUnit militaryUnit = (MilitaryUnit) selectedUnit;
-        cancelActions();
         militaryUnit.setState("ready");
+        cancelActions();
         militaryUnit.setRemainingMoves(0);
         int strength;
         int bonus=0;

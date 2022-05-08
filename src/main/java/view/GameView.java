@@ -412,7 +412,10 @@ public class GameView {
             System.out.println("invalid number");
         }
         if(!whichProduction.equals("exit")){
-            System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichProduction)-1).getName()));
+            System.out.println("do you want to purchase this unit with gold");
+            String answer = scanner.nextLine();
+            if(answer.equals("no")) System.out.println(cityController.constructUnit(units.get(Integer.parseInt(whichProduction)-1).getName()));
+            else if(answer.equals("yes")) System.out.println(cityController.purchaseUnitWithGold(units.get(Integer.parseInt(whichProduction)-1).getName()));
         }
     }
     public void unitBuild(String name){

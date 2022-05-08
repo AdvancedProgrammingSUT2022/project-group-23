@@ -151,24 +151,45 @@ public class CityController extends GameController{
         HashMap<String, Integer> waitedUnits = selectedCity.getWaitedUnits();
         selectedCity.setConstructingUnit(name);
         if(!waitedUnits.containsKey(name)){
-            int cost = 0;
-            if(name.equals("Worker")) cost = 70;
-            else if(name.equals("Settler")){
-                if(selectedCity.getCountOfCitizens() < 2 )return "you can't build Settler in city with less than 2 citizens";
-                if(currentPlayer.getIsUnhappy() == 1)return "you can't build Settler when your civilization is unhappy";
-                cost = 89;
+            if(name.equals("Settler")) {
+                if (selectedCity.getCountOfCitizens() < 2)
+                    return "you can't build Settler in city with less than 2 citizens";
+                if (currentPlayer.getIsUnhappy() == 1)
+                    return "you can't build Settler when your civilization is unhappy";
             }
-            else {
-                for (Unit unit : UnitsDatabase.getUnits()) {
-                    if (unit.getName().equals(name)) {
-                        cost = unit.getCost();
-                        break;
-                    }
-                }
-            }
+            int cost = getUnitCost(name);
             waitedUnits.put(name, cost);
         }
         return "unit is being constructed";
+
+    }
+    private int getUnitCost(String name){
+        int cost = 0;
+        if(name.equals("Worker")) cost = 70;
+        else if(name.equals("Settler")) cost = 89;
+        else {
+            for (Unit unit : UnitsDatabase.getUnits()) {
+                if (unit.getName().equals(name)) {
+                    cost = unit.getCost();
+                    break;
+                }
+            }
+        }
+        return cost;
+    }
+    public String purchaseUnitWithGold(String name){
+        if(selectedCity == null)return "no city selected";
+        if(name.equals("Settler")) {
+            if (selectedCity.getCountOfCitizens() < 2)
+                return "you can't build Settler in city with less than 2 citizens";
+            if (currentPlayer.getIsUnhappy() == 1)
+                return "you can't build Settler when your civilization is unhappy";
+        }
+        int cost = getUnitCost(name);
+        if(currentPlayer.getGold() < cost)return "you don't have enough gold to build this unit";
+        currentPlayer.setGold(currentPlayer.getGold() - cost);
+        createUnit(name,selectedCity);
+        return "unit is constructed";
 
     }
     public void createUnit(String name, City city){

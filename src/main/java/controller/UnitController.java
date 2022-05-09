@@ -569,7 +569,7 @@ public class UnitController extends GameController {
             if(!player.equals(currentPlayer)){
                 for (City city : player.getCities()) {
                     for (Tile tile : city.getTiles()) {
-                        if(reachableTiles.contains(tile)){
+                        if(reachableTiles.contains(tile) && !reachableCities.contains(city)){
                             reachableCities.add(city);
                     }
                 }
@@ -624,9 +624,9 @@ public class UnitController extends GameController {
             strengthAttacker += strengthAttacker*(bonusAttacker)/100;
             strengthDefender=(100-(getUnitOwner(unit).getIsUnhappy()*25))*unit1.getStrength()/100;
             strengthDefender += strengthDefender*(bonusDefender)/100;
-            unit1.setHealth(unit1.getHealth() - strengthAttacker);
+            unit1.setHealth(unit1.getHealth() - (strengthAttacker/2));
             if (militaryUnit.getRange() == -1) {
-                militaryUnit.setHealth(militaryUnit.getHealth() - strengthDefender);
+                militaryUnit.setHealth(militaryUnit.getHealth() - (strengthDefender/2));
             }
             if(!militaryUnit.getName().equals("Horseman") && !militaryUnit.getName().equals("Knight") &&!militaryUnit.getName().equals("Cavalry")
                     &&!militaryUnit.getName().equals("Lancer")&&!militaryUnit.getName().equals("Panzer")&&!militaryUnit.getName().equals("Tank")){
@@ -689,9 +689,9 @@ public class UnitController extends GameController {
                 cityStrength += unit.getStrength()*5/4;
             }
         }
-        city.setHealth(city.getHealth()-strength);
+        city.setHealth(city.getHealth()-(strength/2));
         if(militaryUnit.getRange()==-1){
-            militaryUnit.setHealth(militaryUnit.getHealth()-cityStrength);
+            militaryUnit.setHealth(militaryUnit.getHealth()-(cityStrength/3));
         }else {
             if(city.getHealth()<1)city.setHealth(1);
         }
@@ -706,6 +706,7 @@ public class UnitController extends GameController {
                 currentPlayer.setGold(currentPlayer.getGold()+4);
                 return "dominated";
             }else {
+                if(city.getHealth()<0) city.setHealth(1);
                 currentPlayer.getUnits().remove(militaryUnit);
                 return "your unit died!";
             }

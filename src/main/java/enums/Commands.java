@@ -20,21 +20,21 @@ public enum Commands {
     SELECT_NONCOMBAT_UNIT("select noncombat unit (?<x>\\d+) (?<y>\\d+)"),
     MOVE_UNIT("unit move to (?<x>\\d+) (?<y>\\d+)"),
     SELECT_CITY("select city (?<x>\\d+) (?<y>\\d+)"),
-    UNIT_BUILD("unit build (?<name>\\.+)"),
-    UNIT_REMOVE("unit remove (?<name>\\.+)"),
+    UNIT_BUILD("unit build (?<name>.+)"),
+    UNIT_REMOVE("unit remove (?<name>.+)"),
     ADD_CITIZEN_TO_TILE("add citizen to tile (?<x>\\d+) (?<y>\\d+)"),
     REMOVE_CITIZEN_FROM_TILE("remove citizen from tile (?<x>\\d+) (?<y>\\d+)"),
-    CHEAT_GOLD("cheat increase –gold (?<amount>\\d+)"),
-    CHEAT_TURN("cheat increase –turn (?<amount>\\d+)"),
-    CHEAT_HAPPINESS("cheat increase –happiness (?<amount>\\d+)"),
+    CHEAT_GOLD("cheat increase –?-gold (?<amount>\\d+)"),
+    CHEAT_TURN("cheat increase –?-turn (?<amount>\\d+)"),
+    CHEAT_HAPPINESS("cheat increase –?-happiness (?<amount>\\d+)"),
     CHEAT_UNIT_FULL_HEALTH("cheat increase units health"),
     CHEAT_CITY_FULL_HEALTH("cheat increase cities health"),
-    CHEAT_INCREASE_CITIZEN("cheat -city (?<id>\\d+) increase -citizen (?<amount>\\d+)"),
+    CHEAT_INCREASE_CITIZEN("cheat -?-city (?<id>\\d+) increase -citizen (?<amount>\\d+)"),
     CHEAT_BUILD_ROAD("cheat build road (?<x>\\d+) (?<y>\\d+)"),
-    CHEAT_INCREASE_MOVEMENT("cheat increase -movement (?<amount>\\d+)"),
+    CHEAT_INCREASE_MOVEMENT("cheat increase -?-movement (?<amount>\\d+)"),
     CHEAT_CREATE_CITY("cheat create city (?<x>\\d+) (?<y>\\d+)"),
     CHEAT_FINISH_STUDY("cheat finish current study"),
-    CHEAT_BUILD_UNIT("cheat -city (?<id>\\d+) build -unit (?<name>\\.+)");
+    CHEAT_BUILD_UNIT("cheat -?-city (?<id>\\d+) build -?-unit (?<name>.+)");
     private String regex;
 
     Commands(String regex) {

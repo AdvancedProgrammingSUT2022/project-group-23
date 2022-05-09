@@ -130,6 +130,7 @@ public class GameView {
                 }
             }
             else if(input.equals("unit repair tile")) System.out.println(unitController.healTile());
+            else if(input.equals("unit loot tile")) System.out.println(unitController.lootTile());
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
             else if(input.equals("unit delete")) System.out.println(unitController.deleteSelectedUnit());
             else if(input.equals("unit sleep")) System.out.println(unitController.sleep());
@@ -262,7 +263,7 @@ public class GameView {
     private void showUnitsInfo(ArrayList<Unit> units){
         System.out.println("number of units : " + units.size());
         for(int i=0;i<units.size();i++){
-            System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves());
+            System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves()+" health: "+units.get(i).getHealth());
         }
     }
     private void militaryOverview(ArrayList<Unit> units){
@@ -279,7 +280,7 @@ public class GameView {
 
     private void showCitiesInfo(ArrayList<City> cities){
         for(City city : cities){
-            System.out.println("city id : " + city.getId() + " - capital: (" + city.getCapital().getX() + "," + city.getCapital().getY() + ") number of citizens: "+city.getCountOfCitizens()+" number of tiles: "+city.getTiles().size());
+            System.out.println("city id : " + city.getId() + " - capital: (" + city.getCapital().getX() + "," + city.getCapital().getY() + ") number of citizens: "+city.getCountOfCitizens()+" number of tiles: "+city.getTiles().size()+" remaining health: "+city.getHealth());
             System.out.println("city output for each turn - gold : " + city.gold() + " - food : " + city.totalFood() + " - production : " + city.production());
             System.out.println("number of unemployed citizens : " + (city.getCountOfCitizens() - city.getTilesWithCitizen().size()));
             System.out.println("tile coordinates : ");

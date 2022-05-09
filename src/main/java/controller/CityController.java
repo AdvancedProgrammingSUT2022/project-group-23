@@ -274,7 +274,7 @@ public class CityController extends GameController{
             return "you already have attacked with this city";
         }
         MilitaryUnit militaryUnit = (MilitaryUnit) unit;
-        militaryUnit.setHealth(militaryUnit.getHealth()-selectedCity.strength());
+        militaryUnit.setHealth(militaryUnit.getHealth()-(selectedCity.strength()/3));
         selectedCity.setCanAttack(false);
         if(militaryUnit.getHealth()<=0){
             for (User player : players) {

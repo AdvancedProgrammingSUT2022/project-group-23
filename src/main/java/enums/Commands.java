@@ -34,7 +34,8 @@ public enum Commands {
     CHEAT_INCREASE_MOVEMENT("cheat increase -?-movement (?<amount>\\d+)"),
     CHEAT_CREATE_CITY("cheat create city (?<x>\\d+) (?<y>\\d+)"),
     CHEAT_FINISH_STUDY("cheat finish current study"),
-    CHEAT_BUILD_UNIT("cheat -?-city (?<id>\\d+) build -?-unit (?<name>.+)");
+    CHEAT_BUILD_UNIT("cheat -?-city (?<id>\\d+) build -?-unit (?<name>.+)"),
+    WHICH_NUMBER("\\d+");
     private String regex;
 
     Commands(String regex) {

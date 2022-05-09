@@ -325,6 +325,10 @@ public class GameView {
         }
         String tileNumber = scanner.nextLine();
         if(tileNumber.equals("exit"))return;
+        if((Commands.getCommandMatcher(tileNumber,Commands.WHICH_NUMBER))==null) {
+            System.out.println("invalid command");
+            return;
+        }
         if(Integer.parseInt(tileNumber) > possibleTiles.size() || Integer.parseInt(tileNumber) < 1){
             System.out.println("invalid number");
         }
@@ -392,6 +396,10 @@ public class GameView {
         }
         String whichTechnology=scanner.nextLine();
         if(!whichTechnology.equals("exit")){
+            if((Commands.getCommandMatcher(whichTechnology,Commands.WHICH_NUMBER))==null) {
+                System.out.println("invalid command");
+                return;
+            }
             if(Integer.parseInt(whichTechnology) > readyTechnologies.size() || Integer.parseInt(whichTechnology) < 1){
                 System.out.println("invalid number");
             }
@@ -422,6 +430,10 @@ public class GameView {
         }
         String whichProduction=scanner.nextLine();
         if(!whichProduction.equals("exit")){
+            if((Commands.getCommandMatcher(whichProduction,Commands.WHICH_NUMBER))==null) {
+                System.out.println("invalid command");
+                return;
+            }
             if(Integer.parseInt(whichProduction) > units.size() || Integer.parseInt(whichProduction) < 1){
                 System.out.println("invalid number");
                 return;
@@ -467,10 +479,18 @@ public class GameView {
                     if (reachableUnits.size() > 0) {
                         System.out.println("units that you can reach to attack:");
                         for (int i = 0; i < reachableUnits.size(); i++) {
-                            System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ")");
+                            System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ") health: "+reachableUnits.get(i).getHealth());
                         }
                         String whichUnit = scanner.nextLine();
                         if (!whichUnit.equals("exit")) {
+                            if((Commands.getCommandMatcher(whichUnit,Commands.WHICH_NUMBER))==null) {
+                                System.out.println("invalid command");
+                                return;
+                            }
+                            if(Integer.parseInt(whichUnit) > reachableUnits.size() || Integer.parseInt(whichUnit) < 1){
+                                System.out.println("invalid number");
+                                return;
+                            }
                             System.out.println(unitController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit) - 1)));
                         }
                     } else {
@@ -495,10 +515,18 @@ public class GameView {
                     if (reachableCities.size() > 0) {
                         System.out.println("cities that you can reach to attack:");
                         for (int i = 0; i < reachableCities.size(); i++) {
-                            System.out.println((i + 1) + "- health:" + reachableCities.get(i).getHealth());
+                            System.out.println((i + 1) + "- id: "+reachableCities.get(i).getId()+" health:" + reachableCities.get(i).getHealth());
                         }
                         String whichCity = scanner.nextLine();
                         if (!whichCity.equals("exit")) {
+                            if((Commands.getCommandMatcher(whichCity,Commands.WHICH_NUMBER))==null) {
+                                System.out.println("invalid command");
+                                return;
+                            }
+                            if(Integer.parseInt(whichCity) > reachableCities.size() || Integer.parseInt(whichCity) < 1){
+                                System.out.println("invalid number");
+                                return;
+                            }
                             String output = unitController.attackCity(reachableCities.get(Integer.parseInt(whichCity) - 1));
                             if (!output.equals("dominated")) {
                                 System.out.println(output);
@@ -533,10 +561,18 @@ public class GameView {
             if (reachableUnits.size() > 0) {
                 System.out.println("units that you can reach to attack:");
                 for (int i = 0; i < reachableUnits.size(); i++) {
-                    System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ")");
+                    System.out.println((i + 1) + "- name: " + reachableUnits.get(i).getName() + " location: (" + reachableUnits.get(i).getX() + "," + reachableUnits.get(i).getY() + ") health: "+reachableUnits.get(i).getHealth());
                 }
                 String whichUnit = scanner.nextLine();
                 if (!whichUnit.equals("exit")) {
+                    if((Commands.getCommandMatcher(whichUnit,Commands.WHICH_NUMBER))==null) {
+                        System.out.println("invalid command");
+                        return;
+                    }
+                    if(Integer.parseInt(whichUnit) > reachableUnits.size() || Integer.parseInt(whichUnit) < 1){
+                        System.out.println("invalid number");
+                        return;
+                    }
                     System.out.println(cityController.attackUnit(reachableUnits.get(Integer.parseInt(whichUnit) - 1)));
                 }
             } else {

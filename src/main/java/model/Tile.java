@@ -13,6 +13,7 @@ public class Tile {
     private ArrayList<Integer> rivers;
     private Improvement improvement;
     private HashMap<Integer,String> visibility;
+    private HashMap<Integer,ArrayList<String>> oldInfo;
     private boolean isRoad;
     private boolean hasLooted;
     private Improvement lootedImprovement;
@@ -23,6 +24,7 @@ public class Tile {
         this.y=y;
         this.rivers = new ArrayList<>();
         this.visibility = new HashMap<>();
+        this.oldInfo = new HashMap<>();
     }
 
     public int getX () {
@@ -77,6 +79,14 @@ public class Tile {
         this.visibility.put(userId, visibility);
     }
 
+
+    public ArrayList<String> getOldInfoForUser(int userId) {
+        return oldInfo.get(userId);
+    }
+
+    public void setOldInfoForUser (ArrayList<String> info, int userId) {
+        this.oldInfo.put(userId, info);
+    }
 
     public int getMovementCost(){
         int movementCost = 0;

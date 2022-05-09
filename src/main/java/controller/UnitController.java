@@ -55,6 +55,7 @@ public class UnitController extends GameController {
             }
             unit.setRemainingMoves(unit.getRemainingMoves() - tiles[path.get(0) / mapWidth][path.get(0) % mapWidth].getMovementCost());
             if(isRiver(unit.getX(), unit.getY(), path.get(0) / mapWidth, path.get(0) % mapWidth)) unit.setRemainingMoves(0);
+            if(isZoneOfControl(unit.getX(), unit.getY()) && isZoneOfControl(path.get(0) / mapWidth, path.get(0) % mapWidth)) unit.setRemainingMoves(0);
             unit.setX(path.get(0) / mapWidth);
             unit.setY(path.get(0) % mapWidth);
             path.remove(0);
@@ -63,6 +64,20 @@ public class UnitController extends GameController {
         unit.setMoves(path);
         checkVisibility();
         return "ok";
+    }
+    public boolean isZoneOfControl(int x, int y){
+        for(User user : players){
+            if(user.equals(currentPlayer))continue;
+            for(Unit unit : user.getUnits()){
+                if(unit instanceof MilitaryUnit){
+                    Graph graph = createGraph();
+                    for(Tile tile : graph.getTilesAtDistance(coordinatesToNumber(unit.getX(), unit.getY()), 1)){
+                        if(tile.getX() == x && tile.getY() == y)return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
     public boolean isRiver(int x1, int y1, int x2, int y2){
         //return false;
@@ -103,6 +118,24 @@ public class UnitController extends GameController {
             ArrayList<Tile> viewableTiles = cityController.possibleTilesForPurchase(city);
             for(Tile tile : viewableTiles){
                 tile.setVisibilityForUser("visible", turn);
+            }
+        }
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                if(tiles[i][j].getVisibilityForUser(turn).equals("visible")) {
+                    ArrayList<String> infos = new ArrayList<>();
+                    City city = cityController.getCityAtCoordinate(i, j);
+                    if(city == null)infos.add("nl");
+                    else {
+                        if(city.getCapital().getX() != i || city.getCapital().getY() != j)
+                            infos.add("bg:" + cityController.getCityAtCoordinate(i, j).getId());
+                        else infos.add("cp:" + cityController.getCityAtCoordinate(i, j).getId());
+                    }
+                    StringBuilder terrainFeatureName = new StringBuilder(tiles[i][j].getTerrain().getName().substring(0,3) + "-");
+                    if(tiles[i][j].getFeature() != null) terrainFeatureName.append(tiles[i][j].getFeature().getName().substring(0,3));
+                    infos.add(String.valueOf(terrainFeatureName));
+                    tiles[i][j].setOldInfoForUser(infos, turn);
+                }
             }
         }
     }

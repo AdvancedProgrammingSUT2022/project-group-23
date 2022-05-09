@@ -91,7 +91,7 @@ public class CivilizationController extends GameController{
         unitController.checkVisibility();
         selectedCity=null;
         selectedUnit=null;
-        return "it's " + currentPlayer.getUsername() + " turn";
+        return "it's " + currentPlayer.getNickname() + " turn";
     }
 
     public ArrayList<Unit> showUnitsInfo()

@@ -28,6 +28,7 @@ public class MainMenu {
             if((matcher = Commands.getCommandMatcher(input, Commands.ENTER_MENU)) != null){
                 String menuName = matcher.group("menuName");
                 if(menuName.toLowerCase().matches("(profile)|(profile menu)")){
+                    System.out.println("entered profile menu");
                     ProfileMenu.getInstance().run(scanner);
                 }
             }else if(input.startsWith("play game")){

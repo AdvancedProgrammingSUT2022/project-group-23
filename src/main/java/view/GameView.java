@@ -153,7 +153,10 @@ public class GameView {
             else if(input.equals("show research panel")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
             else if(input.equals("show demographic panel"))demographicPanel();
             else if(input.equals("purchase tile"))purchaseTile(scanner);
-            else if(input.equals("menu exit"))break;
+            else if(input.equals("menu exit")){
+                System.out.println("exited game");
+                break;
+            }
             else System.out.println("invalid command");
         }
     }
@@ -187,13 +190,16 @@ public class GameView {
 
                 StringBuilder unitsName = new StringBuilder("");
                 if(unitController.getTileNonCombatUnit(i, j) != null)
-                    unitsName.append(unitController.getTileNonCombatUnit(i, j).getName().substring(0, 3)).append("-");
-                if(unitController.getTileCombatUnit(i, j) != null)unitsName.append(unitController.getTileCombatUnit(i, j).getName().substring(0,3));
+                    unitsName.append(unitController.getTileNonCombatUnit(i, j).getName(), 0, 3).append("-");
+                if(unitController.getTileCombatUnit(i, j) != null)unitsName.append(unitController.getTileCombatUnit(i, j).getName(), 0, 3);
                 infos.add(String.valueOf(unitsName));
 
                 String background = ANSI_CYAN_BACKGROUND;
                 if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("visible"))background = ANSI_YELLOW_BACKGROUND;
-                else if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))background = ANSI_BLUE_BACKGROUND;
+                else if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed")){
+                    background = ANSI_BLUE_BACKGROUND;
+                    infos = tiles[i][j].getOldInfoForUser(civilizationController.getTurn());
+                }
                 else infos.clear();
 
                 addHexagonal(printableMap, i, j, background, tiles[i][j].getRivers(),infos);

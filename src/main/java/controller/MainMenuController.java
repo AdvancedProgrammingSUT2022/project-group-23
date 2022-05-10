@@ -27,8 +27,7 @@ public class MainMenuController {
     public boolean hasUser(String username){
         for(User user : User.getUsers()){
             if(user.getUsername().equals(username))
-                return true;
-        }
+                return true;}
         return false;
     }
 }

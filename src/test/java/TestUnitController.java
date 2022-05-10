@@ -19,6 +19,27 @@ public class TestUnitController extends GameController {
 
 
     @Test
+    public void testFoundCity(){
+        players=new ArrayList<>();
+        User user=new User("omid","123","omid123");
+        players.add(user);
+        SettlerUnit unit=new SettlerUnit(9,9);
+        CivilizationController civilizationController=new CivilizationController(players);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
+        currentPlayer.getUnits().add(unit);
+        for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
+            currentPlayerUnit.setState("no");
+        }
+        unitController.selectUnit(9,9,false);
+        unitController.foundCity();
+        City isCity=cityController.getCityAtCoordinate(9,9);
+        assertEquals(isCity.getHealth(),20);
+        unitController.getConstructableUnits();
+    }
+
+
+    @Test
     public void testBuildRoad(){
         players=new ArrayList<>();
         User user=new User("omid","123","omid123");
@@ -207,15 +228,21 @@ public class TestUnitController extends GameController {
         unit1.setY(9);
         currentPlayer.getUnits().add(unit);
         user1.getUnits().add(unit1);
+        assertTrue(unitController.isZoneOfControl(9,9));
         unit1.setState("fortify");
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");
         }
-        GameController.setSelectedUnit(unit);
+        unitController.selectUnit(9,9,true);
         assertEquals(unitController.reachableUnits().get(0),unit1);
         String output=unitController.attackUnit(unit1);
-        assertEquals(output,"you killed the unit");
-        assertEquals(unit.getHealth(),6);
+        assertEquals(output,"you have attacked the unit, but you and the unit are still alive!");
+        assertEquals(unit.getHealth(),8);
+        for(int i=0;i<2;i++){
+            unit.setRemainingMoves(5);
+            unitController.attackUnit(unit1);
+        }
+        unitController.deleteSelectedUnit();
     }
 
     @Test
@@ -243,8 +270,71 @@ public class TestUnitController extends GameController {
         GameController.setSelectedUnit(unit);
         assertEquals(unitController.reachableCities().get(0),cityController.getCityAtCoordinate(8,7));
         String output=unitController.attackCity(cityController.getCityAtCoordinate(8,7));
-        assertEquals(output,"your unit died!");
-        assertEquals(cityController.getCityAtCoordinate(8,7).getHealth(),10);
+        assertEquals(output,"you attacked the city, but you are alive and the city is still ok!");
+        assertEquals(cityController.getCityAtCoordinate(8,7).getHealth(),15);
+        for(int i=0;i<1;i++){
+            unit.setRemainingMoves(5);
+            unitController.attackCity(cityController.getCityAtCoordinate(8,7));
+        }
+    }
+
+    @Test
+    public void testUnitActions(){
+        players=new ArrayList<>();
+        User user=new User("omid","123","omid123");
+        players.add(user);
+        CivilizationController civilizationController=new CivilizationController(players);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
+        MilitaryUnit unit=new MilitaryUnit("Catapult", 100, "Siege", 2, 4, 14, 2, "Mathematics", "Iron");
+        unit.setX(9);
+        unit.setY(9);
+        currentPlayer=user;
+        currentPlayer.getUnits().add(unit);
+        unitController.selectUnit(9,9,true);
+        unitController.alert();
+        assertEquals(unit.getState(),"alert");
+        unitController.isTurnPossible();
+        unitController.sleep();
+        assertEquals(unit.getState(),"sleep");
+        unitController.wake();
+        assertEquals(unit.getState(),"ready");
+        unitController.fortify();
+        assertEquals(unit.getState(),"fortify");
+        SettlerUnit unit1=new SettlerUnit(9,9);
+        currentPlayer.getUnits().add(unit1);
+        unitController.selectUnit(9,9,false);
+        unitController.foundCity();
+        unitController.selectUnit(9,9,true);
+        unitController.garrison();
+        assertEquals(unit.getState(),"garrison");
+        unitController.rangeSetup();
+        assertEquals(unit.getState(),"range setup");
+    }
+
+    @Test
+    public void testTwoUnitsInOneTile(){
+        players=new ArrayList<>();
+        User user=new User("omid","123","omid123");
+        players.add(user);
+        CivilizationController civilizationController=new CivilizationController(players);
+        CityController cityController= civilizationController.getCityController();
+        UnitController unitController=civilizationController.getUnitController();
+        MilitaryUnit unit=new MilitaryUnit("Warrior", 40, "Melee", 2, 6, -1, -1, null, null);
+        unit.setX(9);
+        unit.setY(9);
+        MilitaryUnit unit1=new MilitaryUnit("Archer", 70, "Archery", 2, 4, 6, 2, "Archery", null);
+        unit1.setX(9);
+        unit1.setY(9);
+        user.getUnits().add(unit);
+        user.getUnits().add(unit1);
+        assertTrue(unitController.hasTwoUnitsInSameTile(tiles[9][9]));
+        user.getUnits().remove(unit1);
+        WorkerUnit unit2=new WorkerUnit(9,9);
+        user.getUnits().add(unit2);
+        WorkerUnit unit3=new WorkerUnit(9,9);
+        user.getUnits().add(unit3);
+        assertTrue(unitController.hasTwoUnitsInSameTile(tiles[9][9]));
     }
 
     @After

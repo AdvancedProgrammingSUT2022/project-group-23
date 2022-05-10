@@ -7,8 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TestMainMenuController {
 
@@ -28,6 +27,7 @@ public class TestMainMenuController {
     {
         RegisterController registerController=RegisterController.getInstance();
         MainMenuController mainMenuController=MainMenuController.getInstance();
+        assertFalse(mainMenuController.hasUser("omid"));
         registerController.addUser("omid","omid123","123");
         registerController.login("omid","123");
         assertTrue(mainMenuController.hasUser("omid"));

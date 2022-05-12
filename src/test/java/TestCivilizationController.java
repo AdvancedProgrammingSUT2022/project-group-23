@@ -33,8 +33,10 @@ public class TestCivilizationController extends GameController {
         for (Unit unit : user.getUnits()) {
             unit.setState("na");
         }
+        user.setCurrentStudy(TechnologyDatabase.getTechnologies().get(0));
+        user.getWaitedTechnologies().put(TechnologyDatabase.getTechnologies().get(0).getName(),0);
         output=civilizationController.nextTurn();
-        assertEquals(output,"it's omid1 turn");
+        assertEquals(output,"it's omid1231 turn");
     }
 
     @Test
@@ -56,6 +58,8 @@ public class TestCivilizationController extends GameController {
         civilizationController.getMapWidth();
         civilizationController.showCurrentStudy();
         civilizationController.getTiles();
+        civilizationController.getTurn();
+        GameController.getSelectedCity();
     }
 
     @After

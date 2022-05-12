@@ -82,7 +82,11 @@ public class TestCityController extends GameController {
         cityController.selectCity(8,7);
         assertTrue(cityController.reachableUnits().contains(unit));
         output=cityController.attackUnit(unit);
-        assertEquals(output,"you killed the unit!");
+        assertEquals(output,"you attacked the unit, but its still alive!");
+        for(int i=0;i<4;i++){
+            selectedCity.setCanAttack(true);
+            cityController.attackUnit(unit);
+        }
         assertFalse(user1.getUnits().contains(unit));
     }
 
@@ -106,6 +110,18 @@ public class TestCityController extends GameController {
                 assertTrue(true);
             }
         }
+        currentPlayer.setGold(0);
+        output=cityController.purchaseUnitWithGold("Scout");
+        assertEquals(output,"you don't have enough gold to build this unit");
+        currentPlayer.setGold(100);
+        output=cityController.purchaseUnitWithGold("Scout");
+        assertEquals(output,"unit is constructed");
+        output=cityController.purchaseUnitWithGold("Settler");
+        assertEquals(output,"you can't build Settler in city with less than 2 citizens");
+        selectedCity.setCountOfCitizens(5);
+        currentPlayer.setIsUnhappy(1);
+        output=cityController.purchaseUnitWithGold("Settler");
+        assertEquals(output,"you can't build Settler when your civilization is unhappy");
     }
 
     @After

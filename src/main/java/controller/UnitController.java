@@ -355,6 +355,7 @@ public class UnitController extends GameController {
             }
             currentPlayer.setProcessingTiles(map);
         }
+        currentPlayer.setGold(currentPlayer.getGold()-currentPlayer.getUnits().size()/2);
         for(Unit unit : currentPlayer.getUnits()) unit.setRemainingMoves(unit.getMovement());
         return "ok";
     }

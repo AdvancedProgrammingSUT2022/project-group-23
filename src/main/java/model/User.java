@@ -29,6 +29,8 @@ public class User {
     private HashMap<Tile,Improvement> improvingTiles;
     private ArrayList<Tile> eliminatingFeatures;
 
+    private ArrayList<String> notifications;
+
     public User(String username,String password,String nickname)
     {
         this.username=username;
@@ -158,6 +160,7 @@ public class User {
         workingWorkers = new HashMap<>();
         improvingTiles = new HashMap<>();
         eliminatingFeatures = new ArrayList<>();
+        notifications = new ArrayList<>();
         updateUsersInfo();
     }
 
@@ -170,6 +173,14 @@ public class User {
         } catch (IOException e) {
             System.out.println("ERROR");
         }
+    }
+
+    public ArrayList<String> getNotifications() {
+        return notifications;
+    }
+
+    public void addNotification(String notification){
+        notifications.add(notification);
     }
 
     public void setScore (int score) {

@@ -194,7 +194,10 @@ public class UnitController extends GameController {
         if(!(selectedUnit instanceof SettlerUnit))return "unit is not Settler";
         if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
         String message = cityController.createCity(selectedUnit.getX(), selectedUnit.getY());
-        if(message.equals("city founded"))deleteSelectedUnit();
+        if(message.equals("city founded")){
+            deleteSelectedUnit();
+            currentPlayer.addNotification("you found a city  at : (" + selectedUnit.getX() + "," + selectedUnit.getY() + ")");
+        }
         return message;
 
     }
@@ -352,19 +355,19 @@ public class UnitController extends GameController {
         return "ok";
     }
 
-    public String buildRoad(){
+    public String buildRoad(String name){
         if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof WorkerUnit))return "unit is not Worker";
         WorkerUnit unit = (WorkerUnit) selectedUnit;
         for (Technology technology : currentPlayer.getTechnologies()) {
-            if(technology.getName().equals("Wheel")){
+            if((name.equals("Road") && technology.getName().equals("Wheel")) || (name.equals("Railroad") && technology.getName().equals("Railroad"))){
                 if(tiles[unit.getX()][unit.getY()].getTerrain().getMovementCost()!=-1 ||
                         (tiles[unit.getX()][unit.getY()].getFeature()!=null && tiles[unit.getX()][unit.getY()].getFeature().getMovementCost()!=-1)){
                     if(unit.getRemainingMoves()==0 || unit.getState().equals("working")){
                         return "this worker can't build right now!";
                     }
                     if(tiles[unit.getX()][unit.getY()].isRoad()){
-                        return "this tile is already a road";
+                        return "this tile already has a " + name;
                     }
                     cancelActions();
                     unit.setState("working");
@@ -380,12 +383,12 @@ public class UnitController extends GameController {
                         processingRoads.put(tiles[unit.getX()][unit.getY()],3);
                         roadWorkers.put(tiles[unit.getX()][unit.getY()],unit);
                     }
-                    return "starting to build a road!";
+                    return "starting to build a " + name + "!";
                 }
-                return "you can't build a road on this tile!";
+                return "you can't build a " + name +" on this tile!";
             }
         }
-        return "you don't have the right technology to build road";
+        return "you don't have the right technology to build " + name;
     }
 
     public String improveTile(Improvement improvement){

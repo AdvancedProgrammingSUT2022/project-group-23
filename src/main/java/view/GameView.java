@@ -71,22 +71,31 @@ public class GameView {
                 System.out.println(unitController.selectUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")), false));
             else if((matcher = Commands.getCommandMatcher(input, Commands.SELECT_CITY)) != null)
                 System.out.println(cityController.selectCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
-            else if((matcher = Commands.getCommandMatcher(input, Commands.MOVE_UNIT)) != null)
+            else if((matcher = Commands.getCommandMatcher(input, Commands.MOVE_UNIT)) != null){
                 System.out.println(unitController.moveSelectedUnit(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
+                drawMap();
+            }
             else if((matcher = Commands.getCommandMatcher(input, Commands.ADD_CITIZEN_TO_TILE)) != null)
-                System.out.println(cityController.putCitizenToWork(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
+                System.out.println(cityController.putCitizenToWork(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y"))));
             else if((matcher = Commands.getCommandMatcher(input, Commands.REMOVE_CITIZEN_FROM_TILE)) != null)
                 System.out.println(cityController.removeCitizen(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y"))));
-            else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_BUILD)) != null)
+            else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_BUILD)) != null) {
                 unitBuild(matcher.group("name"));
-            else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null)
+                drawMap();
+            }
+            else if((matcher = Commands.getCommandMatcher(input, Commands.UNIT_REMOVE)) != null) {
                 unitRemove(matcher.group("name"));
+                drawMap();
+            }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_GOLD)) != null)
                 civilizationController.getCurrentPlayer().setGold(civilizationController.getCurrentPlayer().getGold()+Integer.parseInt(matcher.group("amount")));
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_TURN)) != null){
+                String message = "";
                 for(int i=0;i<Integer.parseInt(matcher.group("amount"));i++){
-                    civilizationController.nextTurn();
+                    message = civilizationController.nextTurn();
                 }
+                System.out.println(message);
+                drawMap();
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_HAPPINESS)) != null)
                 civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness()+Integer.parseInt(matcher.group("amount")));
@@ -108,15 +117,19 @@ public class GameView {
                    }
                 }
             }
-            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null)
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null) {
                 civilizationController.getTiles()[Integer.parseInt(matcher.group("x"))][Integer.parseInt(matcher.group("y"))].setRoad(true);
+                drawMap();
+            }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null){
                 for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
                     unit.setRemainingMoves(unit.getRemainingMoves()+Integer.parseInt(matcher.group("amount")));
                 }
             }
-            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CREATE_CITY)) != null)
-                cityController.createCity(Integer.parseInt(matcher.group("x")),Integer.parseInt(matcher.group("y")));
+            else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CREATE_CITY)) != null) {
+                cityController.createCity(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
+                drawMap();
+            }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_FINISH_STUDY)) != null){
                 civilizationController.getCurrentPlayer().addTechnology(civilizationController.getCurrentPlayer().getCurrentStudy());
                 civilizationController.getCurrentPlayer().getWaitedTechnologies().remove(civilizationController.getCurrentPlayer().getCurrentStudy().getName());
@@ -128,6 +141,7 @@ public class GameView {
                         cityController.createUnit(matcher.group("name"),city);
                     }
                 }
+                drawMap();
             }
             else if(input.equals("unit repair tile")) System.out.println(unitController.healTile());
             else if(input.equals("unit loot tile")) System.out.println(unitController.lootTile());
@@ -140,16 +154,32 @@ public class GameView {
             else if(input.equals("unit garrison")) System.out.println(unitController.garrison());
             else if(input.equals("unit range attack setup")) System.out.println(unitController.rangeSetup());
             else if(input.equals("unit cancel action")) System.out.println(unitController.cancelActions());
-            else if(input.equals("next turn")) System.out.println(civilizationController.nextTurn());
+            else if(input.equals("next turn")) {
+                System.out.println(civilizationController.nextTurn());
+                drawMap();
+            }
             else if(input.equals("menu show-current")) System.out.println("Game Menu");
-            else if(input.equals("attack unit by unit")) attackUnit(scanner);
-            else if(input.equals("attack city")) attackCity(scanner);
-            else if(input.equals("attack unit by city")) attackUnitFromCity(scanner);
+            else if(input.equals("attack unit by unit")) {
+                attackUnit(scanner);
+                drawMap();
+            }
+            else if(input.equals("attack city")) {
+                attackCity(scanner);
+                drawMap();
+            }
+            else if(input.equals("attack unit by city")) {
+                attackUnitFromCity(scanner);
+                drawMap();
+            }
             else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("production menu")) chooseProductionMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("show units panel")) showUnitsInfo(civilizationController.showUnitsInfo());
             else if(input.equals("show military overview")) militaryOverview(civilizationController.showUnitsInfo());
             else if(input.equals("show cities panel")) showCitiesInfo(civilizationController.showCitiesInfo());
+            else if(input.equals("show notifications history")) {
+                if(civilizationController.getCurrentPlayer().getNotifications().isEmpty()) System.out.println("you don't have any notifications");
+                else System.out.println(civilizationController.getCurrentPlayer().getNotifications());
+            }
             else if(input.equals("show research panel")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
             else if(input.equals("show demographic panel"))demographicPanel();
             else if(input.equals("purchase tile"))purchaseTile(scanner);
@@ -180,13 +210,18 @@ public class GameView {
                 StringBuilder terrainFeatureName = new StringBuilder(tiles[i][j].getTerrain().getName().substring(0,3) + "-");
                 if(tiles[i][j].getFeature() != null) terrainFeatureName.append(tiles[i][j].getFeature().getName().substring(0,3));
                 infos.add(String.valueOf(terrainFeatureName));
+
+                StringBuilder resourceImprovementName = new StringBuilder("");
                 if(tiles[i][j].getResource() != null){
-                    if(tiles[i][j].getResource().getNeededTechnology() == null)infos.add(tiles[i][j].getResource().getName());
+                    if(tiles[i][j].getResource().getNeededTechnology() == null)resourceImprovementName.append(tiles[i][j].getResource().getName(), 0, 3).append("-");
                     else {
                         if(civilizationController.getCurrentPlayer().hasTechnology(tiles[i][j].getResource().getNeededTechnology()))
-                            infos.add(tiles[i][j].getResource().getName());
+                            resourceImprovementName.append(tiles[i][j].getResource().getName(), 0, 3).append("-");
                     }
                 }
+                if(tiles[i][j].getImprovement() != null)resourceImprovementName.append(tiles[i][j].getImprovement().getName(), 0 , 3).append("-");
+                if(tiles[i][j].isRoad())resourceImprovementName.append("rd");
+                infos.add(String.valueOf(resourceImprovementName));
 
                 StringBuilder unitsName = new StringBuilder("");
                 if(unitController.getTileNonCombatUnit(i, j) != null)
@@ -269,7 +304,7 @@ public class GameView {
     private void showUnitsInfo(ArrayList<Unit> units){
         System.out.println("number of units : " + units.size());
         for(int i=0;i<units.size();i++){
-            System.out.println((i+1)+"- name: "+units.get(i).getName()+" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves()+" health: "+units.get(i).getHealth());
+            System.out.println((i+1)+"- name: "+units.get(i).getName()+ " state: "+ units.get(i).getState() +" current tile: ("+units.get(i).getX()+","+units.get(i).getY()+") remaining move: "+units.get(i).getRemainingMoves()+" health: "+units.get(i).getHealth());
         }
     }
     private void militaryOverview(ArrayList<Unit> units){
@@ -453,7 +488,8 @@ public class GameView {
     public void unitBuild(String name){
         if(unitController.getSelectedUnit()==null) System.out.println("you need to choose a worker unit first!");
         if(!(unitController.getSelectedUnit() instanceof WorkerUnit)) System.out.println("this unit is not a worker unit");
-        if (name.equals("Road")) System.out.println(unitController.buildRoad());
+        if (name.equals("Road")) System.out.println(unitController.buildRoad("Road"));
+        if (name.equals("Railroad")) System.out.println(unitController.buildRoad("Railroad"));
         else{
             for(Improvement improvement : ImprovementDatabase.getImprovements()){
                 if(improvement.getName().equals(name)){
@@ -466,7 +502,7 @@ public class GameView {
     }
 
     public void unitRemove(String name){
-        if (name.equals("Road")) System.out.println(unitController.eliminateRoad());
+        if (name.equals("Road")  || name.equals("RailRoad")) System.out.println(unitController.eliminateRoad());
         else System.out.println(unitController.eliminateFeature());
     }
 

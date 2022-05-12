@@ -139,6 +139,7 @@ public class CityController extends GameController{
             waitedUnits.put(city.getConstructingUnit(),waitedUnits.get(city.getConstructingUnit()) - city.production());
             if(waitedUnits.get(city.getConstructingUnit()) <= 0){
                 createUnit(city.getConstructingUnit(), city);
+                currentPlayer.addNotification("you have constructed unit : " + city.getConstructingUnit());
                 waitedUnits.remove(city.getConstructingUnit());
                 city.setConstructingUnit(null);
             }
@@ -189,6 +190,8 @@ public class CityController extends GameController{
         if(currentPlayer.getGold() < cost)return "you don't have enough gold to build this unit";
         currentPlayer.setGold(currentPlayer.getGold() - cost);
         createUnit(name,selectedCity);
+
+        currentPlayer.addNotification("you have constructed unit : " + name);
         return "unit is constructed";
 
     }

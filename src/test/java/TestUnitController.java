@@ -32,9 +32,9 @@ public class TestUnitController extends GameController {
             currentPlayerUnit.setState("no");
         }
         GameController.setSelectedUnit(unit);
-        assertEquals(unitController.buildRoad(),"you don't have the right technology to build road");
+        assertEquals(unitController.buildRoad("Road"),"you don't have the right technology to build Road");
         currentPlayer.addTechnology(TechnologyDatabase.getTechnologies().get(8));
-        unitController.buildRoad();
+        unitController.buildRoad("Road");
         for(int i=0;i<3;i++){
             unitController.isTurnPossible();
         }
@@ -56,7 +56,7 @@ public class TestUnitController extends GameController {
         }
         GameController.setSelectedUnit(unit);
         currentPlayer.addTechnology(TechnologyDatabase.getTechnologies().get(8));
-        unitController.buildRoad();
+        unitController.buildRoad("Road");
         for(int i=0;i<3;i++){
             unitController.isTurnPossible();
         }

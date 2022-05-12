@@ -325,19 +325,23 @@ public class UnitController extends GameController {
                 if(processingTiles.get(entry.getKey())==0){
                     if(improvingTiles.get(entry.getKey())==null){
                         if(eliminatingFeatures.contains(entry.getKey())){
+                            currentPlayer.addNotification("you eliminate this feature: "+entry.getKey().getFeature().getName()+" on this tile: ("+entry.getKey().getX()+","+entry.getKey().getY()+")");
                             eliminatingFeatures.remove(entry.getKey());
                             entry.getKey().setFeature(null);
                             workingWorkers.get(entry.getKey()).setState("ready");
                             workingWorkers.remove(entry.getKey());
                         }else {
+                            currentPlayer.addNotification("you build a road on this tile: ("+entry.getKey().getX()+","+entry.getKey().getY()+")");
                             currentPlayer.setGold(currentPlayer.getGold()-2);
                             entry.getKey().setRoad(true);
                             workingWorkers.get(entry.getKey()).setState("ready");
                             workingWorkers.remove(entry.getKey());
                         }
                     }else {
+                        currentPlayer.addNotification("you build this improvement: "+improvingTiles.get(entry.getKey()).getName()+" on this tile: ("+entry.getKey().getX()+","+entry.getKey().getY()+")");
                         entry.getKey().setImprovement(improvingTiles.get(entry.getKey()));
                         if(eliminatingFeatures.contains(entry.getKey())){
+                            currentPlayer.addNotification("you eliminate this feature: "+entry.getKey().getFeature().getName()+" on this tile: ("+entry.getKey().getX()+","+entry.getKey().getY()+")");
                             entry.getKey().setFeature(null);
                             eliminatingFeatures.remove(entry.getKey());
                         }

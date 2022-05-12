@@ -195,8 +195,8 @@ public class UnitController extends GameController {
         if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
         String message = cityController.createCity(selectedUnit.getX(), selectedUnit.getY());
         if(message.equals("city founded")){
-            deleteSelectedUnit();
             currentPlayer.addNotification("you found a city  at : (" + selectedUnit.getX() + "," + selectedUnit.getY() + ")");
+            deleteSelectedUnit();
         }
         return message;
 

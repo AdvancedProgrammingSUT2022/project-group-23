@@ -48,6 +48,9 @@ public class TestUnitController extends GameController {
         CivilizationController civilizationController=new CivilizationController(players);
         CityController cityController= civilizationController.getCityController();
         UnitController unitController=civilizationController.getUnitController();
+        tiles[9][9].setTerrain(new Terrain("Hill" , 0, 0, 2, 2, 25,35));
+        tiles[9][9].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
+
         currentPlayer.getUnits().add(unit);
         for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
             currentPlayerUnit.setState("no");

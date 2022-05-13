@@ -53,4 +53,5 @@ public class GameController {
     public static City getSelectedCity() {
         return selectedCity;
     }
+
 }

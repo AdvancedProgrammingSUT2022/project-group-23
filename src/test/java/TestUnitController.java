@@ -245,7 +245,7 @@ public class TestUnitController extends GameController {
             unit.setRemainingMoves(5);
             unitController.attackUnit(unit1);
         }
-        unitController.deleteSelectedUnit();
+        unitController.deleteSelectedUnit(false);
     }
 
     @Test

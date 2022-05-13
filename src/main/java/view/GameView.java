@@ -146,7 +146,10 @@ public class GameView {
             else if(input.equals("unit repair tile")) System.out.println(unitController.healTile());
             else if(input.equals("unit loot tile")) System.out.println(unitController.lootTile());
             else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
-            else if(input.equals("unit delete")) System.out.println(unitController.deleteSelectedUnit());
+            else if(input.equals("unit delete")){
+                System.out.println(unitController.deleteSelectedUnit(true));
+                drawMap();
+            }
             else if(input.equals("unit sleep")) System.out.println(unitController.sleep());
             else if(input.equals("unit wake")) System.out.println(unitController.wake());
             else if(input.equals("unit fortify")) System.out.println(unitController.fortify());
@@ -292,7 +295,7 @@ public class GameView {
 
     }
     private void printMap(String[][] printableMap){
-        for (int i = 0; i < 65; i++) {
+        for (int i = 0; i < civilizationController.getMapHeight() * 7; i++) {
             for (int j = 0; j < 100; j++) {
                 if (printableMap[i][j] != null) System.out.print(printableMap[i][j]);
                 else System.out.print(" ");

@@ -54,7 +54,10 @@ public class UnitController extends GameController {
                 break;
             }
             unit.setRemainingMoves(unit.getRemainingMoves() - tiles[path.get(0) / mapWidth][path.get(0) % mapWidth].getMovementCost());
-            if(isRiver(unit.getX(), unit.getY(), path.get(0) / mapWidth, path.get(0) % mapWidth)) unit.setRemainingMoves(0);
+            if(isRiver(unit.getX(), unit.getY(), path.get(0) / mapWidth, path.get(0) % mapWidth)){
+                if(!currentPlayer.hasTechnology("Construction") ||
+                        !tiles[unit.getX()][unit.getY()].isRoad() || !tiles[path.get(0) / mapWidth][path.get(0) / mapHeight].isRoad())unit.setRemainingMoves(0);
+            }
             if(isZoneOfControl(unit.getX(), unit.getY()) && isZoneOfControl(path.get(0) / mapWidth, path.get(0) % mapWidth)) unit.setRemainingMoves(0);
             unit.setX(path.get(0) / mapWidth);
             unit.setY(path.get(0) % mapWidth);
@@ -196,16 +199,17 @@ public class UnitController extends GameController {
         String message = cityController.createCity(selectedUnit.getX(), selectedUnit.getY());
         if(message.equals("city founded")){
             currentPlayer.addNotification("you found a city  at : (" + selectedUnit.getX() + "," + selectedUnit.getY() + ")");
-            deleteSelectedUnit();
+            deleteSelectedUnit(false);
         }
         return message;
 
     }
 
-    public String deleteSelectedUnit(){
+    public String deleteSelectedUnit(boolean giveGold){
         if(selectedUnit == null)return "no unit selected";
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         currentPlayer.removeUnit(selectedUnit);
+        if(giveGold)currentPlayer.setGold(currentPlayer.getGold() + selectedUnit.getCost() / 10);
         selectedUnit = null;
         checkVisibility();
         return "unit deleted successfully";

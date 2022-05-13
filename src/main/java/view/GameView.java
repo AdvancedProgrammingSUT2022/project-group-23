@@ -57,7 +57,7 @@ public class GameView {
         civilizationController = new CivilizationController(players);
         unitController = civilizationController.getUnitController();
         cityController = civilizationController.getCityController();
-
+        drawMap();
     }
     public void run(Scanner scanner){
         String input;
@@ -145,7 +145,10 @@ public class GameView {
             }
             else if(input.equals("unit repair tile")) System.out.println(unitController.healTile());
             else if(input.equals("unit loot tile")) System.out.println(unitController.lootTile());
-            else if(input.equals("unit found city")) System.out.println(unitController.foundCity());
+            else if(input.equals("unit found city")){
+                System.out.println(unitController.foundCity());
+                drawMap();
+            }
             else if(input.equals("unit delete")){
                 System.out.println(unitController.deleteSelectedUnit(true));
                 drawMap();
@@ -175,6 +178,7 @@ public class GameView {
                 drawMap();
             }
             else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
+            else if(input.equals("show technologies panel"))showTechnologyInfo();
             else if(input.equals("production menu")) chooseProductionMenu(civilizationController.getCurrentPlayer(),scanner);
             else if(input.equals("show units panel")) showUnitsInfo(civilizationController.showUnitsInfo());
             else if(input.equals("show military overview")) militaryOverview(civilizationController.showUnitsInfo());
@@ -194,6 +198,15 @@ public class GameView {
         }
     }
 
+    private void showTechnologyInfo() {
+        if(civilizationController.getCurrentPlayer().getTechnologies().isEmpty()) {
+            System.out.println("you have no technologies");
+            return;
+        }
+        for(Technology technology : civilizationController.getCurrentPlayer().getTechnologies()){
+            System.out.println(technology.getName());
+        }
+    }
 
     private void drawMap(){
         String[][] printableMap = new String[100][100];
@@ -327,6 +340,8 @@ public class GameView {
             System.out.println("city id : " + city.getId() + " - capital: (" + city.getCapital().getX() + "," + city.getCapital().getY() + ") number of citizens: "+city.getCountOfCitizens()+" number of tiles: "+city.getTiles().size()+" remaining health: "+city.getHealth());
             System.out.println("city output for each turn - gold : " + city.gold() + " - food : " + city.totalFood() + " - production : " + city.production());
             System.out.println("number of unemployed citizens : " + (city.getCountOfCitizens() - city.getTilesWithCitizen().size()));
+            if(city.getConstructingUnit() != null)
+                System.out.println("current production : " + city.getConstructingUnit());
             System.out.println("tile coordinates : ");
             for(Tile tile : city.getTiles()){
                 System.out.print("(" + tile.getX() + " , " + tile.getY() + ") - ");
@@ -430,10 +445,14 @@ public class GameView {
             if(civilizationController.getCurrentPlayer().totalCup()==0){
                 turnsLeft=-1;
             }else {
-                if (readyTechnologies.get(i).getCost() % civilizationController.getCurrentPlayer().totalCup() == 0) {
-                    turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup();
+                int cost = readyTechnologies.get(i).getCost();
+                if(civilizationController.getCurrentPlayer().getWaitedTechnologies().containsKey(readyTechnologies.get(i).getName())){
+                    cost = civilizationController.getCurrentPlayer().getWaitedTechnologies().get(readyTechnologies.get(i).getName());
+                }
+                if (cost % civilizationController.getCurrentPlayer().totalCup() == 0) {
+                    turnsLeft = cost / civilizationController.getCurrentPlayer().totalCup();
                 } else {
-                    turnsLeft = readyTechnologies.get(i).getCost() / civilizationController.getCurrentPlayer().totalCup() + 1;
+                    turnsLeft = cost / civilizationController.getCurrentPlayer().totalCup() + 1;
                 }
             }
             System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
@@ -464,10 +483,14 @@ public class GameView {
             if(GameController.getSelectedCity().production()==0){
                 turnsLeft=-1;
             }else {
-                if (units.get(i).getCost() % GameController.getSelectedCity().production() == 0) {
-                    turnsLeft =  units.get(i).getCost() / GameController.getSelectedCity().production();
+                int cost = units.get(i).getCost();
+                if(GameController.getSelectedCity().getWaitedUnits().containsKey(units.get(i).getName())){
+                    cost = GameController.getSelectedCity().getWaitedUnits().get(units.get(i).getName());
+                }
+                if (cost % GameController.getSelectedCity().production() == 0) {
+                    turnsLeft =  cost / GameController.getSelectedCity().production();
                 } else {
-                    turnsLeft = units.get(i).getCost() / GameController.getSelectedCity().production() + 1;
+                    turnsLeft = cost / GameController.getSelectedCity().production() + 1;
                 }
             }
             System.out.println((i+1)+"- "+units.get(i).getName()+", it needs "+turnsLeft+" turns to be built");

@@ -54,10 +54,10 @@ public class MainMenu {
                 }
             }
             else if(input.equals("menu show-current")) System.out.println("Main Menu");
-            else if(input.equals("user logout")){
+            else if(input.equals("user logout") || input.equals("menu exit")){
                 System.out.println(mainMenuController.logout());
                 break;
-            } else if(input.equals("menu exit"))break;
+            }
             else System.out.println("invalid command");
         }
     }

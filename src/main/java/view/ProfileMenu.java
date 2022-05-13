@@ -37,7 +37,10 @@ public class ProfileMenu {
                 System.out.println(profileController.changeUsername(matcher.group("username")));
             }
             else if(input.equals("menu show-current")) System.out.println("Profile Menu");
-            else if(input.equals("menu exit"))break;
+            else if(input.equals("menu exit")){
+                System.out.println("exited profile menu into main menu");
+                break;
+            }
             else System.out.println("invalid command");
         }
     }

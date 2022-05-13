@@ -11,10 +11,10 @@ public enum Commands {
     LOGIN_USER("user login --?(?<option1>\\w+) (?<value1>\\w+) " +
             "--?(?<option2>\\w+) (?<value2>\\w+)"),
     ENTER_MENU("menu enter (?<menuName>.+)"),
-    CHANGE_NICKNAME("profile change --?nickname (?<nickname>\\w+)"),
+    CHANGE_NICKNAME("profile change --?(nickname|n) (?<nickname>\\w+)"),
 
-    CHANGE_USERNAME("profile change --?username (?<username>\\w+)"),
-    CHANGE_PASSWORD("profile change --?password --?(?<option1>\\w+) (?<value1>\\w+) " +
+    CHANGE_USERNAME("profile change --?(username|u) (?<username>\\w+)"),
+    CHANGE_PASSWORD("profile change --?(password|p) --?(?<option1>\\w+) (?<value1>\\w+) " +
             "--?(?<option2>\\w+) (?<value2>\\w+)"),
     SELECT_COMBAT_UNIT("select combat unit (?<x>\\d+) (?<y>\\d+)"),
     SELECT_NONCOMBAT_UNIT("select noncombat unit (?<x>\\d+) (?<y>\\d+)"),

@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CityController extends GameController{
-
-
+    private static CityController currentCityController;
+    public CityController(){
+        currentCityController = this;
+    }
 
     public String createCity(int x, int y){
         if(getCityAtCoordinate(x, y) != null) return "this tile belongs to a city";
@@ -289,6 +291,10 @@ public class CityController extends GameController{
         }else {
             return "you attacked the unit, but its still alive!";
         }
+    }
+
+    public static CityController getCurrentCityController() {
+        return currentCityController;
     }
 }
 

@@ -9,6 +9,8 @@ import java.util.Random;
 
 public class CivilizationController extends GameController{
 
+    private static CivilizationController currentCivilizationController;
+
     private UnitController unitController;
     private CityController cityController;
 
@@ -18,6 +20,7 @@ public class CivilizationController extends GameController{
         for (User user : players) user.newGame();
         currentPlayer = players.get(0);
         initializeMap();
+        currentCivilizationController = this;
         turn = 0;
         cityController = new CityController();
         unitController = new UnitController(cityController);
@@ -143,5 +146,9 @@ public class CivilizationController extends GameController{
         if(!waitedTechnologies.containsKey(technology.getName())){
             waitedTechnologies.put(technology.getName(),technology.getCost());
         }
+    }
+
+    public static CivilizationController getCurrentCivilizationController() {
+        return currentCivilizationController;
     }
 }

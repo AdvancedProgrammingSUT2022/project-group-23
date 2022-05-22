@@ -1,6 +1,7 @@
 package view_graphic;
 
 import controller.RegisterController;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -39,6 +40,7 @@ public class LoginPage {
     @FXML
     Label passwordLabel;
     public void initialize() {
+        Platform.runLater(() -> borderPane.requestFocus());
         usernameLabel.setTextFill(Color.rgb(232,200,22));
         nicknameLabel.setTextFill(Color.rgb(232,200,22));
         passwordLabel.setTextFill(Color.rgb(232,200,22));

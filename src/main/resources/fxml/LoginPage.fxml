@@ -10,17 +10,20 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view_graphic.LoginPage"
             prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
-    <Text text="Welcome to Civilization game!" styleClass="title" layoutX="420" layoutY="170" fx:id="title"/>
+<!--    <Text text="Welcome to Civilization game!" styleClass="title" layoutX="420" layoutY="170" fx:id="title"/>-->
     <top>
-        <GridPane fx:id="grid" alignment="CENTER">
 
-        </GridPane>
+<!--        <GridPane fx:id="grid" alignment="CENTER">-->
 
+<!--        </GridPane>-->
     </top>
 
     <center>
 
         <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="vbox">
+            <HBox alignment="CENTER" styleClass="titleBox">
+                <Text text="Welcome to Civilization V!" styleClass="title" fx:id="title"/>
+            </HBox>
             <Label text="Username" fx:id="usernameLabel"/>
             <TextField fx:id="username" promptText="enter your username" />
             <Label text="Nickname" fx:id="nicknameLabel"/>

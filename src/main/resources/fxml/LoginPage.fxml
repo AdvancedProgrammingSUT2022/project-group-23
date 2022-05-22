@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.LoginPage"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+    <Text text="Welcome to Civilization game!" styleClass="title" layoutX="420" layoutY="170" fx:id="title"/>
+    <top>
+        <GridPane fx:id="grid" alignment="CENTER">
+
+        </GridPane>
+
+    </top>
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="vbox">
+            <Label text="Username" fx:id="usernameLabel"/>
+            <TextField fx:id="username" promptText="enter your username" />
+            <Label text="Nickname" fx:id="nicknameLabel"/>
+            <TextField fx:id="nickname" promptText="enter your nickname"/>
+            <Label text="Password" fx:id="passwordLabel"/>
+            <TextField fx:id="password" promptText="enter your password" onKeyTyped="#type"/>
+            <Button fx:id="loginButton" styleClass="primary-btn" text="Login" onMouseClicked="#login" />
+            <Button fx:id="registerButton" styleClass="secondary-btn" text="Register" onMouseClicked="#register"/>
+        </VBox>
+
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>

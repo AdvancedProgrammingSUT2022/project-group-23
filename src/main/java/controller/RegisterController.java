@@ -59,7 +59,4 @@ public class RegisterController {
         }
         return "Username and password didn't match!";
     }
-
-
-
 }

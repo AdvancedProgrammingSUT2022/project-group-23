@@ -1,7 +1,6 @@
 package view_graphic;
 
 import controller.MainMenuController;
-import controller.RegisterController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -17,9 +16,6 @@ public class MainMenuPage {
     private BorderPane borderPane;
     @FXML
     private Text title;
-    private Text text;
-    @FXML
-    private VBox vbox;
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
         title.setFill(Color.rgb(1, 231, 212));
@@ -29,12 +25,10 @@ public class MainMenuPage {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
-        text = new Text();
-        vbox.getChildren().add(text);
     }
 
     public void profileMenu(){
-        //TODO change scene to profilePage
+        App.changeMenu("ProfilePage");
     }
 
     public void exit(MouseEvent mouseEvent) {
@@ -52,5 +46,9 @@ public class MainMenuPage {
 
     public void chatMenu (MouseEvent mouseEvent) {
         //TODO change scene to chatMenu
+    }
+
+    public void gameMenu(){
+        //TODO change scene to gameMenu
     }
 }

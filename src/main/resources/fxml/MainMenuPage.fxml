@@ -19,7 +19,7 @@
     <center>
 
         <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="vbox">
-            <Button fx:id="gameButton" styleClass="primary-btn" text="Game Menu" />
+            <Button fx:id="gameButton" styleClass="primary-btn" text="Game Menu" onMouseClicked="#gameMenu"/>
             <Button fx:id="profileButton" styleClass="secondary-btn" text="Profile Menu"  onMouseClicked="#profileMenu"/>
             <Button fx:id="scoreButton" styleClass="secondary-btn" text="Score Menu"  onMouseClicked="#scoreMenu"/>
             <Button fx:id="chatButton" styleClass="secondary-btn" text="Chat Menu"  onMouseClicked="#chatMenu"/>

@@ -52,7 +52,6 @@ public class LoginPage {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
-
         registerButton.setDisable(true);
         loginButton.setDisable(true);
         text = new Text();
@@ -75,6 +74,11 @@ public class LoginPage {
     public void register() {
         String output = registerController.addUser(username.getText(), nickname.getText(), password.getText());
         if (output.equals("user created successfully!")) {
+            username.setText("");
+            password.setText("");
+            nickname.setText("");
+            registerButton.setDisable(true);
+            loginButton.setDisable(true);
             text.setFill(Color.GREEN);
             text.setText(output);
         } else {

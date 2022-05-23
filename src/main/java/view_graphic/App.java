@@ -11,8 +11,10 @@ import java.net.URL;
 
 public class App extends Application {
     private static Scene scene;
+    private static Stage stage;
     @Override
     public void start(Stage stage) throws Exception {
+        App.setStage(stage);
         Parent root = loadFXML("LoginPage");
         Scene scene = new Scene(root);
         App.scene = scene;
@@ -38,5 +40,13 @@ public class App extends Application {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Stage getStage () {
+        return stage;
+    }
+
+    public static void setStage (Stage stage) {
+        App.stage = stage;
     }
 }

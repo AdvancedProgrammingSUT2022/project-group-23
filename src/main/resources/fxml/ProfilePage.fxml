@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.ProfilePage"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+    <top>
+        <HBox alignment="CENTER" styleClass="titleBox">
+            <Text text="Profile" styleClass="title" fx:id="title"/>
+
+        </HBox>
+
+    </top>
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="500" fx:id="vbox">
+            <VBox alignment="CENTER"  fx:id="vbox1">
+
+            </VBox>
+            <Label text="Change Nickname" fx:id="nicknameLabel"/>
+            <TextField fx:id="nickname" promptText="enter your new nickname" onKeyTyped="#typeNickname"/>
+            <Button fx:id="nicknameButton" styleClass="primary-btn" text="Change Nickname" onMouseClicked="#changeNickname"/>
+            <Label text="Change Password" fx:id="passwordLabel"/>
+            <TextField fx:id="currentPassword" promptText="enter your current password" onKeyTyped="#typePassword"/>
+            <TextField fx:id="newPassword" promptText="enter your new password" onKeyTyped="#typePassword"/>
+            <Button fx:id="passwordButton" styleClass="primary-btn" text="Change Password" onMouseClicked="#changePassword"/>
+            <Button styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
+        </VBox>
+
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>

@@ -6,6 +6,13 @@ Button {
     -fx-background-color: none;
 }
 
+.button1 {
+    -fx-pref-width: 80;
+    -fx-pref-height: 35;
+    -fx-border-radius: 5;
+    -fx-background-color: white;
+}
+
 TextField{
     -fx-max-width: 330;
     -fx-pref-height: 35;
@@ -30,6 +37,18 @@ TextField{
     -fx-font-weight: bold;
     color: #DC143C;
 }
+
+.text1{
+    -fx-font-size: 30;
+    -fx-font-weight: bold;
+}
+
+.text2{
+    -fx-font-size: 20;
+    -fx-font-weight: none;
+    color: #DC143C;
+}
+
 .titleBox{
     -fx-padding: 90 0 0 0;
 }

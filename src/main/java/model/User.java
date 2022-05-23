@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class User {
     private String username;
@@ -28,6 +29,7 @@ public class User {
     private HashMap<Tile,WorkerUnit> workingWorkers;
     private HashMap<Tile,Improvement> improvingTiles;
     private ArrayList<Tile> eliminatingFeatures;
+    private String profilePictureURL;
 
     private ArrayList<String> notifications;
 
@@ -36,6 +38,7 @@ public class User {
         this.username=username;
         this.password=password;
         this.nickname=nickname;
+        this.profilePictureURL=getClass().getResource("/images/profilePictures/"+new Random().nextInt(6)+".png").toString();
         users.add(this);
         User.updateUsersInfo();
     }
@@ -282,6 +285,14 @@ public class User {
 
     public ArrayList<Tile> getEliminatingFeatures () {
         return eliminatingFeatures;
+    }
+
+    public String getProfilePictureURL () {
+        return profilePictureURL;
+    }
+
+    public void setProfilePictureURL (String profilePictureURL) {
+        this.profilePictureURL = profilePictureURL;
     }
 }
 

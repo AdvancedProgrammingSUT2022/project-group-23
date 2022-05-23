@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.MainMenuPage"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+    <top>
+        <HBox alignment="CENTER" styleClass="titleBox">
+            <Text text="Main Menu" styleClass="title" fx:id="title"/>
+        </HBox>
+    </top>
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="vbox">
+            <Button fx:id="gameButton" styleClass="primary-btn" text="Game Menu" />
+            <Button fx:id="profileButton" styleClass="secondary-btn" text="Profile Menu"  onMouseClicked="#profileMenu"/>
+            <Button fx:id="scoreButton" styleClass="secondary-btn" text="Score Menu"  onMouseClicked="#scoreMenu"/>
+            <Button fx:id="chatButton" styleClass="secondary-btn" text="Chat Menu"  onMouseClicked="#chatMenu"/>
+            <Button fx:id="logoutButton" styleClass="secondary-btn" text="Logout" onMouseClicked="#logout"/>
+            <Button styleClass="secondary-btn" text="Exit" onMouseClicked="#exit"/>
+        </VBox>
+
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>

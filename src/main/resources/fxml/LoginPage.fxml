@@ -10,10 +10,9 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view_graphic.LoginPage"
             prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
-<!--    <Text text="Welcome to Civilization V!" styleClass="title" layoutX="420" layoutY="170" fx:id="title"/>-->
     <top>
         <HBox alignment="CENTER" styleClass="titleBox">
-            <Text text="Welcome to Civilization V!" styleClass="title" fx:id="title"/>
+            <Text text="Welcome to Civilization VI!" styleClass="title" fx:id="title"/>
         </HBox>
 <!--        <GridPane fx:id="grid" alignment="CENTER">-->
 

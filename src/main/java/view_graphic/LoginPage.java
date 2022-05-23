@@ -86,7 +86,7 @@ public class LoginPage {
     public void login(MouseEvent mouseEvent) throws Exception {
         String output = registerController.login(username.getText(), password.getText());
         if (output.equals("user logged in successfully!")) {
-            //TODO enter main menu
+            App.changeMenu("MainMenuPage");
         } else {
                 text.setFill(Color.RED);
                 text.setText(output);

@@ -23,6 +23,7 @@ public class ChatPage {
     }
 
     public void enterPublicChatMenu(MouseEvent mouseEvent) {
+        App.changeMenu("PublicChatPage");
     }
 
     public void enterPrivateChatMenu(MouseEvent mouseEvent) {

@@ -52,7 +52,17 @@ TextField{
 .titleBox{
     -fx-padding: 90 0 0 0;
 }
+.chatTextArea {
+    -fx-max-height: 100;
+    -fx-pref-height: 100;
+}
 
-
-
-
+.sendButton {
+    -fx-max-height: 100;
+    -fx-border-color: #726060;
+    -fx-background-color: #7a84cb;
+}
+.sendMessageBox{
+    -fx-background-color: #768176;
+    -fx-background-radius: 10;
+}

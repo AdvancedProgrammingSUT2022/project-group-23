@@ -12,6 +12,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import model.User;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class ScorePage {
 
     @FXML
@@ -28,9 +31,10 @@ public class ScorePage {
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
         title.setFill(Color.rgb(1, 231, 212));
-        User.sortUsers();
+        ArrayList<User> sortedUsers = User.getUsers();
+        Collections.sort(sortedUsers);
         int i=1;
-        for (User user : User.getUsers()) {
+        for (User user : sortedUsers) {
             HBox hBox=new HBox();
             Circle circle=new Circle(20);
             ImagePattern imagePattern=new ImagePattern(new Image(user.getProfilePictureURL()));

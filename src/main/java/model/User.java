@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
-public class User{
+public class User implements Comparable<User>{
     private String username;
     private String password;
     private String nickname;
@@ -253,32 +253,6 @@ public class User{
         return readyTechnology;
     }
 
-    public static void sortUsers(){
-        for(int i=0;i<users.size();i++){
-            for(int j=i;j<users.size();j++){
-                if(users.get(j).getScore()>users.get(i).getScore()){
-                    User backup=users.get(i);
-                    users.set(i,users.get(j));
-                    users.set(j,backup);
-                }
-                else if(users.get(j).getScore()==users.get(i).getScore()){
-                    if(users.get(i).getLastWin().compareTo(users.get(j).getLastWin()) > 0){
-                        User backup=users.get(i);
-                        users.set(i,users.get(j));
-                        users.set(j,backup);
-                    }
-                    else if(users.get(j).getLastWin().equals(users.get(i).getLastWin())){
-                        if(users.get(i).getNickname().compareTo(users.get(j).getNickname()) > 0){
-                            User backup=users.get(i);
-                            users.set(i,users.get(j));
-                            users.set(j,backup);
-                        }
-                    }
-                }
-            }
-        }
-        updateUsersInfo();
-    }
 
     public int getIsUnhappy () {
         return isUnhappy;
@@ -342,6 +316,17 @@ public class User{
 
     public void setLastOnline (String lastOnline) {
         this.lastOnline = lastOnline;
+    }
+
+    @Override
+    public int compareTo(User o) {
+        if(this.getScore() > o.getScore()) return 1;
+        else if(this.getScore() < o.getScore())return -1;
+        else if(this.getLastWin().compareTo(o.lastWin) > 0)return 1;
+        else if(this.getLastWin().compareTo(o.lastWin) < 0)return -1;
+        else if(this.getNickname().compareTo(o.getNickname()) > 0)return 1;
+        else if(this.getNickname().compareTo(o.getNickname()) < 0)return -1;
+        return 0;
     }
 }
 

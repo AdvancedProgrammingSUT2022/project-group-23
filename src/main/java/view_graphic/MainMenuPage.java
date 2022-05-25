@@ -41,7 +41,7 @@ public class MainMenuPage {
     }
 
     public void scoreMenu (MouseEvent mouseEvent) {
-        //TODO change scene to scoreMenu
+        App.changeMenu("ScorePage");
     }
 
     public void chatMenu (MouseEvent mouseEvent) {

@@ -15,7 +15,7 @@
 
     <top>
         <HBox alignment="CENTER" styleClass="titleBox">
-            <Text text="Chat Menu" styleClass="title"/>
+            <Text text="Chat Menu" styleClass="title" fx:id="title"/>
         </HBox>
     </top>
 

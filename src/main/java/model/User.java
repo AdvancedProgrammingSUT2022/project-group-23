@@ -5,11 +5,13 @@ import database.TechnologyDatabase;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
-public class User {
+public class User{
     private String username;
     private String password;
     private String nickname;
@@ -30,6 +32,8 @@ public class User {
     private HashMap<Tile,Improvement> improvingTiles;
     private ArrayList<Tile> eliminatingFeatures;
     private String profilePictureURL;
+    private String lastWin;
+    private String lastOnline;
 
     private ArrayList<String> notifications;
 
@@ -39,6 +43,8 @@ public class User {
         this.password=password;
         this.nickname=nickname;
         this.profilePictureURL=getClass().getResource("/images/profilePictures/"+new Random().nextInt(6)+".png").toString();
+        this.lastOnline="";
+        this.lastWin="";
         users.add(this);
         User.updateUsersInfo();
     }
@@ -247,6 +253,33 @@ public class User {
         return readyTechnology;
     }
 
+    public static void sortUsers(){
+        for(int i=0;i<users.size();i++){
+            for(int j=i;j<users.size();j++){
+                if(users.get(j).getScore()>users.get(i).getScore()){
+                    User backup=users.get(i);
+                    users.set(i,users.get(j));
+                    users.set(j,backup);
+                }
+                else if(users.get(j).getScore()==users.get(i).getScore()){
+                    if(users.get(i).getLastWin().compareTo(users.get(j).getLastWin()) > 0){
+                        User backup=users.get(i);
+                        users.set(i,users.get(j));
+                        users.set(j,backup);
+                    }
+                    else if(users.get(j).getLastWin().equals(users.get(i).getLastWin())){
+                        if(users.get(i).getNickname().compareTo(users.get(j).getNickname()) > 0){
+                            User backup=users.get(i);
+                            users.set(i,users.get(j));
+                            users.set(j,backup);
+                        }
+                    }
+                }
+            }
+        }
+        updateUsersInfo();
+    }
+
     public int getIsUnhappy () {
         return isUnhappy;
     }
@@ -293,6 +326,22 @@ public class User {
 
     public void setProfilePictureURL (String profilePictureURL) {
         this.profilePictureURL = profilePictureURL;
+    }
+
+    public String getLastWin () {
+        return lastWin;
+    }
+
+    public void setLastWin (String lastWin) {
+        this.lastWin = lastWin;
+    }
+
+    public String getLastOnline () {
+        return lastOnline;
+    }
+
+    public void setLastOnline (String lastOnline) {
+        this.lastOnline = lastOnline;
     }
 }
 

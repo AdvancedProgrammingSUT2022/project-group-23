@@ -46,7 +46,6 @@ TextField{
 .text2{
     -fx-font-size: 20;
     -fx-font-weight: none;
-    color: #DC143C;
 }
 
 .titleBox{
@@ -65,4 +64,15 @@ TextField{
 .sendMessageBox{
     -fx-background-color: #768176;
     -fx-background-radius: 10;
+}
+
+.score{
+    -fx-fill: #adff2f;
+    -fx-arc-width: 20;
+    -fx-arc-height: 20;
+}
+
+.scoreUserLogged{
+-fx-font-size: 30;
+    -fx-font-weight: bold;
 }

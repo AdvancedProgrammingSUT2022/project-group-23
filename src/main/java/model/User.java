@@ -328,5 +328,14 @@ public class User implements Comparable<User>{
         else if(this.getNickname().compareTo(o.getNickname()) < 0)return -1;
         return 0;
     }
+
+    public static User getUserByUsername(String username){
+        for (User user : users) {
+            if(user.getUsername().equals(username)){
+                return user;
+            }
+        }
+        return null;
+    }
 }
 

@@ -49,6 +49,6 @@ public class MainMenuPage {
     }
 
     public void gameMenu(){
-        //TODO change scene to gameMenu
+        App.changeMenu("GameMenu");
     }
 }

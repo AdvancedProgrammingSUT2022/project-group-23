@@ -73,22 +73,17 @@ public class ProfilePage {
             circle.setFill(imagePattern1);
             hbox2.getChildren().add(circle);
             int finalI = i;
-            circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle (MouseEvent mouseEvent) {
+            circle.setOnMouseClicked(mouseEvent ->{
                     currentAvatar.setFill(imagePattern1);
                     User.getUserLogged().setProfilePictureURL(getClass().getResource("/images/profilePictures/"+ finalI +".png").toExternalForm());
                     User.updateUsersInfo();
-                }
             });
         }
         Button button=new Button();
         button.setText("other...");
         button.getStyleClass().add("button1");
         hbox2.getChildren().add(button);
-        button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle (MouseEvent mouseEvent) {
+        button.setOnMouseClicked(mouseEvent-> {
                 File file=new FileChooser().showOpenDialog(App.getStage());
                 try {
                     User.getUserLogged().setProfilePictureURL(file.toURI().toURL().toExternalForm());
@@ -98,7 +93,6 @@ public class ProfilePage {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
-            }
         });
         nicknameLabel.setTextFill(Color.rgb(232, 200, 22));
         passwordLabel.setTextFill(Color.rgb(232, 200, 22));

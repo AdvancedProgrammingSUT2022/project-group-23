@@ -31,8 +31,10 @@ public class ChatPage {
     }
 
     public void enterPrivateChatMenu(MouseEvent mouseEvent) {
+        App.changeMenu("ChoosePrivateChat");
     }
 
     public void enterChatRooms(MouseEvent mouseEvent) {
+        App.changeMenu("ChooseRoomPage");
     }
 }

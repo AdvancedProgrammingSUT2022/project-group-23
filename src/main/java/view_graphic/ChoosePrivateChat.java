@@ -3,6 +3,7 @@ package view_graphic;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +21,8 @@ public class ChoosePrivateChat {
     private Text title;
     @FXML
     private VBox vbox;
+    @FXML
+    private Button selectButton;
     public static User userChatting;
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
@@ -36,8 +39,9 @@ public class ChoosePrivateChat {
             }
         }
         ComboBox<String> comboBox=new ComboBox<>(FXCollections.observableArrayList(usersUsernames));
+        comboBox.setMinWidth(100);
         vbox.getChildren().add(comboBox);
-        comboBox.setOnAction(actionEvent -> {
+        selectButton.setOnMouseClicked(mouseEvent -> {
             userChatting=User.getUserByUsername(comboBox.getValue());
             App.changeMenu("PrivateChatPage");
         });

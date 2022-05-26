@@ -22,7 +22,8 @@
             <VBox spacing="10" alignment="CENTER" fx:id="vbox">
 
             </VBox>
-            <Button  styleClass="secondary-btn" text="Create Room" onMouseClicked="#createRoom"/>
+            <Button  fx:id="selectButton" styleClass="secondary-btn" text="Add"/>
+            <Button  styleClass="primary-btn" text="Create Room" onMouseClicked="#createRoom"/>
             <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
         </VBox>
 

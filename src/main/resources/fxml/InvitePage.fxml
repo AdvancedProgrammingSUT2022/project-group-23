@@ -22,6 +22,7 @@
             <VBox spacing="10" alignment="CENTER" fx:id="vbox">
 
             </VBox>
+            <Button  fx:id="selectButton" styleClass="primary-btn" text="Select"/>
             <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
         </VBox>
 

@@ -23,7 +23,7 @@ public class CreateRoomPage {
     private VBox vbox;
     @FXML
     private Button selectButton;
-    public static ArrayList<User> usersChatting=new ArrayList<>();
+    public ArrayList<User> usersChatting = new ArrayList<>();
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
         title.setFill(Color.rgb(1, 231, 212));
@@ -43,7 +43,7 @@ public class CreateRoomPage {
         vbox.getChildren().add(comboBox);
         selectButton.setOnMouseClicked(mouseEvent -> {
             if(!usersChatting.contains(User.getUserByUsername(comboBox.getValue()))) {
-                Text text = new Text(comboBox.getValue().toString() + " added");
+                Text text = new Text(comboBox.getValue() + " added");
                 text.getStyleClass().add("text2");
                 text.setFill(Color.rgb(70, 210, 25));
                 vbox.getChildren().add(text);

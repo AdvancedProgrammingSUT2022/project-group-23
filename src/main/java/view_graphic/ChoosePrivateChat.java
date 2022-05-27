@@ -23,7 +23,6 @@ public class ChoosePrivateChat {
     private VBox vbox;
     @FXML
     private Button selectButton;
-    public static User userChatting;
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
         title.setFill(Color.rgb(1, 231, 212));
@@ -42,8 +41,9 @@ public class ChoosePrivateChat {
         comboBox.setMinWidth(100);
         vbox.getChildren().add(comboBox);
         selectButton.setOnMouseClicked(mouseEvent -> {
-            userChatting=User.getUserByUsername(comboBox.getValue());
-            App.changeMenu("PrivateChatPage");
+            ChatPage.setChatType("Private");
+            ChatPage.setChatName(comboBox.getValue());
+            App.changeMenu("ChatPage");
         });
     }
 

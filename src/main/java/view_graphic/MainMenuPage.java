@@ -45,7 +45,7 @@ public class MainMenuPage {
     }
 
     public void chatMenu (MouseEvent mouseEvent) {
-        App.changeMenu("ChatPage");
+        App.changeMenu("ChatMenuPage");
     }
 
     public void gameMenu(){

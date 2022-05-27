@@ -37,8 +37,11 @@ public class ChooseRooms {
         for(int i=0;i<rooms.size();i++){
             Button button=new Button("Room Number "+(i+1));
             button.getStyleClass().add("secondary-btn");
+            int finalI = i;
             button.setOnMouseClicked(mouseEvent -> {
-                App.changeMenu("RoomPage");
+                ChatPage.setChatType("Room");
+                ChatPage.setChatName("Room:" + finalI);
+                App.changeMenu("ChatPage");
             });
             vbox.getChildren().add(button);
         }

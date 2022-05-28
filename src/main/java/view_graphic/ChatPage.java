@@ -1,10 +1,12 @@
 package view_graphic;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,6 +34,13 @@ public class ChatPage {
     public void initialize(){
         Platform.runLater(() -> borderPane.requestFocus());
         Platform.runLater(() -> textArea.setMinWidth(borderPane.getWidth() - sendButton.getWidth()));
+        textArea.setOnKeyPressed(keyEvent -> {
+            if(keyEvent.getCode().getName().equals("Enter")) {
+                if (!keyEvent.isControlDown() && !keyEvent.isShiftDown())
+                    sendMessage(null);
+                else textArea.appendText("\n");
+            }
+        });
     }
 
     public void sendMessage(MouseEvent mouseEvent) {
@@ -43,8 +52,19 @@ public class ChatPage {
             Circle currentAvatar =new Circle(20);
             ImagePattern imagePattern=new ImagePattern(new Image(User.getUserLogged().getProfilePictureURL()));
             currentAvatar.setFill(imagePattern);
+            Button editButton = new Button("Edit");
+            Button deleteButton = new Button("Delete");
+            editButton.getStyleClass().add("editButton");
+            deleteButton.getStyleClass().add("deleteButton");
+            deleteButton.setOnMouseClicked(mouseEvent1 -> {
+                messageBox.getChildren().remove(hBox);
+            });
+            hBox.setSpacing(5);
             hBox.getChildren().add(currentAvatar);
             hBox.getChildren().add(text);
+            hBox.getChildren().add(editButton);
+            hBox.getChildren().add(deleteButton);
+            Platform.runLater(() -> hBox.setMaxWidth(hBox.getWidth()));
             messageBox.getChildren().add(hBox);
             hBox.getStyleClass().add("sendMessageBox");
             textArea.setText("");

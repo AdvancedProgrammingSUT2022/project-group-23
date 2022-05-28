@@ -61,9 +61,24 @@ TextField{
     -fx-border-color: #726060;
     -fx-background-color: #7a84cb;
 }
+.editButton {
+    -fx-min-width: 70;
+    -fx-pref-width: 70;
+    -fx-max-width: 70;
+    -fx-border-color: #5b4e4e;
+    -fx-background-color: #8f6161;
+}
+.deleteButton {
+    -fx-min-width: 70;
+    -fx-pref-width: 70;
+    -fx-max-width: 70;
+    -fx-border-color: #6b5050;
+    -fx-background-color: #c23a47;
+}
 .sendMessageBox{
-    -fx-background-color: #768176;
+    -fx-background-color: #c2c90c;
     -fx-background-radius: 10;
+    -fx-alignment: CENTER_LEFT;
 }
 
 .score{

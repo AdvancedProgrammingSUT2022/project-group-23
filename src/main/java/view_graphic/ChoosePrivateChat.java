@@ -48,6 +48,6 @@ public class ChoosePrivateChat {
     }
 
     public void back(MouseEvent mouseEvent) {
-        App.changeMenu("ChatPage");
+        App.changeMenu("ChatMenuPage");
     }
 }

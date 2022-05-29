@@ -19,7 +19,7 @@
         </ScrollPane>
     </center>
     <bottom>
-        <HBox>
+        <HBox fx:id="hbox">
             <TextArea styleClass="chatTextArea" fx:id="textArea" promptText="Write a message"/>
             <Button styleClass="sendButton" fx:id="sendButton" text="Send" onMouseClicked="#sendMessage"/>
         </HBox>

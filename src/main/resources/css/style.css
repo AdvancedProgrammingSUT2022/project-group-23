@@ -61,6 +61,16 @@ TextField{
     -fx-border-color: #726060;
     -fx-background-color: #7a84cb;
 }
+.edit {
+    -fx-max-height: 100;
+    -fx-border-color: #726060;
+    -fx-background-color: #A52A2A;
+}
+.cancel {
+    -fx-max-height: 100;
+    -fx-border-color: #726060;
+    -fx-background-color: #FFF8DC;
+}
 .editButton {
     -fx-min-width: 70;
     -fx-pref-width: 70;

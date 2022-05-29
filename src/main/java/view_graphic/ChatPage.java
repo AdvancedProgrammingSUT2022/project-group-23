@@ -16,6 +16,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import model.User;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class ChatPage {
@@ -27,12 +28,19 @@ public class ChatPage {
     private TextArea textArea;
     @FXML
     private BorderPane borderPane;
+    @FXML
+    private HBox hbox;
 
     private static String chatType;
     private static String chatName;
 
     public void initialize(){
         Platform.runLater(() -> borderPane.requestFocus());
+        borderPane.setOnKeyPressed(keyEvent -> {
+            if(keyEvent.getCode().getName().equals("Esc")){
+                App.changeMenu("ChatMenuPage");
+            }
+        });
         Platform.runLater(() -> textArea.setMinWidth(borderPane.getWidth() - sendButton.getWidth()));
         textArea.setOnKeyPressed(keyEvent -> {
             if(keyEvent.getCode().getName().equals("Enter")) {
@@ -59,9 +67,34 @@ public class ChatPage {
             deleteButton.setOnMouseClicked(mouseEvent1 -> {
                 messageBox.getChildren().remove(hBox);
             });
+            editButton.setOnMouseClicked(mouseEvent1 -> {
+                hbox.getChildren().remove(sendButton);
+                Button edit=new Button("edit");
+                edit.getStyleClass().add("edit");
+                Button cancel=new Button("cancel");
+                cancel.getStyleClass().add("cancel");
+                hbox.getChildren().add(edit);
+                hbox.getChildren().add(cancel);
+                cancel.setOnMouseClicked(mouseEvent2 -> {
+                    hbox.getChildren().remove(edit);
+                    hbox.getChildren().remove(cancel);
+                    hbox.getChildren().add(sendButton);
+                });
+                edit.setOnMouseClicked(mouseEvent2 -> {
+                    if(!textArea.getText().equals("")) {
+                        text.setText(textArea.getText());
+                        textArea.setText("");
+                        hbox.getChildren().remove(edit);
+                        hbox.getChildren().remove(cancel);
+                        hbox.getChildren().add(sendButton);
+                    }
+                });
+            });
             hBox.setSpacing(5);
             hBox.getChildren().add(currentAvatar);
+            hBox.getChildren().add(new Text(User.getUserLogged().getNickname()+":  "));
             hBox.getChildren().add(text);
+            hBox.getChildren().add(new Text(LocalTime.now().getHour()+":"+LocalTime.now().getMinute()));
             hBox.getChildren().add(editButton);
             hBox.getChildren().add(deleteButton);
             Platform.runLater(() -> hBox.setMaxWidth(hBox.getWidth()));

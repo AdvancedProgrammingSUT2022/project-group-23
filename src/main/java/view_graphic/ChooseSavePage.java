@@ -3,60 +3,47 @@ package view_graphic;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import model.User;
 
+import java.io.File;
 import java.util.ArrayList;
 
-public class GameMenuPage {
+public class ChooseSavePage {
     @FXML
     private BorderPane borderPane;
     @FXML
     private Text title;
     @FXML
-    private Button newGameButton;
+    private VBox vbox;
     @FXML
-    private Button continueButton;
-    @FXML
-    private Button inviteButton;
-    @FXML
-    private Button backButton;
-
-    public static ArrayList<User> players =new ArrayList<>();
-
+    private Button selectButton;
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
+        GameMenuPage.players = new ArrayList<>();
         title.setFill(Color.rgb(1, 231, 212));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
-        Tooltip tooltip1=new Tooltip("starting a new game");
-        newGameButton.setTooltip(tooltip1);
-        Tooltip tooltip2=new Tooltip("continuing your previous plays");
-        continueButton.setTooltip(tooltip2);
-        Tooltip tooltip3=new Tooltip("invite other players to play with you");
-        inviteButton.setTooltip(tooltip3);
-        Tooltip tooltip4=new Tooltip("go back to main menu");
-        backButton.setTooltip(tooltip4);
+        String[] fileNames=new File("src/main/resources/saves").list();
+        for (String fileName : fileNames) {
+            String name=fileName.toString().replaceAll(".json","");
+            Button save=new Button(name);
+            save.getStyleClass().add("secondary-btn");
+            vbox.getChildren().add(save);
+            save.setOnMouseClicked(mouseEvent -> {
+                //TODO start game from save
+            });
+        }
     }
 
 
     public void back(MouseEvent mouseEvent) {
-        App.changeMenu("MainMenuPage");
-    }
-
-    public void invite (MouseEvent mouseEvent) {
-        App.changeMenu("InvitePage");
-    }
-
-    public void save(){
-        App.changeMenu("ChooseSavePage");
+        App.changeMenu("GameMenu");
     }
 }

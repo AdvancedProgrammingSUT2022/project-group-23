@@ -176,7 +176,7 @@ public class User implements Comparable<User>{
     public static void updateUsersInfo()
     {
         try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\UsersInfo.json");
+            FileWriter writer=new FileWriter("src\\main\\resources\\saves\\Last Save.json");
             writer.write(new Gson().toJson(User.getUsers()));
             writer.close();
         } catch (IOException e) {

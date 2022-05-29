@@ -16,7 +16,7 @@ public class RegisterController {
     private RegisterController()
     {
         try {
-            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\UsersInfo.json")));
+            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\Last Save.json")));
             User.setUsers(new Gson().fromJson(json, new TypeToken<List<User>>(){}.getType()));
         } catch (IOException e) {
             System.out.println("ERROR");

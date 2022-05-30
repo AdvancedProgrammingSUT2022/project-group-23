@@ -42,7 +42,7 @@ public class CreateRoomPage {
         comboBox.setMinWidth(100);
         vbox.getChildren().add(comboBox);
         selectButton.setOnMouseClicked(mouseEvent -> {
-            if(!usersChatting.contains(User.getUserByUsername(comboBox.getValue()))) {
+            if(comboBox.getValue() != null && !usersChatting.contains(User.getUserByUsername(comboBox.getValue()))) {
                 Text text = new Text(comboBox.getValue() + " added");
                 text.getStyleClass().add("text2");
                 text.setFill(Color.rgb(70, 210, 25));

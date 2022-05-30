@@ -42,7 +42,7 @@ public class InvitePage {
         comboBox.setMinWidth(100);
         vbox.getChildren().add(comboBox);
         selectButton.setOnMouseClicked(mouseEvent -> {
-            if(!GameMenuPage.players.contains(User.getUserByUsername(comboBox.getValue().toString()))) {
+            if(comboBox.getValue() != null && !GameMenuPage.players.contains(User.getUserByUsername(comboBox.getValue().toString()))) {
                 Text text = new Text(comboBox.getValue().toString() + " selected");
                 text.getStyleClass().add("text2");
                 text.setFill(Color.rgb(70, 210, 25));

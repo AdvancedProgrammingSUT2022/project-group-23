@@ -41,9 +41,11 @@ public class ChoosePrivateChat {
         comboBox.setMinWidth(100);
         vbox.getChildren().add(comboBox);
         selectButton.setOnMouseClicked(mouseEvent -> {
-            ChatPage.setChatType("Private");
-            ChatPage.setChatName(comboBox.getValue());
-            App.changeMenu("ChatPage");
+            if(comboBox.getValue() != null) {
+                ChatPage.setChatType("Private");
+                ChatPage.setChatName(comboBox.getValue());
+                App.changeMenu("ChatPage");
+            }
         });
     }
 

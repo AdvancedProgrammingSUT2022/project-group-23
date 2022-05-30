@@ -26,11 +26,16 @@ public class GameMenuPage {
     private Button inviteButton;
     @FXML
     private Button backButton;
+    private Text error;
+    @FXML
+    private VBox vbox;
 
     public static ArrayList<User> players =new ArrayList<>();
 
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
+        error=new Text("you have to invite at least 1 other player from invite menu");
+        error.setFill(Color.RED);
         title.setFill(Color.rgb(1, 231, 212));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
@@ -58,5 +63,14 @@ public class GameMenuPage {
 
     public void save(){
         App.changeMenu("ChooseSavePage");
+    }
+
+    public void newGame (MouseEvent mouseEvent) {
+        if(players.size()==0){
+            if(!vbox.getChildren().contains(error))
+            vbox.getChildren().add(error);
+        }else {
+            App.changeMenu("Game");
+        }
     }
 }

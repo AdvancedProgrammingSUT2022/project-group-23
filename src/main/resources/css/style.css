@@ -101,3 +101,13 @@ TextField{
 -fx-font-size: 30;
     -fx-font-weight: bold;
 }
+
+.info{
+-fx-font-size: 30;
+    -fx-font-weight: none;
+}
+
+.tileInfo{
+    -fx-font-size: 20;
+    -fx-font-weight: none;
+}

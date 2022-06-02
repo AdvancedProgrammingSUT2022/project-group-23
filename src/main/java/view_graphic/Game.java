@@ -5,7 +5,6 @@ import controller.CivilizationController;
 import controller.UnitController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -19,7 +18,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.GraphicTile;
 import model.Tile;
-import model.User;
+import model.Unit;
 
 public class Game {
     @FXML
@@ -28,10 +27,12 @@ public class Game {
     private HBox bar;
     private GraphicTile[][] tiles;
     private double size = 100,v=Math.sqrt(3)/2.0;
-    private CivilizationController civilizationController;
+    public static CivilizationController civilizationController;
     private UnitController unitController;
     private CityController cityController;
     private VBox tileInformation;
+    private VBox unitInformation;
+    private Text nextTurnError=new Text();
 
     public void initialize(){
         Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
@@ -39,7 +40,6 @@ public class Game {
         }));
         focusTimeline.setCycleCount(-1);
         focusTimeline.play();
-        civilizationController=new CivilizationController(GameMenuPage.players);
         unitController=civilizationController.getUnitController();
         cityController=civilizationController.getCityController();
         bar.setMinHeight(70);
@@ -50,7 +50,7 @@ public class Game {
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
         bar.setSpacing(30);
-        Text userNickname=new Text(User.getUserLogged().getNickname());
+        Text userNickname=new Text(civilizationController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
         bar.getChildren().add(userNickname);
@@ -81,13 +81,23 @@ public class Game {
         scienceAmount.setY(45);
         scienceAmount.getStyleClass().add("info");
         bar.getChildren().add(scienceAmount);
+        VBox nextTurnVBox=new VBox();
         Button nextTurn=new Button("Next Turn");
         nextTurn.getStyleClass().add("primary-btn");
         nextTurn.setMaxWidth(100);
-        bar.getChildren().add(nextTurn);
-//        nextTurn.setOnMouseClicked(mouseEvent -> {
-//            System.out.println(civilizationController.nextTurn());
-//        });
+        nextTurnVBox.getChildren().add(nextTurn);
+        nextTurn.setOnMouseClicked(mouseEvent -> {
+            String output=civilizationController.nextTurn();
+            if(output.equals("ok")) App.changeMenu("Game");
+            else {
+                nextTurnError.setText(output);
+                nextTurnError.setFill(Color.rgb(50,100,200));
+                if(!nextTurnVBox.getChildren().contains(nextTurnError)){
+                    nextTurnVBox.getChildren().add(nextTurnError);
+                }
+            }
+        });
+        bar.getChildren().add(nextTurnVBox);
         tileMap.setOnKeyPressed(this::move);
         tiles=new GraphicTile[civilizationController.getMapHeight()][civilizationController.getMapWidth()];
         Tile[][] modelTiles= civilizationController.getTiles();
@@ -175,6 +185,83 @@ public class Game {
                             }
                         }else tileInformation=null;
                     });
+                }
+                if(tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")) {
+                    if (unitController.getTileNonCombatUnit((int) i, (int) j) != null) {
+                        Unit unit=unitController.getTileNonCombatUnit((int) i, (int) j);
+                        tile.addUnit(unit);
+                        VBox unitInfo=new VBox();
+                        unitInfo.setBackground(new Background(backgroundImage1));
+                        HBox unitHBox=new HBox();
+                        Rectangle unitPicture=new Rectangle();
+                        unitPicture.setHeight(100);
+                        unitPicture.setWidth(100);
+                        ImagePattern unitImage=new ImagePattern(new Image(getClass().getResource("/images/unitIcon/"+unit.getName()+".png").toExternalForm()));
+                        unitPicture.setFill(unitImage);
+                        unitHBox.getChildren().add(unitPicture);
+                        Text unitName=new Text("  "+unit.getName());
+                        unitName.setFill(Color.WHITE);
+                        unitName.getStyleClass().add("tileInfo");
+                        unitHBox.getChildren().add(unitName);
+                        unitInfo.getChildren().add(unitHBox);
+                        Rectangle graphicUnit = tile.getGraphicUnits().get(unit);
+                        graphicUnit.setOnMouseClicked(mouseEvent -> {
+                            if(tileInformation!=null){
+                                tileMap.getChildren().remove(tileInformation);
+                                tileInformation=null;
+                            }
+                            if (unitInformation != null) {
+                                tileMap.getChildren().remove(unitInformation);
+                            }
+                            if(!(unitInformation!=null&&unitInformation.equals(unitInfo))) {
+                                tileMap.getChildren().add(unitInfo);
+                                unitInformation = unitInfo;
+                            }else {
+                                unitInformation=null;
+                            }
+                            if(graphicUnit.getOpacity()==1){
+                                graphicUnit.setOpacity(0.5);
+                            }else graphicUnit.setOpacity(1);
+                        });
+                    }
+                    if (unitController.getTileCombatUnit((int) i, (int) j) != null) {
+                        tile.addUnit(unitController.getTileCombatUnit((int) i, (int) j));
+                        Unit unit=unitController.getTileCombatUnit((int) i, (int) j);
+                        tile.addUnit(unit);
+                        VBox unitInfo=new VBox();
+                        unitInfo.setBackground(new Background(backgroundImage1));
+                        HBox unitHBox=new HBox();
+                        Rectangle unitPicture=new Rectangle();
+                        unitPicture.setHeight(100);
+                        unitPicture.setWidth(100);
+                        ImagePattern unitImage=new ImagePattern(new Image(getClass().getResource("/images/unitIcon/"+unit.getName()+".png").toExternalForm()));
+                        unitPicture.setFill(unitImage);
+                        unitHBox.getChildren().add(unitPicture);
+                        Text unitName=new Text("  "+unit.getName());
+                        unitName.setFill(Color.WHITE);
+                        unitName.getStyleClass().add("tileInfo");
+                        unitHBox.getChildren().add(unitName);
+                        unitInfo.getChildren().add(unitHBox);
+                        Rectangle graphicUnit = tile.getGraphicUnits().get(unit);
+                        graphicUnit.setOnMouseClicked(mouseEvent -> {
+                            if(tileInformation!=null){
+                                tileMap.getChildren().remove(tileInformation);
+                                tileInformation=null;
+                            }
+                            if (unitInformation != null) {
+                                tileMap.getChildren().remove(unitInformation);
+                            }
+                            if(!(unitInformation!=null&&unitInformation.equals(unitInfo))) {
+                                tileMap.getChildren().add(unitInfo);
+                                unitInformation = unitInfo;
+                            }else {
+                                unitInformation=null;
+                            }
+                            if(graphicUnit.getOpacity()==1){
+                                graphicUnit.setOpacity(0.5);
+                            }else graphicUnit.setOpacity(1);
+                        });
+                    }
                 }
                 dy = dy==y ? dy+size*v : y;
             }

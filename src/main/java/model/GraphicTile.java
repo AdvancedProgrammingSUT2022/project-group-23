@@ -1,15 +1,23 @@
 package model;
 
 import controller.CivilizationController;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GraphicTile extends Polygon {
     private Text location;
     private Polygon feature;
     private Tile tile;
     private AnchorPane tileMap;
+    private HashMap<Unit,Rectangle> graphicUnits=new HashMap<>();
     private CivilizationController civilizationController;
     public GraphicTile(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4, double x5, double y5, double x6, double y6, String location, Tile tile, AnchorPane tileMap,CivilizationController civilizationController){
         this.tile=tile;
@@ -55,10 +63,17 @@ public class GraphicTile extends Polygon {
         this.getFeature().getPoints().set(11,(this.getFeature().getPoints().get(11)+dy));
         this.getLocation().setX(this.getLocation().getX()+dx);
         this.getLocation().setY(this.getLocation().getY()+dy);
+        for(Map.Entry<Unit,Rectangle> entry : this.graphicUnits.entrySet()){
+            this.graphicUnits.get(entry.getKey()).setX(this.graphicUnits.get(entry.getKey()).getX()+dx);
+            this.graphicUnits.get(entry.getKey()).setY(this.graphicUnits.get(entry.getKey()).getY()+dy);
+        }
         if(this.getPoints().get(1)<0){
             tileMap.getChildren().remove(this);
             tileMap.getChildren().remove(this.location);
             tileMap.getChildren().remove(this.feature);
+            for(Map.Entry<Unit,Rectangle> entry : this.graphicUnits.entrySet()){
+                tileMap.getChildren().remove(this.graphicUnits.get(entry.getKey()));
+            }
         }
         else if(!tileMap.getChildren().contains(this)){
             tileMap.getChildren().add(this);
@@ -66,10 +81,34 @@ public class GraphicTile extends Polygon {
             if(this.tile.getFeature()!=null && !this.tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
                 tileMap.getChildren().add(this.feature);
             }
+            for(Map.Entry<Unit,Rectangle> entry : this.graphicUnits.entrySet()){
+                tileMap.getChildren().add(this.graphicUnits.get(entry.getKey()));
+            }
         }
     }
 
     public Tile getTile () {
         return tile;
+    }
+
+    public void addUnit(Unit unit){
+        Rectangle rectangle=new Rectangle();
+        rectangle.setHeight(100);
+        rectangle.setWidth(100);
+        rectangle.setX(this.getPoints().get(0)+graphicUnits.size()*40);
+        rectangle.setY(this.getPoints().get(5));
+        ImagePattern unitImage=new ImagePattern(new Image(getClass().getResource("/images/unit/"+unit.getName()+".png").toExternalForm()));
+        rectangle.setFill(unitImage);
+        graphicUnits.put(unit,rectangle);
+        tileMap.getChildren().add(rectangle);
+    }
+
+    public void deleteUnit(Unit unit){
+        tileMap.getChildren().remove(graphicUnits.get(unit));
+        graphicUnits.remove(unit);
+    }
+
+    public HashMap<Unit, Rectangle> getGraphicUnits () {
+        return graphicUnits;
     }
 }

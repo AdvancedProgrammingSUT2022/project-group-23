@@ -26,6 +26,7 @@ public class InvitePage {
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
         GameMenuPage.players=new ArrayList<>();
+        GameMenuPage.players.add(User.getUserLogged());
         title.setFill(Color.rgb(1, 231, 212));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),

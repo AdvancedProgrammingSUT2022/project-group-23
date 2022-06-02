@@ -1,5 +1,6 @@
 package view_graphic;
 
+import controller.CivilizationController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -31,7 +32,6 @@ public class GameMenuPage {
     private VBox vbox;
 
     public static ArrayList<User> players =new ArrayList<>();
-
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
         error=new Text("you have to invite at least 1 other player from invite menu");
@@ -66,10 +66,11 @@ public class GameMenuPage {
     }
 
     public void newGame (MouseEvent mouseEvent) {
-        if(players.isEmpty()){
+        if(players.size()<2){
             if(!vbox.getChildren().contains(error))
                 vbox.getChildren().add(error);
         }else {
+            Game.civilizationController=new CivilizationController(players);
             App.changeMenu("Game");
         }
     }

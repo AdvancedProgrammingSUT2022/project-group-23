@@ -66,9 +66,9 @@ public class GameMenuPage {
     }
 
     public void newGame (MouseEvent mouseEvent) {
-        if(players.size()==0){
+        if(players.isEmpty()){
             if(!vbox.getChildren().contains(error))
-            vbox.getChildren().add(error);
+                vbox.getChildren().add(error);
         }else {
             App.changeMenu("Game");
         }

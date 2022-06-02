@@ -3,6 +3,8 @@ package view_graphic;
 import controller.CityController;
 import controller.CivilizationController;
 import controller.UnitController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,6 +16,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import model.GraphicTile;
 import model.Tile;
 import model.User;
@@ -31,7 +34,11 @@ public class Game {
     private VBox tileInformation;
 
     public void initialize(){
-        Platform.runLater(()->tileMap.requestFocus());
+        Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
+            tileMap.requestFocus();
+        }));
+        focusTimeline.setCycleCount(-1);
+        focusTimeline.play();
         civilizationController=new CivilizationController(GameMenuPage.players);
         unitController=civilizationController.getUnitController();
         cityController=civilizationController.getCityController();
@@ -80,7 +87,6 @@ public class Game {
         bar.getChildren().add(nextTurn);
 //        nextTurn.setOnMouseClicked(mouseEvent -> {
 //            System.out.println(civilizationController.nextTurn());
-//            tileMap.requestFocus();
 //        });
         tileMap.setOnKeyPressed(this::move);
         tiles=new GraphicTile[civilizationController.getMapHeight()][civilizationController.getMapWidth()];

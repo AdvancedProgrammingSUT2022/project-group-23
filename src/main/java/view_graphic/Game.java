@@ -2,38 +2,27 @@ package view_graphic;
 
 import controller.CityController;
 import controller.CivilizationController;
-import controller.GameController;
 import controller.UnitController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
-import javafx.stage.Window;
 import model.GraphicTile;
 import model.Tile;
-import view.GameView;
-
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import model.User;
 
 public class Game {
     @FXML
     private AnchorPane tileMap;
     @FXML
-    private HBox hbox;
+    private HBox bar;
     private GraphicTile[][] tiles;
     private double size = 100,v=Math.sqrt(3)/2.0;
     private CivilizationController civilizationController;
@@ -46,41 +35,53 @@ public class Game {
         civilizationController=new CivilizationController(GameMenuPage.players);
         unitController=civilizationController.getUnitController();
         cityController=civilizationController.getCityController();
-        hbox.setMinHeight(70);
-        hbox.setMinWidth(1280);
+        bar.setMinHeight(70);
+        bar.setMinWidth(1280);
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/topBar.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
-        hbox.setBackground(new Background(backgroundImage));
-        hbox.setSpacing(30);
+        bar.setBackground(new Background(backgroundImage));
+        bar.setSpacing(30);
+        Text userNickname=new Text(User.getUserLogged().getNickname());
+        userNickname.setY(45);
+        userNickname.getStyleClass().add("info");
+        bar.getChildren().add(userNickname);
         Circle gold=new Circle(30);
         gold.setCenterY(15);
         ImagePattern goldImage=new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
         gold.setFill(goldImage);
-        hbox.getChildren().add(gold);
+        bar.getChildren().add(gold);
         Text goldAmount=new Text("Gold:  "+civilizationController.getCurrentPlayer().getGold());
         goldAmount.setY(45);
         goldAmount.getStyleClass().add("info");
-        hbox.getChildren().add(goldAmount);
+        bar.getChildren().add(goldAmount);
         Circle happiness=new Circle(30);
         happiness.setCenterY(15);
         ImagePattern happinessImage=new ImagePattern(new Image(getClass().getResource("/images/info/Happiness.png").toExternalForm()));
         happiness.setFill(happinessImage);
-        hbox.getChildren().add(happiness);
+        bar.getChildren().add(happiness);
         Text happinessAmount=new Text("Happiness:  "+civilizationController.getCurrentPlayer().getHappiness());
         happinessAmount.setY(45);
         happinessAmount.getStyleClass().add("info");
-        hbox.getChildren().add(happinessAmount);
+        bar.getChildren().add(happinessAmount);
         Circle science=new Circle(30);
         science.setCenterY(15);
         ImagePattern scienceImage=new ImagePattern(new Image(getClass().getResource("/images/info/Science.png").toExternalForm()));
         science.setFill(scienceImage);
-        hbox.getChildren().add(science);
+        bar.getChildren().add(science);
         Text scienceAmount=new Text("Science:  "+civilizationController.getCurrentPlayer().totalCup());
         scienceAmount.setY(45);
         scienceAmount.getStyleClass().add("info");
-        hbox.getChildren().add(scienceAmount);
+        bar.getChildren().add(scienceAmount);
+        Button nextTurn=new Button("Next Turn");
+        nextTurn.getStyleClass().add("primary-btn");
+        nextTurn.setMaxWidth(100);
+        bar.getChildren().add(nextTurn);
+//        nextTurn.setOnMouseClicked(mouseEvent -> {
+//            System.out.println(civilizationController.nextTurn());
+//            tileMap.requestFocus();
+//        });
         tileMap.setOnKeyPressed(this::move);
         tiles=new GraphicTile[civilizationController.getMapHeight()][civilizationController.getMapWidth()];
         Tile[][] modelTiles= civilizationController.getTiles();
@@ -113,7 +114,6 @@ public class Game {
                 VBox infos=new VBox();
                 infos.setMinHeight(60);
                 infos.setMinWidth(200);
-                BackgroundSize backgroundSize1 = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
                 BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
                         BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                         backgroundSize);
@@ -127,12 +127,18 @@ public class Game {
                     resource.setFill(resourceImage);
                     resourceHBox.getChildren().add(resource);
                     Text resourceName=new Text("    Resource: "+tile.getTile().getResource().getName());
+                    Text resourceValues=new Text("    Resource Values: Gold: "+tile.getTile().getResource().getGold()+"  Food: "+tile.getTile().getResource().getFood()+"   Production: "+tile.getTile().getResource().getProduction());
                     resourceName.setFill(Color.WHITE);
                     resourceName.getStyleClass().add("tileInfo");
-                    resourceHBox.getChildren().add(resourceName);
+                    resourceValues.setFill(Color.WHITE);
+                    resourceValues.getStyleClass().add("tileInfo");
+                    VBox resourceInfo=new VBox();
+                    resourceInfo.getChildren().add(resourceName);
+                    resourceInfo.getChildren().add(resourceValues);
+                    resourceHBox.getChildren().add(resourceInfo);
                     infos.getChildren().add(resourceHBox);
                 }
-                Text tileInfo=new Text("Gold: "+tile.getTile().getGold()+"  Production:  "+tile.getTile().getProduction()+"  Food:  "+tile.getTile().getFood());
+                Text tileInfo=new Text("Tile Values: Gold: "+tile.getTile().getGold()+"  Production:  "+tile.getTile().getProduction()+"  Food:  "+tile.getTile().getFood());
                 tileInfo.setFill(Color.WHITE);
                 tileInfo.getStyleClass().add("tileInfo");
                 infos.getChildren().add(tileInfo);

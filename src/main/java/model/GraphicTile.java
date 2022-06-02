@@ -56,14 +56,12 @@ public class GraphicTile extends Polygon {
         this.getLocation().setX(this.getLocation().getX()+dx);
         this.getLocation().setY(this.getLocation().getY()+dy);
         if(this.getPoints().get(1)<0){
-            this.setDisable(true);
-            this.setOpacity(0);
+            tileMap.getChildren().remove(this);
             tileMap.getChildren().remove(this.location);
             tileMap.getChildren().remove(this.feature);
         }
-        else if(this.getOpacity()==0.0){
-            this.setDisable(false);
-            this.setOpacity(1);
+        else if(!tileMap.getChildren().contains(this)){
+            tileMap.getChildren().add(this);
             tileMap.getChildren().add(this.location);
             if(this.tile.getFeature()!=null && !this.tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
                 tileMap.getChildren().add(this.feature);

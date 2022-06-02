@@ -1,4 +1,4 @@
-package model;
+package view_graphic.component;
 
 import controller.CivilizationController;
 import javafx.scene.image.Image;
@@ -7,6 +7,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import model.Tile;
+import model.Unit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

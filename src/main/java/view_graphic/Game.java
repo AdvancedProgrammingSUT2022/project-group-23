@@ -8,16 +8,18 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import model.GraphicTile;
+import view_graphic.component.GraphicTile;
 import model.Tile;
 import model.Unit;
 
@@ -118,6 +120,15 @@ public class Game {
                     ImagePattern fog=new ImagePattern(new Image(getClass().getResource("/images/tile/Fog.png").toExternalForm()));
                     tile.setFill(fog);
                 }
+                if(modelTiles[(int) i][(int) j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed")){
+                    Lighting lighting = new Lighting();
+                    lighting.setDiffuseConstant(0.8);
+                    lighting.setSpecularConstant(0.0);
+                    lighting.setSpecularExponent(0.0);
+                    lighting.setSurfaceScale(0.0);
+                    tile.setEffect(lighting);
+                    if(tile.getTile().getFeature()!=null)tile.getFeature().setEffect(lighting);
+                }
                 tile.setStroke(Color.rgb(15, 65, 135));
                 tile.setStrokeWidth(4);
                 tileMap.getChildren().add(tile);
@@ -161,14 +172,21 @@ public class Game {
                 infos.getChildren().add(tileInfo);
                 double finalI = i;
                 double finalJ = j;
-                tile.setOnMouseClicked(mouseEvent -> {
+                Polygon select;
+                if(tile.getTile().getFeature()!=null){
+                    select=tile.getFeature();
+                }else select=tile;
+                select.setOnMouseClicked(mouseEvent -> {
                     if(unitController.getSelectedUnit()!=null){
+                        int x1=unitController.getSelectedUnit().getX(),y1=unitController.getSelectedUnit().getY();
                         String output=unitController.moveSelectedUnit((int) finalI,(int) finalJ);
                         if(output.equals("unit is moving")){
-                            tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].deleteUnit(unitController.getSelectedUnit());
+                            tiles[x1][y1].deleteUnit(unitController.getSelectedUnit());
                             tileMap.getChildren().remove(unitInformation);
+                            tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].addUnit(unitController.getSelectedUnit());
+                            selectUnit(unitController.getSelectedUnit(),tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()]);
                             GameController.setSelectedUnit(null);
-                            App.changeMenu("Game");
+                            reBuildTiles();
                         }else {
                             nextTurnError.setText(output);
                             nextTurnError.setFill(Color.rgb(250,250,0));
@@ -183,7 +201,7 @@ public class Game {
                         if (tileInformation != null) {
                             tileMap.getChildren().remove(tileInformation);
                         }
-                        if (!tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
+                        if (tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")) {
                             if (!(tileInformation != null && tileInformation.equals(infos))) {
                                 tileMap.getChildren().add(infos);
                                 tileInformation = infos;
@@ -193,98 +211,15 @@ public class Game {
                         } else tileInformation = null;
                     }
                 });
-                if(tile.getTile().getFeature()!=null){
-                    tile.getFeature().setOnMouseClicked(mouseEvent -> {
-                        if(unitController.getSelectedUnit()!=null){
-                            String output=unitController.moveSelectedUnit((int) finalI,(int) finalJ);
-                            if(output.equals("unit is moving")){
-                                tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].deleteUnit(unitController.getSelectedUnit());
-                                tileMap.getChildren().remove(unitInformation);
-                                GameController.setSelectedUnit(null);
-                                App.changeMenu("Game");
-                            }else {
-                                nextTurnError.setText(output);
-                                nextTurnError.setFill(Color.rgb(250,250,0));
-                                if(!nextTurnVBox.getChildren().contains(nextTurnError)){
-                                    nextTurnVBox.getChildren().add(nextTurnError);
-                                }
-                                tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].getGraphicUnits().get(unitController.getSelectedUnit()).setOpacity(1);
-                                tileMap.getChildren().remove(unitInformation);
-                                GameController.setSelectedUnit(null);
-                            }
-                        }else {
-                            if (tileInformation != null) {
-                                tileMap.getChildren().remove(tileInformation);
-                            }
-                            if (!tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
-                                if (!(tileInformation != null && tileInformation.equals(infos))) {
-                                    tileMap.getChildren().add(infos);
-                                    tileInformation = infos;
-                                } else {
-                                    tileInformation = null;
-                                }
-                            } else tileInformation = null;
-                        }
-                    });
-                }
-                if(tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible") && (unitController.getTileNonCombatUnit((int) i, (int) j) != null || unitController.getTileCombatUnit((int) i, (int) j) != null)) {
-                    Unit unit =null;
-                    if (unitController.getTileNonCombatUnit((int) i, (int) j) != null) {
+                Unit unit;
+                if(!tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")&&(unitController.getTileNonCombatUnit((int) i, (int) j) != null || unitController.getTileCombatUnit((int) i, (int) j) != null)){
+                    if(unitController.getTileNonCombatUnit((int) i, (int) j) != null){
                         unit=unitController.getTileNonCombatUnit((int) i, (int) j);
-                    }
-                    if (unitController.getTileCombatUnit((int) i, (int) j) != null) {
+                    }else {
                         unit=unitController.getTileCombatUnit((int) i, (int) j);
                     }
                     tile.addUnit(unit);
-                    Rectangle graphicUnit = tile.getGraphicUnits().get(unit);
-                    Unit finalUnit = unit;
-                    graphicUnit.setOnMouseClicked(mouseEvent -> {
-                        VBox unitInfo=new VBox();
-                        unitInfo.setBackground(new Background(backgroundImage1));
-                        HBox unitHBox=new HBox();
-                        Rectangle unitPicture=new Rectangle();
-                        unitPicture.setHeight(100);
-                        unitPicture.setWidth(100);
-                        ImagePattern unitImage=new ImagePattern(new Image(getClass().getResource("/images/unitIcon/"+finalUnit.getName()+".png").toExternalForm()));
-                        unitPicture.setFill(unitImage);
-                        unitHBox.getChildren().add(unitPicture);
-                        VBox unitValues=new VBox();
-                        Text unitName=new Text("  "+finalUnit.getName());
-                        unitName.setFill(Color.WHITE);
-                        unitName.getStyleClass().add("tileInfo");
-                        Text unitSpec=new Text("  State: "+finalUnit.getState()+"  Health: "+finalUnit.getHealth()+"  Remaining Moves: "+finalUnit.getRemainingMoves());
-                        unitSpec.setFill(Color.WHITE);
-                        unitSpec.getStyleClass().add("tileInfo");
-                        unitValues.getChildren().add(unitName);
-                        unitValues.getChildren().add(unitSpec);
-                        unitHBox.getChildren().add(unitValues);
-                        unitInfo.getChildren().add(unitHBox);
-                        Button sleep=new Button("Sleep");
-                        sleep.getStyleClass().add("secondary-btn");
-                        sleep.setMaxWidth(50);
-                        sleep.setOnMouseClicked(mouseEvent1 -> {
-                            unitController.sleep();
-                        });
-                        unitHBox.getChildren().add(sleep);
-                        if(tileInformation!=null){
-                            tileMap.getChildren().remove(tileInformation);
-                            tileInformation=null;
-                        }
-                        if(graphicUnit.getOpacity()==1){
-                            GameController.setSelectedUnit(finalUnit);
-                            graphicUnit.setOpacity(0.5);
-                            if(unitInformation!=null){
-                                tileMap.getChildren().remove(unitInformation);
-                            }
-                            tileMap.getChildren().add(unitInfo);
-                            unitInformation=unitInfo;
-                        }else {
-                            GameController.setSelectedUnit(null);
-                            graphicUnit.setOpacity(1);
-                            tileMap.getChildren().remove(unitInformation);
-                            unitInformation=null;
-                        }
-                    });
+                    selectUnit(unit,tile);
                 }
                 dy = dy==y ? dy+size*v : y;
             }
@@ -317,6 +252,93 @@ public class Game {
             for(int j=0;j<civilizationController.getMapWidth();j++){
                 tiles[i][j].move(dx,dy);
             }
+        }
+    }
+
+    public void reBuildTiles (){
+        Tile[][] modelTiles= civilizationController.getTiles();
+        for(int i=0;i<civilizationController.getMapHeight();i++){
+            for(int j=0;j<civilizationController.getMapWidth();j++){
+                ImagePattern imagePattern=new ImagePattern(new Image(getClass().getResource("/images/tile/"+modelTiles[(int)i][(int)j].getTerrain().getName()+".png").toExternalForm()));
+                tiles[i][j].setFill(imagePattern);
+                if(modelTiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")){
+                    ImagePattern fog=new ImagePattern(new Image(getClass().getResource("/images/tile/Fog.png").toExternalForm()));
+                    tiles[i][j].setFill(fog);
+                }
+                if(modelTiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed")){
+                    Lighting lighting = new Lighting();
+                    lighting.setDiffuseConstant(0.8);
+                    lighting.setSpecularConstant(0.0);
+                    lighting.setSpecularExponent(0.0);
+                    lighting.setSurfaceScale(0.0);
+                    tiles[i][j].setEffect(lighting);
+                    if(tiles[i][j].getTile().getFeature()!=null)tiles[i][j].getFeature().setEffect(lighting);
+                }
+                tiles[i][j].setStroke(Color.rgb(15, 65, 135));
+                tiles[i][j].setStrokeWidth(4);
+                if(modelTiles[i][j].getFeature()!=null && !modelTiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")){
+                    ImagePattern imagePattern1=new ImagePattern(new Image(getClass().getResource("/images/tile/"+modelTiles[(int)i][(int)j].getFeature().getName()+".png").toExternalForm()));
+                    tiles[i][j].getFeature().setFill(imagePattern1);
+                }
+            }
+        }
+    }
+
+    public void selectUnit(Unit unit,GraphicTile tile){
+        if(tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")) {
+            Rectangle graphicUnit = tile.getGraphicUnits().get(unit);
+            Unit finalUnit = unit;
+            graphicUnit.setOnMouseClicked(mouseEvent -> {
+                VBox unitInfo=new VBox();
+                BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
+                BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+                        BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                        backgroundSize);
+                unitInfo.setBackground(new Background(backgroundImage1));
+                HBox unitHBox=new HBox();
+                Rectangle unitPicture=new Rectangle();
+                unitPicture.setHeight(100);
+                unitPicture.setWidth(100);
+                ImagePattern unitImage=new ImagePattern(new Image(getClass().getResource("/images/unitIcon/"+finalUnit.getName()+".png").toExternalForm()));
+                unitPicture.setFill(unitImage);
+                unitHBox.getChildren().add(unitPicture);
+                VBox unitValues=new VBox();
+                Text unitName=new Text("  "+finalUnit.getName());
+                unitName.setFill(Color.WHITE);
+                unitName.getStyleClass().add("tileInfo");
+                Text unitSpec=new Text("  State: "+finalUnit.getState()+"  Health: "+finalUnit.getHealth()+"  Remaining Moves: "+finalUnit.getRemainingMoves());
+                unitSpec.setFill(Color.WHITE);
+                unitSpec.getStyleClass().add("tileInfo");
+                unitValues.getChildren().add(unitName);
+                unitValues.getChildren().add(unitSpec);
+                unitHBox.getChildren().add(unitValues);
+                unitInfo.getChildren().add(unitHBox);
+                Button sleep=new Button("Sleep");
+                sleep.getStyleClass().add("secondary-btn");
+                sleep.setMaxWidth(50);
+                sleep.setOnMouseClicked(mouseEvent1 -> {
+                    unitController.sleep();
+                });
+                unitHBox.getChildren().add(sleep);
+                if(tileInformation!=null){
+                    tileMap.getChildren().remove(tileInformation);
+                    tileInformation=null;
+                }
+                if(graphicUnit.getOpacity()==1){
+                    GameController.setSelectedUnit(finalUnit);
+                    graphicUnit.setOpacity(0.5);
+                    if(unitInformation!=null){
+                        tileMap.getChildren().remove(unitInformation);
+                    }
+                    tileMap.getChildren().add(unitInfo);
+                    unitInformation=unitInfo;
+                }else {
+                    GameController.setSelectedUnit(null);
+                    graphicUnit.setOpacity(1);
+                    tileMap.getChildren().remove(unitInformation);
+                    unitInformation=null;
+                }
+            });
         }
     }
 }

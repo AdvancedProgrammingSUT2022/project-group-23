@@ -10,20 +10,14 @@ import java.util.Random;
 
 public class UnitController extends GameController {
 
-    private static UnitController currentUnitController;
-
     private CityController cityController;
     public UnitController(CityController cityController) {
         this.cityController = cityController;
-        currentUnitController = this;
         initializeUnits();
         checkVisibility();
 
     }
 
-    public static UnitController getCurrentUnitController() {
-        return currentUnitController;
-    }
 
     public void initializeUnits(){
         Random random = new Random();

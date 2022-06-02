@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CityController extends GameController{
-    private static CityController currentCityController;
     public CityController(){
-        currentCityController = this;
     }
 
     public String createCity(int x, int y){
@@ -293,8 +291,5 @@ public class CityController extends GameController{
         }
     }
 
-    public static CityController getCurrentCityController() {
-        return currentCityController;
-    }
 }
 

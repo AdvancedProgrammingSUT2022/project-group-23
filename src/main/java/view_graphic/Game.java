@@ -183,8 +183,6 @@ public class Game {
                         if(output.equals("unit is moving")){
                             tiles[x1][y1].deleteUnit(unitController.getSelectedUnit());
                             tileMap.getChildren().remove(unitInformation);
-                            tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].addUnit(unitController.getSelectedUnit());
-                            selectUnit(unitController.getSelectedUnit(),tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()]);
                             GameController.setSelectedUnit(null);
                             reBuildTiles();
                         }else {

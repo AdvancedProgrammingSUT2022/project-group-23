@@ -22,6 +22,8 @@
             <Button fx:id="newGameButton" styleClass="primary-btn" text="New Game" onMouseClicked="#newGame"/>
             <Button fx:id="continueButton" styleClass="primary-btn" text="Continue" onMouseClicked="#save"/>
             <Button fx:id="inviteButton" styleClass="secondary-btn" text="Invite" onMouseClicked="#invite"/>
+            <Button fx:id="mapButton" styleClass="secondary-btn" text="Map Size" onMouseClicked="#map"/>
+            <Button fx:id="autoSaveButton" styleClass="secondary-btn" text="Set Auto Save" onMouseClicked="#autoSave"/>
             <Button fx:id="backButton" styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
         </VBox>
 

@@ -1,6 +1,7 @@
 package view_graphic;
 
 import controller.CivilizationController;
+import controller.GameController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,7 +31,10 @@ public class GameMenuPage {
     private Text error;
     @FXML
     private VBox vbox;
-
+    @FXML
+    private Button mapButton;
+    @FXML
+    private Button autoSaveButton;
     public static ArrayList<User> players =new ArrayList<>();
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
@@ -50,6 +54,10 @@ public class GameMenuPage {
         inviteButton.setTooltip(tooltip3);
         Tooltip tooltip4=new Tooltip("go back to main menu");
         backButton.setTooltip(tooltip4);
+        Tooltip tooltip5=new Tooltip("set map width and map height");
+        mapButton.setTooltip(tooltip5);
+        Tooltip tooltip6=new Tooltip("set when and how many times you want auto save");
+        autoSaveButton.setTooltip(tooltip6);
     }
 
 
@@ -70,8 +78,20 @@ public class GameMenuPage {
             if(!vbox.getChildren().contains(error))
                 vbox.getChildren().add(error);
         }else {
+            if(GameController.mapWidth==0 && GameController.mapHeight==0){
+                GameController.setMapHeight(5*players.size());
+                GameController.setMapWidth(5*players.size());
+            }
             Game.civilizationController=new CivilizationController(players);
             App.changeMenu("Game");
         }
+    }
+
+    public void map (MouseEvent mouseEvent) {
+        App.changeMenu("MapSizeMenu");
+    }
+
+    public void autoSave (MouseEvent mouseEvent) {
+        App.changeMenu("AutoSaveMenu");
     }
 }

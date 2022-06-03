@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.AutoSaveMenu"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+    <top>
+        <HBox alignment="CENTER" styleClass="titleBox">
+            <Text text="Auto Save Menu" styleClass="title" fx:id="title"/>
+        </HBox>
+    </top>
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="350">
+            <VBox spacing="10" alignment="CENTER" fx:id="vbox">
+
+            </VBox>
+            <Label text="Auto Save" fx:id="autoSaveLabel"/>
+            <TextField fx:id="autoSave" promptText="enter the number of auto saves" onKeyTyped="#type" />
+            <Button  fx:id="setButton" styleClass="primary-btn" text="Set"/>
+            <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
+        </VBox>
+
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>

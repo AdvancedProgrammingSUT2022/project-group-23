@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class GameController {
 
-    protected static int mapWidth = 10;
-    protected static int mapHeight = 10;
+    public static int mapWidth ;
+    public static int mapHeight ;
     protected static ArrayList<User> players;
     protected static Tile[][] tiles;
 
@@ -52,6 +52,14 @@ public class GameController {
 
     public static City getSelectedCity() {
         return selectedCity;
+    }
+
+    public static void setMapWidth (int mapWidth) {
+        GameController.mapWidth = mapWidth;
+    }
+
+    public static void setMapHeight (int mapHeight) {
+        GameController.mapHeight = mapHeight;
     }
 
 }

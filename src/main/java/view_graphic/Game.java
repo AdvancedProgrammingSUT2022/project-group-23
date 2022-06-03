@@ -280,6 +280,16 @@ public class Game {
                     ImagePattern imagePattern1=new ImagePattern(new Image(getClass().getResource("/images/tile/"+modelTiles[(int)i][(int)j].getFeature().getName()+".png").toExternalForm()));
                     tiles[i][j].getFeature().setFill(imagePattern1);
                 }
+                Unit unit;
+                if(!tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")&&(unitController.getTileNonCombatUnit(i,  j) != null || unitController.getTileCombatUnit( i, j) != null)){
+                    if(unitController.getTileNonCombatUnit(i,j) != null){
+                        unit=unitController.getTileNonCombatUnit(i,j);
+                    }else {
+                        unit=unitController.getTileCombatUnit(i,j);
+                    }
+                    tiles[i][j].addUnit(unit);
+                    selectUnit(unit,tiles[i][j]);
+                }
             }
         }
     }

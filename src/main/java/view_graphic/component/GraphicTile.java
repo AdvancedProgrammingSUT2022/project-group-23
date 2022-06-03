@@ -3,14 +3,16 @@ package view_graphic.component;
 import controller.CivilizationController;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import model.City;
 import model.Tile;
 import model.Unit;
+import model.User;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ public class GraphicTile extends Polygon {
     private AnchorPane tileMap;
     private HashMap<Unit, Rectangle> graphicUnits = new HashMap<>();
     private CivilizationController civilizationController;
+    private VBox infos;
 
     private static Lighting lighting = new Lighting();
 
@@ -55,6 +58,13 @@ public class GraphicTile extends Polygon {
         this.setStrokeWidth(4);
         if (tile.getFeature() != null && !tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
             ImagePattern imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getFeature().getName() + ".png").toExternalForm()));
+            for (User user : User.getUsers()) {
+                for (City city : user.getCities()) {
+                    if(city.getCapital().equals(this.tile)){
+                        imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
+                    }
+                }
+            }
             feature.setFill(imagePattern);
             if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))
                 feature.setEffect(lighting);
@@ -125,9 +135,24 @@ public class GraphicTile extends Polygon {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Fog.png").toExternalForm()));
         else if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed")) {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getTerrain().getName() + ".png").toExternalForm()));
+            for (User user : User.getUsers()) {
+                for (City city : user.getCities()) {
+                    if(city.getCapital().equals(this.tile)){
+                        imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
+                    }
+                }
+            }
             this.setEffect(lighting);
-        } else
+        } else {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getTerrain().getName() + ".png").toExternalForm()));
+            for (User user : User.getUsers()) {
+                for (City city : user.getCities()) {
+                    if(city.getCapital().equals(this.tile)){
+                        imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
+                    }
+                }
+            }
+        }
         this.setFill(imagePattern);
     }
 
@@ -166,5 +191,45 @@ public class GraphicTile extends Polygon {
 
     public HashMap<Unit, Rectangle> getGraphicUnits() {
         return graphicUnits;
+    }
+
+    public VBox getInfosBox(BackgroundSize backgroundSize) {
+        if(infos==null) {
+            infos=new VBox();
+            infos.setMinHeight(60);
+            infos.setMinWidth(200);
+            BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+                    BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    backgroundSize);
+            infos.setBackground(new Background(backgroundImage1));
+            if (this.getTile().getResource() != null) {
+                HBox resourceHBox = new HBox();
+                Rectangle resource = new Rectangle();
+                ImagePattern resourceImage = new ImagePattern(new Image(getClass().getResource("/images/Resources/" + this.getTile().getResource().getName() + ".png").toExternalForm()));
+                resource.setHeight(100);
+                resource.setWidth(100);
+                resource.setFill(resourceImage);
+                resourceHBox.getChildren().add(resource);
+                Text resourceName = new Text("    Resource: " + this.getTile().getResource().getName());
+                Text resourceValues = new Text("    Resource Values: Gold: " + this.getTile().getResource().getGold() + "  Food: " + this.getTile().getResource().getFood() + "   Production: " + this.getTile().getResource().getProduction());
+                resourceName.setFill(Color.WHITE);
+                resourceName.getStyleClass().add("tileInfo");
+                resourceValues.setFill(Color.WHITE);
+                resourceValues.getStyleClass().add("tileInfo");
+                VBox resourceInfo = new VBox();
+                resourceInfo.getChildren().add(resourceName);
+                resourceInfo.getChildren().add(resourceValues);
+                resourceHBox.getChildren().add(resourceInfo);
+                infos.getChildren().add(resourceHBox);
+            }
+            Text tileInfo = new Text("Tile Values: Gold: " + this.getTile().getGold() + "  Production:  " + this.getTile().getProduction() + "  Food:  " + this.getTile().getFood());
+            tileInfo.setFill(Color.WHITE);
+            tileInfo.getStyleClass().add("tileInfo");
+            infos.getChildren().add(tileInfo);
+            infos.setOpacity(0.8);
+        }
+        infos.setLayoutX(this.getPoints().get(10));
+        infos.setLayoutY(this.getPoints().get(7));
+        return infos;
     }
 }

@@ -8,7 +8,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -19,6 +18,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import model.SettlerUnit;
 import view_graphic.component.GraphicTile;
 import model.Tile;
 import model.Unit;
@@ -35,7 +35,9 @@ public class Game {
     private CityController cityController;
     private VBox tileInformation;
     private VBox unitInformation;
-    private Text nextTurnError = new Text();
+    private VBox vBoxError=new VBox();
+    private Text error = new Text();
+    private Timeline timelineError=new Timeline();
 
     public void initialize() {
         Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
@@ -49,6 +51,16 @@ public class Game {
         bar.setMinWidth(1280);
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         createTopBar(backgroundSize);
+        vBoxError.getChildren().add(error);
+        vBoxError.setLayoutX(900);
+        vBoxError.setLayoutY(20);
+        vBoxError.setBackground(bar.getBackground());
+        error.setFill(Color.rgb(250, 250, 0));
+        error.getStyleClass().add("vBoxError");
+        timelineError.getKeyFrames().add(new KeyFrame(Duration.seconds(2)));
+        timelineError.setOnFinished(actionEvent -> {
+            tileMap.getChildren().remove(vBoxError);
+        });
         tileMap.setOnKeyPressed(this::move);
         tiles = new GraphicTile[civilizationController.getMapHeight()][civilizationController.getMapWidth()];
         Tile[][] modelTiles = civilizationController.getTiles();
@@ -64,7 +76,6 @@ public class Game {
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
 
                 tiles[i][j] = tile;
-                VBox infos = getInfosBox(backgroundSize, tile);
                 int finalI = i;
                 int finalJ = j;
                 Polygon select = tile;
@@ -79,13 +90,15 @@ public class Game {
                             GameController.setSelectedUnit(null);
                             reBuildTiles();
                         } else {
-                            nextTurnError.setText(output);
-                            nextTurnError.setFill(Color.rgb(250, 250, 0));
+                            error.setText(output);
+                            tileMap.getChildren().add(vBoxError);
+                            timelineError.play();
                             tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].getGraphicUnits().get(unitController.getSelectedUnit()).setOpacity(1);
                             tileMap.getChildren().remove(unitInformation);
                             GameController.setSelectedUnit(null);
                         }
                     } else {
+                        VBox infos = tile.getInfosBox(backgroundSize);
                         if (tileInformation != null) {
                             tileMap.getChildren().remove(tileInformation);
                         }
@@ -114,40 +127,7 @@ public class Game {
         }
     }
 
-    private VBox getInfosBox(BackgroundSize backgroundSize, GraphicTile tile) {
-        VBox infos = new VBox();
-        infos.setMinHeight(60);
-        infos.setMinWidth(200);
-        BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
-                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                backgroundSize);
-        infos.setBackground(new Background(backgroundImage1));
-        if (tile.getTile().getResource() != null) {
-            HBox resourceHBox = new HBox();
-            Rectangle resource = new Rectangle();
-            ImagePattern resourceImage = new ImagePattern(new Image(getClass().getResource("/images/Resources/" + tile.getTile().getResource().getName() + ".png").toExternalForm()));
-            resource.setHeight(100);
-            resource.setWidth(100);
-            resource.setFill(resourceImage);
-            resourceHBox.getChildren().add(resource);
-            Text resourceName = new Text("    Resource: " + tile.getTile().getResource().getName());
-            Text resourceValues = new Text("    Resource Values: Gold: " + tile.getTile().getResource().getGold() + "  Food: " + tile.getTile().getResource().getFood() + "   Production: " + tile.getTile().getResource().getProduction());
-            resourceName.setFill(Color.WHITE);
-            resourceName.getStyleClass().add("tileInfo");
-            resourceValues.setFill(Color.WHITE);
-            resourceValues.getStyleClass().add("tileInfo");
-            VBox resourceInfo = new VBox();
-            resourceInfo.getChildren().add(resourceName);
-            resourceInfo.getChildren().add(resourceValues);
-            resourceHBox.getChildren().add(resourceInfo);
-            infos.getChildren().add(resourceHBox);
-        }
-        Text tileInfo = new Text("Tile Values: Gold: " + tile.getTile().getGold() + "  Production:  " + tile.getTile().getProduction() + "  Food:  " + tile.getTile().getFood());
-        tileInfo.setFill(Color.WHITE);
-        tileInfo.getStyleClass().add("tileInfo");
-        infos.getChildren().add(tileInfo);
-        return infos;
-    }
+
 
     private void createTopBar(BackgroundSize backgroundSize) {
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/topBar.png").toExternalForm()),
@@ -195,11 +175,11 @@ public class Game {
             String output = civilizationController.nextTurn();
             if (output.startsWith("it")) App.changeMenu("Game");
             else {
-                nextTurnError.setText(output);
-                nextTurnError.setFill(Color.rgb(250, 250, 0));
+                error.setText(output);
+                tileMap.getChildren().add(vBoxError);
+                timelineError.play();
             }
         });
-        nextTurnVBox.getChildren().add(nextTurnError);
         bar.getChildren().add(nextTurnVBox);
     }
 
@@ -243,8 +223,10 @@ public class Game {
                     } else {
                         unit = unitController.getTileCombatUnit(i, j);
                     }
-                    tiles[i][j].addUnit(unit);
-                    selectUnit(unit, tiles[i][j]);
+                    if(!tiles[i][j].getGraphicUnits().containsKey(unit)) {
+                        tiles[i][j].addUnit(unit);
+                        selectUnit(unit, tiles[i][j]);
+                    }
                 }
             }
         }
@@ -286,6 +268,24 @@ public class Game {
                     unitController.sleep();
                 });
                 unitHBox.getChildren().add(sleep);
+                if(unit instanceof SettlerUnit){
+                    Button foundCity=new Button("Found City");
+                    foundCity.getStyleClass().add("secondary-btn");
+                    foundCity.setMaxWidth(80);
+                    foundCity.setOnMouseClicked(mouseEvent1 -> {
+                        String output=unitController.foundCity();
+                        if(output.equals("city founded")){
+                            tile.deleteUnit(unitController.getSelectedUnit());
+                            tileMap.getChildren().remove(unitInformation);
+                            GameController.setSelectedUnit(null);
+                            reBuildTiles();
+                        }
+                            error.setText(output);
+                            tileMap.getChildren().add(vBoxError);
+                            timelineError.play();
+                    });
+                    unitHBox.getChildren().add(foundCity);
+                }
                 if (tileInformation != null) {
                     tileMap.getChildren().remove(tileInformation);
                     tileInformation = null;

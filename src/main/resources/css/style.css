@@ -111,3 +111,8 @@ TextField{
     -fx-font-size: 20;
     -fx-font-weight: none;
 }
+
+.vBoxError{
+-fx-font-size: 30;
+    -fx-font-weight: bold;
+}

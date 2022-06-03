@@ -210,7 +210,6 @@ public class UnitController extends GameController {
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         currentPlayer.removeUnit(selectedUnit);
         if(giveGold)currentPlayer.setGold(currentPlayer.getGold() + selectedUnit.getCost() / 10);
-        selectedUnit = null;
         checkVisibility();
         return "unit deleted successfully";
     }

@@ -7,6 +7,7 @@ import controller.UnitController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -18,10 +19,8 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import model.SettlerUnit;
+import model.*;
 import view_graphic.component.GraphicTile;
-import model.Tile;
-import model.Unit;
 
 public class Game {
     @FXML
@@ -38,6 +37,10 @@ public class Game {
     private VBox vBoxError=new VBox();
     private Text error = new Text();
     private Timeline timelineError=new Timeline();
+    private VBox cityPanel;
+    private boolean putCitizenToTile;
+    private boolean deleteCitizen;
+    private boolean purchaseTile;
 
     public void initialize() {
         Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
@@ -52,7 +55,7 @@ public class Game {
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         createTopBar(backgroundSize);
         vBoxError.getChildren().add(error);
-        vBoxError.setLayoutX(900);
+        vBoxError.setLayoutX(600);
         vBoxError.setLayoutY(20);
         vBoxError.setBackground(bar.getBackground());
         error.setFill(Color.rgb(250, 250, 0));
@@ -90,26 +93,39 @@ public class Game {
                             GameController.setSelectedUnit(null);
                             reBuildTiles();
                         } else {
-                            error.setText(output);
-                            tileMap.getChildren().add(vBoxError);
-                            timelineError.play();
+                            showMessage(output);
                             tiles[unitController.getSelectedUnit().getX()][unitController.getSelectedUnit().getY()].getGraphicUnits().get(unitController.getSelectedUnit()).setOpacity(1);
                             tileMap.getChildren().remove(unitInformation);
                             GameController.setSelectedUnit(null);
                         }
                     } else {
-                        VBox infos = tile.getInfosBox(backgroundSize);
-                        if (tileInformation != null) {
-                            tileMap.getChildren().remove(tileInformation);
-                        }
-                        if (tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")) {
-                            if (!(tileInformation != null && tileInformation.equals(infos))) {
-                                tileMap.getChildren().add(infos);
-                                tileInformation = infos;
-                            } else {
-                                tileInformation = null;
+                        if(!putCitizenToTile) {
+                            if (!deleteCitizen) {
+                                if(!purchaseTile) {
+                                    VBox infos = tile.getInfosBox(backgroundSize);
+                                    if (tileInformation != null) {
+                                        tileMap.getChildren().remove(tileInformation);
+                                    }
+                                    if (tile.getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")) {
+                                        if (!(tileInformation != null && tileInformation.equals(infos))) {
+                                            tileMap.getChildren().add(infos);
+                                            tileInformation = infos;
+                                        } else {
+                                            tileInformation = null;
+                                        }
+                                    } else tileInformation = null;
+                                }else {
+                                    showMessage(cityController.purchaseTile(tile.getTile()));
+                                    purchaseTile=false;
+                                }
+                            }else {
+                                showMessage(cityController.removeCitizen(finalI,finalJ));
+                                deleteCitizen=false;
                             }
-                        } else tileInformation = null;
+                        }else {
+                            showMessage(cityController.putCitizenToWork(finalI, finalJ));
+                            putCitizenToTile=false;
+                        }
                     }
                 });
                 Unit unit;
@@ -175,9 +191,7 @@ public class Game {
             String output = civilizationController.nextTurn();
             if (output.startsWith("it")) App.changeMenu("Game");
             else {
-                error.setText(output);
-                tileMap.getChildren().add(vBoxError);
-                timelineError.play();
+                showMessage(output);
             }
         });
         bar.getChildren().add(nextTurnVBox);
@@ -216,6 +230,30 @@ public class Game {
         for (int i = 0; i < civilizationController.getMapHeight(); i++) {
             for (int j = 0; j < civilizationController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
+                    for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                        if(city.getCapital().equals(tiles[i][j].getTile())){
+                            Polygon select=tiles[i][j];
+                            if(tiles[i][j].getTile().getFeature()!=null) select=tiles[i][j].getFeature();
+                            select.setOnMouseClicked(mouseEvent -> {
+                                if(GameController.getSelectedCity()==null){
+                                    GameController.setSelectedCity(city);
+                                for (Tile tile : city.getTiles()) {
+                                    getGraphicByModel(tile).setOpacity(0.7);
+                                    if (tile.getFeature() != null) getGraphicByModel(tile).getFeature().setOpacity(0.7);
+                                }
+                                fillCityPanel(city);
+                                tileMap.getChildren().add(cityPanel);
+                                }else {
+                                    GameController.setSelectedCity(null);
+                                    for (Tile tile : city.getTiles()) {
+                                        getGraphicByModel(tile).setOpacity(1);
+                                        if (tile.getFeature() != null) getGraphicByModel(tile).getFeature().setOpacity(1);
+                                    }
+                                    tileMap.getChildren().remove(cityPanel);
+                                }
+                            });
+                        }
+                    }
                 Unit unit;
                 if (!tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
@@ -280,9 +318,7 @@ public class Game {
                             GameController.setSelectedUnit(null);
                             reBuildTiles();
                         }
-                            error.setText(output);
-                            tileMap.getChildren().add(vBoxError);
-                            timelineError.play();
+                            showMessage(output);
                     });
                     unitHBox.getChildren().add(foundCity);
                 }
@@ -307,4 +343,149 @@ public class Game {
             });
         }
     }
+
+    public GraphicTile getGraphicByModel(Tile tile){
+        for(int i=0;i<civilizationController.getMapWidth();i++){
+            for(int j=0;j<civilizationController.getMapHeight();j++){
+                if(tiles[i][j].getTile().equals(tile)){
+                    return tiles[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
+    public void showMessage(String message){
+        error.setText(message);
+        tileMap.getChildren().add(vBoxError);
+        timelineError.play();
+    }
+
+    public void fillCityPanel(City city){
+        cityPanel=new VBox();
+        cityPanel.setAlignment(Pos.CENTER);
+        if(getGraphicByModel(city.getCapital()).getPoints().get(0)<600){
+            cityPanel.setLayoutX(800);
+        }
+        cityPanel.setSpacing(10);
+        cityPanel.setMinWidth(400);
+        cityPanel.setMinHeight(600);
+        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                backgroundSize);
+        cityPanel.setBackground(new Background(backgroundImage));
+        Text cityId = new Text("City "+city.getId()+" belong to "+cityController.getCityOwner(city).getNickname());
+        cityId.getStyleClass().add("info");
+        cityPanel.getChildren().add(cityId);
+        HBox goldHBox=new HBox();
+        goldHBox.setSpacing(20);
+        Circle gold = new Circle(30);
+        gold.setCenterY(15);
+        ImagePattern goldImage = new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
+        gold.setFill(goldImage);
+        goldHBox.getChildren().add(gold);
+        Text goldAmount = new Text("Gold:  " + city.gold());
+        goldAmount.setY(45);
+        goldAmount.getStyleClass().add("info");
+        goldHBox.getChildren().add(goldAmount);
+        cityPanel.getChildren().add(goldHBox);
+        HBox productionHBox =new HBox();
+        productionHBox.setSpacing(20);
+        Circle production = new Circle(30);
+        production.setCenterY(15);
+        ImagePattern productionImage = new ImagePattern(new Image(getClass().getResource("/images/info/Production.png").toExternalForm()));
+        production.setFill(productionImage);
+        productionHBox.getChildren().add(production);
+        Text productionAmount = new Text("Production:  " + city.production());
+        productionAmount.setY(45);
+        productionAmount.getStyleClass().add("info");
+        productionHBox.getChildren().add(productionAmount);
+        cityPanel.getChildren().add(productionHBox);
+        HBox FoodHBox =new HBox();
+        FoodHBox.setSpacing(20);
+        Circle food = new Circle(30);
+        food.setCenterY(15);
+        ImagePattern foodImage = new ImagePattern(new Image(getClass().getResource("/images/info/Food.png").toExternalForm()));
+        food.setFill(foodImage);
+        FoodHBox.getChildren().add(food);
+        Text foodAmount = new Text("Food:  " + city.totalFood());
+        foodAmount.setY(45);
+        foodAmount.getStyleClass().add("info");
+        FoodHBox.getChildren().add(foodAmount);
+        cityPanel.getChildren().add(FoodHBox);
+        Button purchaseTileButton =new Button("Purchase Tile");
+        purchaseTileButton.setMaxWidth(150);
+        purchaseTileButton.getStyleClass().add("secondary-btn");
+        cityPanel.getChildren().add(purchaseTileButton);
+        purchaseTileButton.setOnMouseClicked(mouseEvent -> {
+            purchaseTile = !purchaseTile;
+        });
+        Button putCitizen=new Button("Put Citizen To Tile");
+        putCitizen.setMaxWidth(150);
+        putCitizen.getStyleClass().add("secondary-btn");
+        cityPanel.getChildren().add(putCitizen);
+        putCitizen.setOnMouseClicked(mouseEvent -> {
+            putCitizenToTile = !putCitizenToTile;
+        });
+        Button eliminateCitizen =new Button("Eliminate Citizen From Tile");
+        eliminateCitizen.setMaxWidth(200);
+        eliminateCitizen.getStyleClass().add("secondary-btn");
+        cityPanel.getChildren().add(eliminateCitizen);
+        eliminateCitizen.setOnMouseClicked(mouseEvent -> {
+            deleteCitizen=!deleteCitizen;
+        });
+        Button productionButton =new Button("Production Panel");
+        productionButton.setMaxWidth(200);
+        productionButton.getStyleClass().add("secondary-btn");
+        cityPanel.getChildren().add(productionButton);
+        productionButton.setOnMouseClicked(mouseEvent -> {
+            cityPanel.getChildren().clear();
+            Text currentProduction=new Text("Your Current Production: "+city.getConstructingUnit());
+            currentProduction.getStyleClass().add("info");
+            cityPanel.getChildren().add(currentProduction);
+            Text text =new Text("You Can Constrict these units:");
+            text.getStyleClass().add("info");
+            cityPanel.getChildren().add(text);
+            for (int i=0;i<unitController.getConstructableUnits().size();i++){
+                Button unit=new Button(unitController.getConstructableUnits().get(i).getName());
+                unit.getStyleClass().add("secondary-btn");
+                unit.setMaxWidth(200);
+                cityPanel.getChildren().add(unit);
+                int finalI = i;
+                unit.setOnMouseClicked(mouseEvent1 -> {
+                    showMessage(cityController.constructUnit(unitController.getConstructableUnits().get(finalI).getName()));
+                    tileMap.getChildren().remove(cityPanel);
+                    fillCityPanel(city);
+                    tileMap.getChildren().add(cityPanel);
+                });
+            }
+            Button back =new Button("Back");
+            back.getStyleClass().add("secondary-btn");
+            back.setMaxWidth(200);
+            cityPanel.getChildren().add(back);
+            back.setOnMouseClicked(mouseEvent1 -> {
+                tileMap.getChildren().remove(cityPanel);
+                fillCityPanel(city);
+                tileMap.getChildren().add(cityPanel);
+            });
+        });
+        Button close=new Button("Close Panel");
+        close.setMaxWidth(150);
+        close.getStyleClass().add("secondary-btn");
+        cityPanel.getChildren().add(close);
+        close.setOnMouseClicked(mouseEvent -> {
+            tileMap.getChildren().remove(cityPanel);
+            cityPanel=null;
+            for (Tile tile : city.getTiles()) {
+                getGraphicByModel(tile).setOpacity(1);
+                if(tile.getFeature()!=null) getGraphicByModel(tile).getFeature().setOpacity(1);
+            }
+            GameController.setSelectedCity(null);
+            purchaseTile=false;
+            deleteCitizen=false;
+            putCitizenToTile=false;
+        });
+    }
+
 }

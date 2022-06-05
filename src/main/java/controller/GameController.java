@@ -54,6 +54,10 @@ public class GameController {
         return selectedCity;
     }
 
+    public static void setSelectedCity(City city) {
+        selectedCity=city;
+    }
+
     public static void setMapWidth (int mapWidth) {
         GameController.mapWidth = mapWidth;
     }

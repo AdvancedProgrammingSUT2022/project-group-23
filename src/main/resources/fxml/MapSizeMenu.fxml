@@ -20,7 +20,7 @@
 
         <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="vbox">
             <Label text="Map Width" fx:id="widthLabel"/>
-            <TextField fx:id="width" promptText="enter map width (it should be at least 6)" onKeyPressed="#type"/>
+            <TextField fx:id="width" promptText="enter map width (it should be at least 6)" onKeyTyped="#type"/>
             <Label text="Map Height" fx:id="heightLabel"/>
             <TextField fx:id="height" promptText="enter map height (it should be at least 6)" onKeyTyped="#type"/>
             <Button fx:id="setButton" styleClass="primary-btn" text="Set" onMouseClicked="#set"/>

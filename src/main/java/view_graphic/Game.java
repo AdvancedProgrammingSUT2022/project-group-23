@@ -116,14 +116,23 @@ public class Game {
                                     } else tileInformation = null;
                                 }else {
                                     showMessage(cityController.purchaseTile(tile.getTile()));
+                                    tileMap.getChildren().remove(cityPanel);
+                                    fillCityPanel(GameController.getSelectedCity());
+                                    tileMap.getChildren().add(cityPanel);
                                     purchaseTile=false;
                                 }
                             }else {
                                 showMessage(cityController.removeCitizen(finalI,finalJ));
+                                tileMap.getChildren().remove(cityPanel);
+                                fillCityPanel(GameController.getSelectedCity());
+                                tileMap.getChildren().add(cityPanel);
                                 deleteCitizen=false;
                             }
                         }else {
                             showMessage(cityController.putCitizenToWork(finalI, finalJ));
+                            tileMap.getChildren().remove(cityPanel);
+                            fillCityPanel(GameController.getSelectedCity());
+                            tileMap.getChildren().add(cityPanel);
                             putCitizenToTile=false;
                         }
                     }
@@ -201,6 +210,17 @@ public class Game {
         if (tileInformation != null) {
             tileMap.getChildren().remove(tileInformation);
             tileInformation = null;
+        }
+        if(GameController.getSelectedCity()!=null){
+            for (Tile tile : GameController.getSelectedCity().getTiles()) {
+                getGraphicByModel(tile).setOpacity(1);
+                if(tile.getFeature()!=null) getGraphicByModel(tile).getFeature().setOpacity(1);
+            }
+            GameController.setSelectedCity(null);
+            tileMap.getChildren().remove(cityPanel);
+            putCitizenToTile=false;
+            purchaseTile=false;
+            deleteCitizen=false;
         }
         double dx = 0, dy = 0;
         if (keyEvent.getCode().getName().equals("Right") && tiles[civilizationController.getMapHeight() - 1][civilizationController.getMapWidth() - 1].getPoints().get(4) > 1280) {
@@ -418,21 +438,39 @@ public class Game {
         purchaseTileButton.setMaxWidth(150);
         purchaseTileButton.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(purchaseTileButton);
-        purchaseTileButton.setOnMouseClicked(mouseEvent -> {
-            purchaseTile = !purchaseTile;
-        });
         Button putCitizen=new Button("Put Citizen To Tile");
         putCitizen.setMaxWidth(150);
         putCitizen.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(putCitizen);
-        putCitizen.setOnMouseClicked(mouseEvent -> {
-            putCitizenToTile = !putCitizenToTile;
-        });
         Button eliminateCitizen =new Button("Eliminate Citizen From Tile");
         eliminateCitizen.setMaxWidth(200);
         eliminateCitizen.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(eliminateCitizen);
+        purchaseTileButton.setOnMouseClicked(mouseEvent -> {
+            putCitizenToTile=false;
+            deleteCitizen=false;
+            eliminateCitizen.setOpacity(1);
+            putCitizen.setOpacity(1);
+            if(purchaseTile) purchaseTileButton.setOpacity(1);
+            else purchaseTileButton.setOpacity(0.5);
+            purchaseTile = !purchaseTile;
+        });
+        putCitizen.setOnMouseClicked(mouseEvent -> {
+            deleteCitizen=false;
+            purchaseTile=false;
+            purchaseTileButton.setOpacity(1);
+            eliminateCitizen.setOpacity(1);
+            if(putCitizenToTile) putCitizen.setOpacity(1);
+            else putCitizen.setOpacity(0.5);
+            putCitizenToTile = !putCitizenToTile;
+        });
         eliminateCitizen.setOnMouseClicked(mouseEvent -> {
+            putCitizenToTile=false;
+            purchaseTile=false;
+            purchaseTileButton.setOpacity(1);
+            putCitizen.setOpacity(1);
+            if(deleteCitizen) eliminateCitizen.setOpacity(1);
+            else eliminateCitizen.setOpacity(0.5);
             deleteCitizen=!deleteCitizen;
         });
         Button productionButton =new Button("Production Panel");
@@ -440,6 +478,9 @@ public class Game {
         productionButton.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(productionButton);
         productionButton.setOnMouseClicked(mouseEvent -> {
+            purchaseTile=false;
+            putCitizenToTile=false;
+            deleteCitizen=false;
             cityPanel.getChildren().clear();
             Text currentProduction=new Text("Your Current Production: "+city.getConstructingUnit());
             currentProduction.getStyleClass().add("info");

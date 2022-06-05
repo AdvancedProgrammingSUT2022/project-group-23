@@ -4,12 +4,18 @@ import controller.CityController;
 import controller.CivilizationController;
 import controller.GameController;
 import controller.UnitController;
+import enums.Commands;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -21,6 +27,8 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.*;
 import view_graphic.component.GraphicTile;
+
+import java.util.regex.Matcher;
 
 public class Game {
     @FXML
@@ -48,6 +56,7 @@ public class Game {
         }));
         focusTimeline.setCycleCount(-1);
         focusTimeline.play();
+        KeyCombination keyCombination=new KeyCodeCombination(KeyCode.C,KeyCombination.SHIFT_DOWN,KeyCombination.CONTROL_DOWN);
         unitController = civilizationController.getUnitController();
         cityController = civilizationController.getCityController();
         bar.setMinHeight(70);
@@ -64,7 +73,73 @@ public class Game {
         timelineError.setOnFinished(actionEvent -> {
             tileMap.getChildren().remove(vBoxError);
         });
-        tileMap.setOnKeyPressed(this::move);
+        tileMap.setOnKeyPressed(keyEvent -> {
+            if(keyCombination.match(keyEvent)){
+                TextInputDialog cheatDialog=new TextInputDialog("enter cheat code");
+                cheatDialog.setTitle("Cheat Code");
+                cheatDialog.showAndWait();
+                Matcher matcher;
+                String input=cheatDialog.getEditor().getText();
+                if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_GOLD)) != null) {
+                    civilizationController.getCurrentPlayer().setGold(civilizationController.getCurrentPlayer().getGold() + Integer.parseInt(matcher.group("amount")));
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_TURN)) != null){
+                    String message = "";
+                    for(int i=0;i<Integer.parseInt(matcher.group("amount"));i++){
+                        message = civilizationController.nextTurn();
+                    }
+                    showMessage(message);
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_HAPPINESS)) != null)
+                    civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness()+Integer.parseInt(matcher.group("amount")));
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_UNIT_FULL_HEALTH)) != null){
+                    for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
+                        unit.setHealth(10);
+                    }
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CITY_FULL_HEALTH)) != null){
+                    for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                        city.setHealth(20);
+                    }
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_CITIZEN)) != null){
+                    for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                        if(city.getId()==Integer.parseInt(matcher.group("id"))){
+                            city.setCountOfCitizens(city.getCountOfCitizens()+Integer.parseInt(matcher.group("amount")));
+                            break;
+                        }
+                    }
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null) {
+                    civilizationController.getTiles()[Integer.parseInt(matcher.group("x"))][Integer.parseInt(matcher.group("y"))].setRoad(true);
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null){
+                    for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
+                        unit.setRemainingMoves(unit.getRemainingMoves()+Integer.parseInt(matcher.group("amount")));
+                    }
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CREATE_CITY)) != null) {
+                    cityController.createCity(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_FINISH_STUDY)) != null){
+                    civilizationController.getCurrentPlayer().addTechnology(civilizationController.getCurrentPlayer().getCurrentStudy());
+                    civilizationController.getCurrentPlayer().getWaitedTechnologies().remove(civilizationController.getCurrentPlayer().getCurrentStudy().getName());
+                    civilizationController.getCurrentPlayer().setCurrentStudy(null);
+                }
+                else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_UNIT)) != null){
+                    for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                        if(city.getId()==Integer.parseInt(matcher.group("id"))){
+                            cityController.createUnit(matcher.group("name"),city);
+                        }
+                    }
+                }
+                bar.getChildren().clear();
+                createTopBar(backgroundSize);
+                reBuildTiles();
+            }else {
+                move(keyEvent);
+            }
+        });
         tiles = new GraphicTile[civilizationController.getMapHeight()][civilizationController.getMapWidth()];
         Tile[][] modelTiles = civilizationController.getTiles();
         int i = 0;
@@ -337,6 +412,8 @@ public class Game {
                             tileMap.getChildren().remove(unitInformation);
                             GameController.setSelectedUnit(null);
                             reBuildTiles();
+                            bar.getChildren().clear();
+                            createTopBar(backgroundSize);
                         }
                             showMessage(output);
                     });

@@ -209,21 +209,25 @@ public class Game {
                                      }else tileInformation=null;
                                     }
                                     for (City city : civilizationController.getCurrentPlayer().getCities()) {
-                                        if(GameController.getSelectedCity()==null){
-                                            GameController.setSelectedCity(city);
-                                            for (Tile tile1 : city.getTiles()) {
-                                                getGraphicByModel(tile1).setOpacity(0.7);
-                                                if (tile1.getFeature() != null) getGraphicByModel(tile1).getFeature().setOpacity(0.7);
+                                        if(tile.getTile().equals(city.getCapital())) {
+                                            if (GameController.getSelectedCity() == null) {
+                                                GameController.setSelectedCity(city);
+                                                for (Tile tile1 : city.getTiles()) {
+                                                    getGraphicByModel(tile1).setOpacity(0.7);
+                                                    if (tile1.getFeature() != null)
+                                                        getGraphicByModel(tile1).getFeature().setOpacity(0.7);
+                                                }
+                                                fillCityPanel(city);
+                                                tileMap.getChildren().add(cityPanel);
+                                            } else {
+                                                GameController.setSelectedCity(null);
+                                                for (Tile tile1 : city.getTiles()) {
+                                                    getGraphicByModel(tile1).setOpacity(1);
+                                                    if (tile1.getFeature() != null)
+                                                        getGraphicByModel(tile1).getFeature().setOpacity(1);
+                                                }
+                                                tileMap.getChildren().remove(cityPanel);
                                             }
-                                            fillCityPanel(city);
-                                            tileMap.getChildren().add(cityPanel);
-                                        }else {
-                                            GameController.setSelectedCity(null);
-                                            for (Tile tile1 : city.getTiles()) {
-                                                getGraphicByModel(tile1).setOpacity(1);
-                                                if (tile1.getFeature() != null) getGraphicByModel(tile1).getFeature().setOpacity(1);
-                                            }
-                                            tileMap.getChildren().remove(cityPanel);
                                         }
                                     }
                                 }else {
@@ -397,6 +401,7 @@ public class Game {
                         tiles[i][j].addUnit(unit);
                         selectUnit(unit, tiles[i][j],backgroundSize);
                     }
+                    selectUnit(unit,tiles[i][j],backgroundSize);
                 }
             }
         }
@@ -461,7 +466,12 @@ public class Game {
                         tiles[x][y].deleteUnit(unitController.getSelectedUnit());
                     }
                     if(output.equals("you killed the unit")){
+                        MilitaryUnit militaryUnit=(MilitaryUnit) unitController.getSelectedUnit();
                         tile.deleteUnit(unit);
+                        if (militaryUnit.getRange() == -1) {
+                            tiles[x][y].deleteUnit(unitController.getSelectedUnit());
+                            tile.addUnit(unitController.getSelectedUnit());
+                        }
                     }
                     GameController.setSelectedUnit(null);
                     reBuildTiles(backgroundSize);
@@ -645,7 +655,8 @@ public class Game {
                 currentWorkText.getStyleClass().add("info");
                 unitInformation.getChildren().add(currentWorkText);
                 if(processingTiles.get(tile.getTile())!=null){
-                    double progress=processingTiles.get(tile.getTile())/totalTurn;
+                    double progress=1.0-((processingTiles.get(tile.getTile())).doubleValue()/totalTurn);
+                    if(progress==0) progress=0.1;
                     progressBar.setProgress(progress);
                     unitInformation.getChildren().add(progressBar);
                 }
@@ -661,7 +672,7 @@ public class Game {
                 for (Improvement improvement : ImprovementDatabase.getImprovements()) {
                     Button improvementButton=new Button(improvement.getName());
                     improvementButton.getStyleClass().add("secondary-btn");
-                    improvementButton.setMinWidth(100);
+                    improvementButton.setMinWidth(70);
                     unitInformation.getChildren().add(improvementButton);
                     improvementButton.setOnMouseClicked(mouseEvent2 -> {
                         showMessage(unitController.improveTile(improvement));

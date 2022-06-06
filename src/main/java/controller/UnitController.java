@@ -686,7 +686,8 @@ public class UnitController extends GameController {
                     militaryUnit.setHealth(militaryUnit.getHealth()-unit1.getHealth());
                     user.getUnits().remove(unit1);
                     if (militaryUnit.getRange() == -1) {
-                        moveSelectedUnit(unit1.getX(), unit1.getY());
+                        militaryUnit.setX(unit1.getX());
+                        militaryUnit.setY(unit1.getY());
                     }
                     return "you killed the unit";
                 }

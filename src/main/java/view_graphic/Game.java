@@ -14,7 +14,9 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -482,6 +484,18 @@ public class Game {
         }
     }
 
+    public Button createUnitActionButton(String actionName){
+        Button actionButton = new Button();
+        ImageView buttonImageView = new ImageView(new Image(getClass().getResource("/images/unitActions/"+ actionName +".png").toExternalForm()));
+        buttonImageView.setFitWidth(30);
+        buttonImageView.setFitHeight(30);
+        actionButton.setGraphic(buttonImageView);
+        actionButton.getStyleClass().add("secondary-btn");
+        actionButton.setMaxWidth(30);
+        Tooltip actionTooltip = new Tooltip(actionName);
+        actionButton.setTooltip(actionTooltip);
+        return actionButton;
+    }
     public void fillUnitInformation(GraphicTile tile,Unit unit,Rectangle graphicUnit,BackgroundSize backgroundSize){
         VBox unitInfo = new VBox();
         unitInfo.setAlignment(Pos.CENTER);
@@ -508,10 +522,9 @@ public class Game {
         unitValues.getChildren().add(unitSpec);
         unitHBox.getChildren().add(unitValues);
         unitInfo.getChildren().add(unitHBox);
-        VBox actions=new VBox();
-        Button sleep = new Button("Sleep");
-        sleep.getStyleClass().add("secondary-btn");
-        sleep.setMaxWidth(100);
+        VBox firstColumnActions=new VBox();
+        VBox secondColumnActions=new VBox();
+        Button sleep = createUnitActionButton("Sleep");
         sleep.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.sleep());
             tileMap.getChildren().remove(unitInformation);
@@ -519,10 +532,8 @@ public class Game {
             GameController.setSelectedUnit(null);
             reBuildTiles(backgroundSize);
         });
-        actions.getChildren().add(sleep);
-        Button wake = new Button("Wake");
-        wake.getStyleClass().add("secondary-btn");
-        wake.setMaxWidth(100);
+        firstColumnActions.getChildren().add(sleep);
+        Button wake = createUnitActionButton("Wake");
         wake.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.wake());
             tileMap.getChildren().remove(unitInformation);
@@ -530,10 +541,8 @@ public class Game {
             GameController.setSelectedUnit(null);
             reBuildTiles(backgroundSize);
         });
-        actions.getChildren().add(wake);
-        Button fortify = new Button("Fortify");
-        fortify.getStyleClass().add("secondary-btn");
-        fortify.setMaxWidth(100);
+        firstColumnActions.getChildren().add(wake);
+        Button fortify = createUnitActionButton("Fortify");
         fortify.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.fortify());
             tileMap.getChildren().remove(unitInformation);
@@ -541,10 +550,8 @@ public class Game {
             GameController.setSelectedUnit(null);
             reBuildTiles(backgroundSize);
         });
-        actions.getChildren().add(fortify);
-        Button garrison = new Button("Garrison");
-        garrison.getStyleClass().add("secondary-btn");
-        garrison.setMaxWidth(100);
+        firstColumnActions.getChildren().add(fortify);
+        Button garrison = createUnitActionButton("Garrison");
         garrison.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.garrison());
             tileMap.getChildren().remove(unitInformation);
@@ -552,10 +559,8 @@ public class Game {
             GameController.setSelectedUnit(null);
             reBuildTiles(backgroundSize);
         });
-        actions.getChildren().add(garrison);
-        Button alert = new Button("Alert");
-        alert.getStyleClass().add("secondary-btn");
-        alert.setMaxWidth(100);
+        firstColumnActions.getChildren().add(garrison);
+        Button alert = createUnitActionButton("Alert");
         alert.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.alert());
             tileMap.getChildren().remove(unitInformation);
@@ -563,10 +568,8 @@ public class Game {
             GameController.setSelectedUnit(null);
             reBuildTiles(backgroundSize);
         });
-        actions.getChildren().add(alert);
-        Button range = new Button("Range Setup");
-        range.getStyleClass().add("secondary-btn");
-        range.setMaxWidth(100);
+        secondColumnActions.getChildren().add(alert);
+        Button range = createUnitActionButton("SetupRange");
         range.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.rangeSetup());
             tileMap.getChildren().remove(unitInformation);
@@ -574,8 +577,33 @@ public class Game {
             GameController.setSelectedUnit(null);
             reBuildTiles(backgroundSize);
         });
-        actions.getChildren().add(range);
-        unitHBox.getChildren().add(actions);
+        secondColumnActions.getChildren().add(range);
+
+        Button cancelAction = createUnitActionButton("CancelAction");
+        cancelAction.setOnMouseClicked(mouseEvent1 -> {
+            showMessage(unitController.cancelActions());
+            tileMap.getChildren().remove(unitInformation);
+            tile.getGraphicUnits().get(unitController.getSelectedUnit()).setOpacity(1);
+            GameController.setSelectedUnit(null);
+            reBuildTiles(backgroundSize);
+        });
+        secondColumnActions.getChildren().add(cancelAction);
+
+        Button deleteUnit = createUnitActionButton("DeleteUnit");
+        deleteUnit.setOnMouseClicked(mouseEvent1 -> {
+            showMessage(unitController.deleteSelectedUnit(true));
+            tileMap.getChildren().remove(unitInformation);
+            tile.getGraphicUnits().get(unitController.getSelectedUnit()).setOpacity(1);
+            tile.deleteUnit(unitController.getSelectedUnit());
+            GameController.setSelectedUnit(null);
+            reBuildTiles(backgroundSize);
+        });
+        secondColumnActions.getChildren().add(deleteUnit);
+
+
+
+        unitHBox.getChildren().add(firstColumnActions);
+        unitHBox.getChildren().add(secondColumnActions);
         if (unit instanceof MilitaryUnit) {
             VBox militaryActions=new VBox();
             Button attack = new Button("Attack");
@@ -587,9 +615,7 @@ public class Game {
                 unitAttack = !unitAttack;
             });
             militaryActions.getChildren().add(attack);
-            Button loot = new Button("Loot Tile");
-            loot.getStyleClass().add("secondary-btn");
-            loot.setMaxWidth(100);
+            Button loot = createUnitActionButton("Pillage");
             loot.setOnMouseClicked(mouseEvent1 -> {
                 showMessage(unitController.lootTile());
             });
@@ -597,9 +623,7 @@ public class Game {
             unitHBox.getChildren().add(militaryActions);
         }
         if (unit instanceof SettlerUnit) {
-            Button foundCity = new Button("Found City");
-            foundCity.getStyleClass().add("secondary-btn");
-            foundCity.setMaxWidth(80);
+            Button foundCity = createUnitActionButton("FoundCity");
             foundCity.setOnMouseClicked(mouseEvent1 -> {
                 String output = unitController.foundCity();
                 if (output.equals("city founded")) {

@@ -47,6 +47,7 @@ public class GraphicTile extends Polygon {
         this.setStrokeWidth(4);
         tileMap.getChildren().add(this);
         addFeature();
+        checkCapital();
         tileMap.getChildren().add(location);
 
 
@@ -58,14 +59,8 @@ public class GraphicTile extends Polygon {
         this.setStrokeWidth(4);
         if (tile.getFeature() != null && !tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
             ImagePattern imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getFeature().getName() + ".png").toExternalForm()));
-            for (User user : User.getUsers()) {
-                for (City city : user.getCities()) {
-                    if(city.getCapital().equals(this.tile)){
-                        imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
-                    }
-                }
-            }
             feature.setFill(imagePattern);
+            checkCapital();
             if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))
                 feature.setEffect(lighting);
         }
@@ -135,25 +130,25 @@ public class GraphicTile extends Polygon {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Fog.png").toExternalForm()));
         else if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed")) {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getTerrain().getName() + ".png").toExternalForm()));
-            for (User user : User.getUsers()) {
-                for (City city : user.getCities()) {
-                    if(city.getCapital().equals(this.tile)){
-                        imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
-                    }
-                }
-            }
             this.setEffect(lighting);
         } else {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getTerrain().getName() + ".png").toExternalForm()));
-            for (User user : User.getUsers()) {
-                for (City city : user.getCities()) {
-                    if(city.getCapital().equals(this.tile)){
-                        imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
-                    }
+        }
+        this.setFill(imagePattern);
+    }
+
+    private void checkCapital() {
+        ImagePattern imagePattern = null;
+        for (User user : User.getUsers()) {
+            for (City city : user.getCities()) {
+                if(city.getCapital().equals(this.tile)){
+                    imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));
                 }
             }
         }
-        this.setFill(imagePattern);
+        if(imagePattern != null){
+            feature.setFill(imagePattern);
+        }
     }
 
     public void addFeature() {

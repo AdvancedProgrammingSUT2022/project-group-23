@@ -14,10 +14,13 @@ public class City {
     private boolean canAttack=true;
     private ArrayList<Tile> tiles = new ArrayList<>();
     private ArrayList<Tile> tilesWithCitizen = new ArrayList<>();
+    private ArrayList<Building> buildings=new ArrayList<>();
 
     private HashMap<String, Integer> waitedUnits = new HashMap<>();
+    private HashMap<String, Integer> waitedBuildings = new HashMap<>();
 
     private String constructingUnit = null;
+    private String constructingBuilding = null;
     public City(Tile capital)
     {
         this.capital=capital;
@@ -96,6 +99,14 @@ public class City {
         this.constructingUnit = constructingUnit;
     }
 
+    public void setConstructingBuilding (String constructingBuilding) {
+        this.constructingBuilding = constructingBuilding;
+    }
+
+    public String getConstructingBuilding () {
+        return constructingBuilding;
+    }
+
     public int totalFood(){
         int food=capital.getFood();
        for (Tile tile : tilesWithCitizen) {
@@ -138,6 +149,9 @@ public class City {
                 strength += 3;
             }
         }
+        for (Building building : buildings) {
+            strength+=building.getDefence();
+        }
         return strength;
     }
 
@@ -147,5 +161,17 @@ public class City {
 
     public void setCanAttack (boolean canAttack) {
         this.canAttack = canAttack;
+    }
+
+    public HashMap<String, Integer> getWaitedBuildings () {
+        return waitedBuildings;
+    }
+
+    public ArrayList<Building> getBuildings () {
+        return buildings;
+    }
+
+    public void addBuilding(Building building){
+        buildings.add(building);
     }
 }

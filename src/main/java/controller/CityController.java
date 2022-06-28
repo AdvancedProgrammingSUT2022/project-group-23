@@ -1,5 +1,6 @@
 package controller;
 
+import database.BuildingDataBase;
 import database.UnitsDatabase;
 import model.*;
 
@@ -13,6 +14,7 @@ public class CityController extends GameController{
     public String createCity(int x, int y){
         if(getCityAtCoordinate(x, y) != null) return "this tile belongs to a city";
         City city = new City(tiles[x][y]);
+        if(currentPlayer.getCities().isEmpty()) city.getBuildings().add(BuildingDataBase.getBuildings().get(0));
         currentPlayer.addCity(city);
         currentPlayer.setHappiness(currentPlayer.getHappiness()-5);
         Graph graph = createGraph();
@@ -101,7 +103,7 @@ public class CityController extends GameController{
 
     public String nextTurn(){
         for (City city : currentPlayer.getCities()) {
-            if(city.getConstructingUnit() == null)return "you have to choose a production for city : " + city.getId();
+            if(city.getConstructingUnit() == null && city.getConstructingBuilding()==null)return "you have to choose a production for city : " + city.getId();
         }
         for (City city : currentPlayer.getCities()) {
             city.setCanAttack(true);
@@ -120,6 +122,7 @@ public class CityController extends GameController{
             currentPlayer.setGold(currentPlayer.getGold() + city.gold());
             if(currentPlayer.getIsUnhappy() == 0)city.setFoodLeft(city.getFoodLeft() + city.totalFood());
             if(currentPlayer.getIsUnhappy() == 1)city.setFoodLeft(city.getFoodLeft() + city.totalFood() / 3);
+            if(city.getConstructingUnit()!=null)
             if(city.getConstructingUnit().equals("Settler"))city.setFoodLeft(0);
             if (city.getFoodLeft() >= (Math.pow(2, city.getCountOfCitizens())) && currentPlayer.getIsUnhappy()==0) {
                 currentPlayer.setHappiness(currentPlayer.getHappiness()-3);
@@ -135,15 +138,28 @@ public class CityController extends GameController{
                 }
                 city.setFoodLeft(0);
             }
-            HashMap<String, Integer> waitedUnits = city.getWaitedUnits();
-            waitedUnits.put(city.getConstructingUnit(),waitedUnits.get(city.getConstructingUnit()) - city.production());
-            if(waitedUnits.get(city.getConstructingUnit()) <= 0){
-                createUnit(city.getConstructingUnit(), city);
-                currentPlayer.addNotification("you have constructed unit : " + city.getConstructingUnit());
-                waitedUnits.remove(city.getConstructingUnit());
-                city.setConstructingUnit(null);
+            if(city.getConstructingUnit()!=null) {
+                HashMap<String, Integer> waitedUnits = city.getWaitedUnits();
+                waitedUnits.put(city.getConstructingUnit(), waitedUnits.get(city.getConstructingUnit()) - city.production());
+                if (waitedUnits.get(city.getConstructingUnit()) <= 0) {
+                    createUnit(city.getConstructingUnit(), city);
+                    currentPlayer.addNotification("you have constructed unit : " + city.getConstructingUnit());
+                    waitedUnits.remove(city.getConstructingUnit());
+                    city.setConstructingUnit(null);
+                }
+            }else {
+                HashMap<String, Integer> waitedBuildings = city.getWaitedBuildings();
+                waitedBuildings.put(city.getConstructingBuilding(), waitedBuildings.get(city.getConstructingBuilding()) - city.production());
+                if (waitedBuildings.get(city.getConstructingBuilding()) <= 0) {
+                    createBuilding(city.getConstructingBuilding(), city);
+                    currentPlayer.addNotification("you have constructed building : " + city.getConstructingBuilding());
+                    waitedBuildings.remove(city.getConstructingBuilding());
+                    city.setConstructingBuilding(null);
+                }
             }
-
+            for (Building building : city.getBuildings()) {
+                currentPlayer.setGold(currentPlayer.getGold()-building.getMaintenance());
+            }
         }
         return "ok";
     }
@@ -151,6 +167,7 @@ public class CityController extends GameController{
         if(selectedCity == null)return "no city selected";
         HashMap<String, Integer> waitedUnits = selectedCity.getWaitedUnits();
         selectedCity.setConstructingUnit(name);
+        selectedCity.setConstructingBuilding(null);
         if(!waitedUnits.containsKey(name)){
             if(name.equals("Settler")) {
                 if (selectedCity.getCountOfCitizens() < 2)
@@ -162,8 +179,8 @@ public class CityController extends GameController{
             waitedUnits.put(name, cost);
         }
         return "unit is being constructed";
-
     }
+
     private int getUnitCost(String name){
         int cost = 0;
         if(name.equals("Worker")) cost = 70;
@@ -193,7 +210,6 @@ public class CityController extends GameController{
 
         currentPlayer.addNotification("you have constructed unit : " + name);
         return "unit is constructed";
-
     }
     public void createUnit(String name, City city){
         if(name.equals("Settler"))currentPlayer.addUnit(new SettlerUnit(city.getCapital().getX(),city.getCapital().getY()));
@@ -210,7 +226,49 @@ public class CityController extends GameController{
                 }
             }
         }
+    }
 
+    public ArrayList<Building> constructableBuildingsForSelectedCity(){
+        ArrayList<Building> buildings=new ArrayList<>();
+        for (Building building : BuildingDataBase.getBuildings()) {
+            if((building.getNeededBuilding()==null || selectedCity.getBuildings().contains(building))&&(building.getNeededTechnology()==null || currentPlayer.hasTechnology(building.getNeededTechnology()))){
+                buildings.add(building);
+            }
+        }
+        return buildings;
+    }
+
+    public String constructBuilding(String name){
+        if(selectedCity == null)return "no city selected";
+        HashMap<String, Integer> waitedBuildings = selectedCity.getWaitedBuildings();
+        selectedCity.setConstructingBuilding(name);
+        selectedCity.setConstructingUnit(null);
+        if(!waitedBuildings.containsKey(name)){
+            int cost=BuildingDataBase.findBuilding(name).getCost();
+            waitedBuildings.put(name, cost);
+        }
+        return "Building is being constructed";
+    }
+
+    public String purchaseBuildingWithGold(String name){
+        if(selectedCity == null)return "no city selected";
+        int cost=BuildingDataBase.findBuilding(name).getCost();
+        if(currentPlayer.getGold() < cost)return "you don't have enough gold to build this building";
+        currentPlayer.setGold(currentPlayer.getGold() - cost);
+        createBuilding(name,selectedCity);
+        currentPlayer.addNotification("you have constructed building : " + name);
+        return "building is constructed";
+    }
+
+    public void createBuilding(String name, City city){
+            for (Building building : BuildingDataBase.getBuildings()) {
+                if (building.getName().equals(name)) {
+                    city.addBuilding(building);
+                    currentPlayer.setHappiness(currentPlayer.getHappiness()+BuildingDataBase.findBuilding(name).getHappiness());
+                    city.setFoodLeft(city.getFoodLeft()+BuildingDataBase.findBuilding(name).getFood());
+                    break;
+                }
+            }
     }
 
     public ArrayList<Tile> possibleTilesForPurchase(City city){

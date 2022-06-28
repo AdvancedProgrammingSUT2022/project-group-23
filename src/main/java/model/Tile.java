@@ -189,4 +189,5 @@ public class Tile {
     public void setHasLooted (boolean hasLooted) {
         this.hasLooted = hasLooted;
     }
+
 }

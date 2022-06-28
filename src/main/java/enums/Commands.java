@@ -35,6 +35,7 @@ public enum Commands {
     CHEAT_CREATE_CITY("create city (?<x>\\d+) (?<y>\\d+)"),
     CHEAT_FINISH_STUDY("finish current study"),
     CHEAT_BUILD_UNIT("-?-city (?<id>\\d+) build -?-unit (?<name>.+)"),
+    CHEAT_BUILD_BUILDING("-?-city (?<id>\\d+) build -?-building (?<name>.+)"),
     WHICH_NUMBER("\\d+");
     private String regex;
 

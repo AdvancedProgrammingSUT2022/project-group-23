@@ -211,6 +211,9 @@ public class User implements Comparable<User>{
         for (City city : cities) {
             cup=+3;
             cup += city.getCountOfCitizens();
+            for (Building building : city.getBuildings()) {
+                cup+=building.getCup();
+            }
         }
         if(gold<0){
             cup += gold;
@@ -337,5 +340,6 @@ public class User implements Comparable<User>{
         }
         return null;
     }
+
 }
 

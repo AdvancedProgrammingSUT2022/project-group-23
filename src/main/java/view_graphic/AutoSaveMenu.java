@@ -19,9 +19,8 @@ import model.User;
 import java.util.ArrayList;
 
 public class AutoSaveMenu {
-    private static ArrayList<String> autoSaves=new ArrayList<>();
     private static String selectedAutoSave;
-    private int autoSaveNumber;
+    private static int autoSaveNumber;
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -35,6 +34,7 @@ public class AutoSaveMenu {
     @FXML
     private TextField autoSave;
     public void initialize() {
+        autoSaveNumber = 0;
         Platform.runLater(() -> borderPane.requestFocus());
         setButton.setDisable(true);
         title.setFill(Color.rgb(1, 231, 212));
@@ -44,6 +44,7 @@ public class AutoSaveMenu {
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
         autoSaveLabel.setTextFill(Color.rgb(232, 200, 22));
+        ArrayList<String> autoSaves=new ArrayList<>();
         autoSaves.add("after founding a city");
         autoSaves.add("after studying a technology");
         autoSaves.add("after building a unit");
@@ -71,5 +72,13 @@ public class AutoSaveMenu {
 
     public void back (MouseEvent mouseEvent) {
         App.changeMenu("GameMenu");
+    }
+
+    public static String getSelectedAutoSave() {
+        return selectedAutoSave;
+    }
+
+    public static int getAutoSaveNumber() {
+        return autoSaveNumber;
     }
 }

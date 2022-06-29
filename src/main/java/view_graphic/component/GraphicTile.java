@@ -1,6 +1,7 @@
 package view_graphic.component;
 
 import controller.CivilizationController;
+import controller.GameController;
 import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -57,11 +58,11 @@ public class GraphicTile extends Polygon {
         setTerrainBackgroundImage();
         this.setStroke(Color.rgb(15, 65, 135));
         this.setStrokeWidth(4);
-        if (tile.getFeature() != null && !tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
+        if (tile.getFeature() != null && !tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
             ImagePattern imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getFeature().getName() + ".png").toExternalForm()));
             feature.setFill(imagePattern);
             checkCapital();
-            if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))
+            if (tile.getVisibilityForUser(GameController.getTurn()).equals("revealed"))
                 feature.setEffect(lighting);
         }
     }
@@ -115,7 +116,7 @@ public class GraphicTile extends Polygon {
         } else if (!tileMap.getChildren().contains(this)) {
             tileMap.getChildren().add(this);
             tileMap.getChildren().add(this.location);
-            if (this.tile.getFeature() != null && !this.tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
+            if (this.tile.getFeature() != null && !this.tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
                 tileMap.getChildren().add(this.feature);
             }
             for (Map.Entry<Unit, Rectangle> entry : this.graphicUnits.entrySet()) {
@@ -126,9 +127,9 @@ public class GraphicTile extends Polygon {
 
     public void setTerrainBackgroundImage() {
         ImagePattern imagePattern;
-        if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war"))
+        if (tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war"))
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Fog.png").toExternalForm()));
-        else if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed")) {
+        else if (tile.getVisibilityForUser(GameController.getTurn()).equals("revealed")) {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getTerrain().getName() + ".png").toExternalForm()));
             this.setEffect(lighting);
         } else {
@@ -154,10 +155,10 @@ public class GraphicTile extends Polygon {
     public void addFeature() {
         feature = new Polygon();
         feature.getPoints().addAll(this.getPoints());
-        if (tile.getFeature() != null && !tile.getVisibilityForUser(civilizationController.getTurn()).equals("fog of war")) {
+        if (tile.getFeature() != null && !tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
             ImagePattern imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getFeature().getName() + ".png").toExternalForm()));
             feature.setFill(imagePattern);
-            if (tile.getVisibilityForUser(civilizationController.getTurn()).equals("revealed"))
+            if (tile.getVisibilityForUser(GameController.getTurn()).equals("revealed"))
                 feature.setEffect(lighting);
             tileMap.getChildren().add(feature);
         }

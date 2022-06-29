@@ -78,11 +78,11 @@ public class GameMenuPage {
             if(!vbox.getChildren().contains(error))
                 vbox.getChildren().add(error);
         }else {
-            if(GameController.mapWidth==0 && GameController.mapHeight==0){
+            if(GameController.getMapWidth()==0 && GameController.getMapHeight()==0){
                 GameController.setMapHeight(5*players.size());
                 GameController.setMapWidth(5*players.size());
             }
-            Game.civilizationController=new CivilizationController(players);
+            Game.setCivilizationController(new CivilizationController(players));
             App.changeMenu("Game");
         }
     }

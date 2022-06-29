@@ -1,15 +1,19 @@
 package model;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import controller.CivilizationController;
+import controller.GameController;
+import database.SaveDatabase;
 import database.TechnologyDatabase;
+import view_graphic.Game;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class User implements Comparable<User>{
     private String username;
@@ -155,6 +159,7 @@ public class User implements Comparable<User>{
         this.username = username;
     }
 
+
     public void newGame(){
         gold = 0;
         isUnhappy = 0;
@@ -173,14 +178,58 @@ public class User implements Comparable<User>{
         updateUsersInfo();
     }
 
-    public static void updateUsersInfo()
-    {
+    public static void updateUsersInfo() {
         try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\saves\\Last Save.json");
+            FileWriter writer=new FileWriter("src\\main\\resources\\saves\\userInfo\\UserInfo.json");
             writer.write(new Gson().toJson(User.getUsers()));
             writer.close();
         } catch (IOException e) {
-            System.out.println("ERROR");
+            System.out.println("ERROR updating info");
+        }
+    }
+    public static void loadGameInfo(String saveName){
+        try {
+            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json")));
+            SaveDatabase saveDatabase = new Gson().fromJson(json, SaveDatabase.class);
+            GameController.setMapWidth(saveDatabase.getMapWidth());
+            GameController.setMapHeight(saveDatabase.getMapHeight());
+            GameController.setSelectedUnit(saveDatabase.getSelectedUnit());
+            GameController.setSelectedCity(saveDatabase.getSelectedCity());
+            GameController.setCivilizationController(saveDatabase.getCivilizationController());
+            GameController.setPlayers(saveDatabase.getPlayers());
+            GameController.setTiles(saveDatabase.getTiles());
+            GameController.setTurn(saveDatabase.getTurn());
+            GameController.setCurrentPlayer(saveDatabase.getCurrentPlayer());
+            CivilizationController civilizationController = GameController.getCivilizationController();
+            for(int j = 0; j < GameController.getPlayers().size(); j++){
+                User player = GameController.getPlayers().get(j);
+                for (int i = 0; i < users.size(); i++) {
+                    if(users.get(i).getUsername().equals(player.getUsername())){
+                        User user = users.get(i);
+                        player.setPassword(user.getPassword());
+                        player.setNickname(user.getNickname());
+                        player.setScore(user.getScore());
+                        player.setLastOnline(user.getLastOnline());
+                        player.setLastWin(user.getLastWin());
+                        player.setProfilePictureURL(user.getProfilePictureURL());
+                        users.set(i, player);
+                        break;
+                    }
+                }
+            }
+            Game.setCivilizationController(civilizationController);
+        } catch (IOException e) {
+            System.out.println("ERROR reading save file");
+        }
+    }
+    public static void saveGame(String saveName){
+        try {
+            FileWriter writer=new FileWriter("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json");
+            SaveDatabase saveDatabase = new SaveDatabase();
+            writer.write(new Gson().toJson(saveDatabase));
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("ERROR saving game info");
         }
     }
 

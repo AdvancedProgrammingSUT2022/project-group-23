@@ -88,7 +88,7 @@ public class GameView {
                 drawMap();
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_GOLD)) != null)
-                civilizationController.getCurrentPlayer().setGold(civilizationController.getCurrentPlayer().getGold()+Integer.parseInt(matcher.group("amount")));
+                GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+Integer.parseInt(matcher.group("amount")));
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_TURN)) != null){
                 String message = "";
                 for(int i=0;i<Integer.parseInt(matcher.group("amount"));i++){
@@ -98,19 +98,19 @@ public class GameView {
                 drawMap();
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_HAPPINESS)) != null)
-                civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness()+Integer.parseInt(matcher.group("amount")));
+                GameController.getCurrentPlayer().setHappiness(GameController.getCurrentPlayer().getHappiness()+Integer.parseInt(matcher.group("amount")));
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_UNIT_FULL_HEALTH)) != null){
-                for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
+                for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
                     unit.setHealth(10);
                 }
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CITY_FULL_HEALTH)) != null){
-                for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                for (City city : GameController.getCurrentPlayer().getCities()) {
                     city.setHealth(20);
                 }
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_CITIZEN)) != null){
-                for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                for (City city : GameController.getCurrentPlayer().getCities()) {
                    if(city.getId()==Integer.parseInt(matcher.group("id"))){
                        city.setCountOfCitizens(city.getCountOfCitizens()+Integer.parseInt(matcher.group("amount")));
                        break;
@@ -122,7 +122,7 @@ public class GameView {
                 drawMap();
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null){
-                for (Unit unit : civilizationController.getCurrentPlayer().getUnits()) {
+                for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
                     unit.setRemainingMoves(unit.getRemainingMoves()+Integer.parseInt(matcher.group("amount")));
                 }
             }
@@ -131,12 +131,12 @@ public class GameView {
                 drawMap();
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_FINISH_STUDY)) != null){
-                civilizationController.getCurrentPlayer().addTechnology(civilizationController.getCurrentPlayer().getCurrentStudy());
-                civilizationController.getCurrentPlayer().getWaitedTechnologies().remove(civilizationController.getCurrentPlayer().getCurrentStudy().getName());
-                civilizationController.getCurrentPlayer().setCurrentStudy(null);
+                GameController.getCurrentPlayer().addTechnology(GameController.getCurrentPlayer().getCurrentStudy());
+                GameController.getCurrentPlayer().getWaitedTechnologies().remove(GameController.getCurrentPlayer().getCurrentStudy().getName());
+                GameController.getCurrentPlayer().setCurrentStudy(null);
             }
             else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_UNIT)) != null){
-                for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                for (City city : GameController.getCurrentPlayer().getCities()) {
                     if(city.getId()==Integer.parseInt(matcher.group("id"))){
                         cityController.createUnit(matcher.group("name"),city);
                     }
@@ -177,15 +177,15 @@ public class GameView {
                 attackUnitFromCity(scanner);
                 drawMap();
             }
-            else if(input.equals("technology menu")) chooseTechnologyMenu(civilizationController.getCurrentPlayer(),scanner);
+            else if(input.equals("technology menu")) chooseTechnologyMenu(GameController.getCurrentPlayer(),scanner);
             else if(input.equals("show technologies panel"))showTechnologyInfo();
-            else if(input.equals("production menu")) chooseProductionMenu(civilizationController.getCurrentPlayer(),scanner);
+            else if(input.equals("production menu")) chooseProductionMenu(GameController.getCurrentPlayer(),scanner);
             else if(input.equals("show units panel")) showUnitsInfo(civilizationController.showUnitsInfo());
             else if(input.equals("show military overview")) militaryOverview(civilizationController.showUnitsInfo());
             else if(input.equals("show cities panel")) showCitiesInfo(civilizationController.showCitiesInfo());
             else if(input.equals("show notifications history")) {
-                if(civilizationController.getCurrentPlayer().getNotifications().isEmpty()) System.out.println("you don't have any notifications");
-                else System.out.println(civilizationController.getCurrentPlayer().getNotifications());
+                if(GameController.getCurrentPlayer().getNotifications().isEmpty()) System.out.println("you don't have any notifications");
+                else System.out.println(GameController.getCurrentPlayer().getNotifications());
             }
             else if(input.equals("show research panel")) showCurrentStudyInfo(civilizationController.showCurrentStudy());
             else if(input.equals("show demographic panel"))demographicPanel();
@@ -199,11 +199,11 @@ public class GameView {
     }
 
     private void showTechnologyInfo() {
-        if(civilizationController.getCurrentPlayer().getTechnologies().isEmpty()) {
+        if(GameController.getCurrentPlayer().getTechnologies().isEmpty()) {
             System.out.println("you have no technologies");
             return;
         }
-        for(Technology technology : civilizationController.getCurrentPlayer().getTechnologies()){
+        for(Technology technology : GameController.getCurrentPlayer().getTechnologies()){
             System.out.println(technology.getName());
         }
     }
@@ -211,8 +211,8 @@ public class GameView {
     private void drawMap(){
         String[][] printableMap = new String[100][100];
         Tile[][] tiles = civilizationController.getTiles();
-        int width = civilizationController.getMapWidth();
-        int height = civilizationController.getMapHeight();
+        int width = GameController.getMapWidth();
+        int height = GameController.getMapHeight();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 ArrayList<String> infos = new ArrayList<>();
@@ -231,7 +231,7 @@ public class GameView {
                 if(tiles[i][j].getResource() != null){
                     if(tiles[i][j].getResource().getNeededTechnology() == null)resourceImprovementName.append(tiles[i][j].getResource().getName(), 0, 3).append("-");
                     else {
-                        if(civilizationController.getCurrentPlayer().hasTechnology(tiles[i][j].getResource().getNeededTechnology()))
+                        if(GameController.getCurrentPlayer().hasTechnology(tiles[i][j].getResource().getNeededTechnology()))
                             resourceImprovementName.append(tiles[i][j].getResource().getName(), 0, 3).append("-");
                     }
                 }
@@ -246,10 +246,10 @@ public class GameView {
                 infos.add(String.valueOf(unitsName));
 
                 String background = ANSI_CYAN_BACKGROUND;
-                if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("visible"))background = ANSI_YELLOW_BACKGROUND;
-                else if(tiles[i][j].getVisibilityForUser(civilizationController.getTurn()).equals("revealed")){
+                if(tiles[i][j].getVisibilityForUser(GameController.getTurn()).equals("visible"))background = ANSI_YELLOW_BACKGROUND;
+                else if(tiles[i][j].getVisibilityForUser(GameController.getTurn()).equals("revealed")){
                     background = ANSI_BLUE_BACKGROUND;
-                    infos = tiles[i][j].getOldInfoForUser(civilizationController.getTurn());
+                    infos = tiles[i][j].getOldInfoForUser(GameController.getTurn());
                 }
                 else infos.clear();
 
@@ -308,7 +308,7 @@ public class GameView {
 
     }
     private void printMap(String[][] printableMap){
-        for (int i = 0; i < civilizationController.getMapHeight() * 7; i++) {
+        for (int i = 0; i < GameController.getMapHeight() * 7; i++) {
             for (int j = 0; j < 100; j++) {
                 if (printableMap[i][j] != null) System.out.print(printableMap[i][j]);
                 else System.out.print(" ");
@@ -363,12 +363,12 @@ public class GameView {
             population += city.getCountOfCitizens();
             tileCount += city.getTiles().size();
         }
-        int happiness = civilizationController.getCurrentPlayer().getHappiness();
+        int happiness = GameController.getCurrentPlayer().getHappiness();
         int countOfMilitaryUnits = 0;
         for(Unit unit : civilizationController.showUnitsInfo()){
             if(unit instanceof MilitaryUnit) countOfMilitaryUnits++;
         }
-        System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " gold : " + civilizationController.getCurrentPlayer().getGold() + " count of military units : " + countOfMilitaryUnits);
+        System.out.println("population : " + population + " tile count : " + tileCount + " happiness : " + happiness + " gold : " + GameController.getCurrentPlayer().getGold() + " count of military units : " + countOfMilitaryUnits);
     }
     private void purchaseTile(Scanner scanner){
         if(GameController.getSelectedCity() == null){
@@ -397,10 +397,10 @@ public class GameView {
     private void showCurrentStudyInfo(Technology technology) {
         if (technology != null) {
             int turnsLeft;
-            if (civilizationController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) % civilizationController.getCurrentPlayer().totalCup() == 0) {
-                turnsLeft =  civilizationController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) / civilizationController.getCurrentPlayer().totalCup();
+            if (GameController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) % GameController.getCurrentPlayer().totalCup() == 0) {
+                turnsLeft =  GameController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) / GameController.getCurrentPlayer().totalCup();
             } else {
-                turnsLeft = civilizationController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) / civilizationController.getCurrentPlayer().totalCup() + 1;
+                turnsLeft = GameController.getCurrentPlayer().getWaitedTechnologies().get(technology.getName()) / GameController.getCurrentPlayer().totalCup() + 1;
             }
             System.out.println("you are currently studying " + technology.getName() + " and there is " + turnsLeft + " turns left to unlock");
             System.out.println("resources that need this technology to be discovered:");
@@ -430,7 +430,7 @@ public class GameView {
     }
 
     private void chooseTechnologyMenu(User user,Scanner scanner){
-        if(civilizationController.getCurrentPlayer().getCities().isEmpty()){
+        if(GameController.getCurrentPlayer().getCities().isEmpty()){
             System.out.println("you need to build a city first");
             return;
         }
@@ -442,17 +442,17 @@ public class GameView {
         ArrayList<Technology> readyTechnologies=user.readyTechnologies();
         for(int i=0;i<readyTechnologies.size();i++){
             int turnsLeft;
-            if(civilizationController.getCurrentPlayer().totalCup()==0){
+            if(GameController.getCurrentPlayer().totalCup()==0){
                 turnsLeft=-1;
             }else {
                 int cost = readyTechnologies.get(i).getCost();
-                if(civilizationController.getCurrentPlayer().getWaitedTechnologies().containsKey(readyTechnologies.get(i).getName())){
-                    cost = civilizationController.getCurrentPlayer().getWaitedTechnologies().get(readyTechnologies.get(i).getName());
+                if(GameController.getCurrentPlayer().getWaitedTechnologies().containsKey(readyTechnologies.get(i).getName())){
+                    cost = GameController.getCurrentPlayer().getWaitedTechnologies().get(readyTechnologies.get(i).getName());
                 }
-                if (cost % civilizationController.getCurrentPlayer().totalCup() == 0) {
-                    turnsLeft = cost / civilizationController.getCurrentPlayer().totalCup();
+                if (cost % GameController.getCurrentPlayer().totalCup() == 0) {
+                    turnsLeft = cost / GameController.getCurrentPlayer().totalCup();
                 } else {
-                    turnsLeft = cost / civilizationController.getCurrentPlayer().totalCup() + 1;
+                    turnsLeft = cost / GameController.getCurrentPlayer().totalCup() + 1;
                 }
             }
             System.out.println((i+1)+"- "+readyTechnologies.get(i).getName()+", it needs "+turnsLeft+" turns to unlock");
@@ -512,8 +512,8 @@ public class GameView {
         }
     }
     public void unitBuild(String name){
-        if(unitController.getSelectedUnit()==null) System.out.println("you need to choose a worker unit first!");
-        if(!(unitController.getSelectedUnit() instanceof WorkerUnit)) System.out.println("this unit is not a worker unit");
+        if(GameController.getSelectedUnit()==null) System.out.println("you need to choose a worker unit first!");
+        if(!(GameController.getSelectedUnit() instanceof WorkerUnit)) System.out.println("this unit is not a worker unit");
         if (name.equals("Road")) System.out.println(unitController.buildRoad("Road"));
         if (name.equals("Railroad")) System.out.println(unitController.buildRoad("Railroad"));
         else{
@@ -537,10 +537,10 @@ public class GameView {
             System.out.println(unitController.checkSelectedUnit());
         }
         else {
-            if (!(unitController.getSelectedUnit() instanceof MilitaryUnit)) {
+            if (!(GameController.getSelectedUnit() instanceof MilitaryUnit)) {
                 System.out.println("this unit can't attack another unit");
             }else {
-                if(unitController.getSelectedUnit().getRemainingMoves()==0){
+                if(GameController.getSelectedUnit().getRemainingMoves()==0){
                     System.out.println("this unit can't attack now!");
                 }else {
                     ArrayList<Unit> reachableUnits = unitController.reachableUnits();
@@ -573,10 +573,10 @@ public class GameView {
         if(!unitController.checkSelectedUnit().equals("ok")){
             System.out.println(unitController.checkSelectedUnit());
         }else {
-            if (!(unitController.getSelectedUnit() instanceof MilitaryUnit)) {
+            if (!(GameController.getSelectedUnit() instanceof MilitaryUnit)) {
                 System.out.println("this unit can't attack another unit");
             }else {
-                if (unitController.getSelectedUnit().getRemainingMoves() == 0) {
+                if (GameController.getSelectedUnit().getRemainingMoves() == 0) {
                     System.out.println("this unit can't attack now!");
                 }else {
                     ArrayList<City> reachableCities = unitController.reachableCities();
@@ -608,8 +608,8 @@ public class GameView {
                                 if (which.equals("annex")) {
                                     cityController.getCityOwner(reachableCities.get(Integer.parseInt(whichCity) - 1)).getCities().remove(reachableCities.get(Integer.parseInt(whichCity) - 1));
                                     reachableCities.get(Integer.parseInt(whichCity) - 1).setHealth(20);
-                                    civilizationController.getCurrentPlayer().setHappiness(civilizationController.getCurrentPlayer().getHappiness() - 5);
-                                    civilizationController.getCurrentPlayer().getCities().add(reachableCities.get(Integer.parseInt(whichCity) - 1));
+                                    GameController.getCurrentPlayer().setHappiness(GameController.getCurrentPlayer().getHappiness() - 5);
+                                    GameController.getCurrentPlayer().getCities().add(reachableCities.get(Integer.parseInt(whichCity) - 1));
                                     System.out.println("you annexed this city to your cities!");
                                 }
                             }

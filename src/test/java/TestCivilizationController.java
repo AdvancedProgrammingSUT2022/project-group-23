@@ -47,18 +47,18 @@ public class TestCivilizationController extends GameController {
         CivilizationController civilizationController=new CivilizationController(players);
         CityController cityController= civilizationController.getCityController();
         UnitController unitController=civilizationController.getUnitController();
-        civilizationController.getCurrentPlayer();
+        GameController.getCurrentPlayer();
         civilizationController.getCityController();
         civilizationController.getUnitController();
         civilizationController.showUnitsInfo();
         civilizationController.showCitiesInfo();
         civilizationController.studyTechnology(TechnologyDatabase.getTechnologies().get(0));
         assertEquals(currentPlayer.getCurrentStudy(),TechnologyDatabase.getTechnologies().get(0));
-        civilizationController.getMapHeight();
-        civilizationController.getMapWidth();
+        GameController.getMapHeight();
+        GameController.getMapWidth();
         civilizationController.showCurrentStudy();
         civilizationController.getTiles();
-        civilizationController.getTurn();
+        GameController.getTurn();
         GameController.getSelectedCity();
     }
 

@@ -1,5 +1,6 @@
 package model;
 
+import controller.GameController;
 import controller.UnitController;
 
 import java.util.*;
@@ -119,8 +120,8 @@ public class Graph {
                 if (distance[s] + 1 < distance[n] && tiles[n / mapWidth][n % mapWidth].getMovementCost() != -1 ){//&&
                       //  !tiles[n / mapWidth][n % mapWidth].getVisibilityForUser(userId).equals("fog of war")) {
 
-                    if(unitController.getSelectedUnit() instanceof MilitaryUnit && unitController.getTileCombatUnit(n / mapWidth,n % mapWidth) != null)continue;
-                    if(!(unitController.getSelectedUnit() instanceof MilitaryUnit) && unitController.getTileNonCombatUnit(n / mapWidth,n % mapWidth) != null)continue;
+                    if(GameController.getSelectedUnit() instanceof MilitaryUnit && unitController.getTileCombatUnit(n / mapWidth,n % mapWidth) != null)continue;
+                    if(!(GameController.getSelectedUnit() instanceof MilitaryUnit) && unitController.getTileNonCombatUnit(n / mapWidth,n % mapWidth) != null)continue;
                     distance[n] = distance[s] + 1;
                     parent[n] = s;
                     queue.add(n);

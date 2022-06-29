@@ -14,6 +14,7 @@ public class CivilizationController extends GameController{
 
     public CivilizationController(ArrayList<User> players) {
         GameController.players = players;
+        GameController.civilizationController = this;
         tiles = new Tile[mapHeight][mapWidth];
         for (User user : players) user.newGame();
         currentPlayer = players.get(0);
@@ -109,17 +110,6 @@ public class CivilizationController extends GameController{
         return currentPlayer.getCurrentStudy();
     }
 
-    public int getMapWidth() {
-        return mapWidth;
-    }
-
-    public int getMapHeight() {
-        return mapHeight;
-    }
-
-    public Tile[][] getTiles() {
-        return tiles;
-    }
 
     public UnitController getUnitController() {
         return unitController;
@@ -129,13 +119,6 @@ public class CivilizationController extends GameController{
         return cityController;
     }
 
-    public int getTurn() {
-        return turn;
-    }
-
-    public User getCurrentPlayer () {
-        return currentPlayer;
-    }
 
     public void studyTechnology(Technology technology){
         currentPlayer.setCurrentStudy(technology);

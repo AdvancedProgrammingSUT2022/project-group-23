@@ -10,12 +10,9 @@ import java.util.Random;
 
 public class UnitController extends GameController {
 
-    private CityController cityController;
     public UnitController(CityController cityController) {
-        this.cityController = cityController;
         initializeUnits();
         checkVisibility();
-
     }
 
 
@@ -118,7 +115,7 @@ public class UnitController extends GameController {
             for(Tile tile : city.getTiles()){
                 tile.setVisibilityForUser("visible", turn);
             }
-            ArrayList<Tile> viewableTiles = cityController.possibleTilesForPurchase(city);
+            ArrayList<Tile> viewableTiles = civilizationController.getCityController().possibleTilesForPurchase(city);
             for(Tile tile : viewableTiles){
                 tile.setVisibilityForUser("visible", turn);
             }
@@ -127,12 +124,12 @@ public class UnitController extends GameController {
             for (int j = 0; j < mapWidth; j++) {
                 if(tiles[i][j].getVisibilityForUser(turn).equals("visible")) {
                     ArrayList<String> infos = new ArrayList<>();
-                    City city = cityController.getCityAtCoordinate(i, j);
+                    City city = civilizationController.getCityController().getCityAtCoordinate(i, j);
                     if(city == null)infos.add("nl");
                     else {
                         if(city.getCapital().getX() != i || city.getCapital().getY() != j)
-                            infos.add("bg:" + cityController.getCityAtCoordinate(i, j).getId());
-                        else infos.add("cp:" + cityController.getCityAtCoordinate(i, j).getId());
+                            infos.add("bg:" + civilizationController.getCityController().getCityAtCoordinate(i, j).getId());
+                        else infos.add("cp:" + civilizationController.getCityController().getCityAtCoordinate(i, j).getId());
                     }
                     StringBuilder terrainFeatureName = new StringBuilder(tiles[i][j].getTerrain().getName().substring(0,3) + "-");
                     if(tiles[i][j].getFeature() != null) terrainFeatureName.append(tiles[i][j].getFeature().getName().substring(0,3));
@@ -196,7 +193,7 @@ public class UnitController extends GameController {
         if(!getUnitOwner(selectedUnit).equals(currentPlayer)) return "unit doesn't belong to you";
         if(!(selectedUnit instanceof SettlerUnit))return "unit is not Settler";
         if(selectedUnit.getRemainingMoves() <= 0)return "no remaining moves";
-        String message = cityController.createCity(selectedUnit.getX(), selectedUnit.getY());
+        String message = civilizationController.getCityController().createCity(selectedUnit.getX(), selectedUnit.getY());
         if(message.equals("city founded")){
             currentPlayer.addNotification("you found a city  at : (" + selectedUnit.getX() + "," + selectedUnit.getY() + ")");
             deleteSelectedUnit(false);
@@ -249,7 +246,7 @@ public class UnitController extends GameController {
     public String garrison(){
         if(!checkSelectedUnit().equals("ok"))return checkSelectedUnit();
         if(!(selectedUnit instanceof MilitaryUnit))return "unit is not military";
-        City city = cityController.getCityAtCoordinate(selectedUnit.getX(), selectedUnit.getY());
+        City city = civilizationController.getCityController().getCityAtCoordinate(selectedUnit.getX(), selectedUnit.getY());
         if(city == null || city.getCapital().getX() != selectedUnit.getX() ||
                 city.getCapital().getY() != selectedUnit.getY()) return "unit can't be garrisoned here";
         cancelActions();
@@ -747,7 +744,7 @@ public class UnitController extends GameController {
         if(city.getHealth()<=0 || militaryUnit.getHealth()<=0){
             if(militaryUnit.getHealth()> city.getHealth()){
                 militaryUnit.setHealth(militaryUnit.getHealth()-city.getHealth());
-                cityController.getCityOwner(city).setGold(cityController.getCityOwner(city).getGold()-5);
+                civilizationController.getCityController().getCityOwner(city).setGold(civilizationController.getCityController().getCityOwner(city).getGold()-5);
                 currentPlayer.setGold(currentPlayer.getGold()+4);
                 return "dominated";
             }else {
@@ -760,7 +757,4 @@ public class UnitController extends GameController {
         }
     }
 
-    public Unit getSelectedUnit() {
-        return selectedUnit;
-    }
 }

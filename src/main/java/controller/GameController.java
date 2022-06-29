@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class GameController {
 
-    public static int mapWidth ;
-    public static int mapHeight ;
+    protected static int mapWidth ;
+    protected static int mapHeight ;
     protected static ArrayList<User> players;
     protected static Tile[][] tiles;
 
@@ -15,6 +15,7 @@ public class GameController {
     protected static City selectedCity;
     protected static int turn;
     protected static User currentPlayer;
+    protected static CivilizationController civilizationController;
 
     public static boolean isCoordinateValid(int x, int y) {
         return x >= 0 && x < mapHeight && y >= 0 && y < mapWidth;
@@ -66,4 +67,55 @@ public class GameController {
         GameController.mapHeight = mapHeight;
     }
 
+    public static void setPlayers(ArrayList<User> players) {
+        GameController.players = players;
+    }
+
+    public static void setTiles(Tile[][] tiles) {
+        GameController.tiles = tiles;
+    }
+
+    public static void setTurn(int turn) {
+        GameController.turn = turn;
+    }
+
+    public static void setCurrentPlayer(User currentPlayer) {
+        GameController.currentPlayer = currentPlayer;
+    }
+
+    public static void setCivilizationController(CivilizationController civilizationController) {
+        GameController.civilizationController = civilizationController;
+    }
+
+    public static int getMapWidth() {
+        return mapWidth;
+    }
+
+    public static int getMapHeight() {
+        return mapHeight;
+    }
+
+    public static ArrayList<User> getPlayers() {
+        return players;
+    }
+
+    public static Tile[][] getTiles() {
+        return tiles;
+    }
+
+    public static Unit getSelectedUnit() {
+        return selectedUnit;
+    }
+
+    public static int getTurn() {
+        return turn;
+    }
+
+    public static User getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public static CivilizationController getCivilizationController() {
+        return civilizationController;
+    }
 }

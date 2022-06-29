@@ -13,10 +13,9 @@ import java.util.Random;
 public class RegisterController {
     private static RegisterController instance;
 
-    private RegisterController()
-    {
+    private RegisterController() {
         try {
-            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\Last Save.json")));
+            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\userInfo\\UserInfo.json")));
             User.setUsers(new Gson().fromJson(json, new TypeToken<List<User>>(){}.getType()));
         } catch (IOException e) {
             System.out.println("ERROR");

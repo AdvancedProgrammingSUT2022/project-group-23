@@ -16,6 +16,7 @@ public class Tile {
     private HashMap<Integer,ArrayList<String>> oldInfo;
     private boolean isRoad;
     private boolean hasLooted;
+    private boolean isRuin;
     private Improvement lootedImprovement;
 
     public Tile(int x,int y)
@@ -190,4 +191,11 @@ public class Tile {
         this.hasLooted = hasLooted;
     }
 
+    public boolean isRuin () {
+        return isRuin;
+    }
+
+    public void setRuin (boolean ruin) {
+        isRuin = ruin;
+    }
 }

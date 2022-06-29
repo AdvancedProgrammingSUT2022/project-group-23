@@ -12,7 +12,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -34,6 +33,7 @@ import view_graphic.component.GraphicTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.regex.Matcher;
 
 public class Game {
@@ -104,8 +104,10 @@ public class Game {
                         x + size, dy + size * Math.sqrt(3),
                         x, dy + size * Math.sqrt(3),
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
-
                 tiles[i][j] = tile;
+                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")){
+                    showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                }
                 int finalI = i;
                 int finalJ = j;
                 Polygon select = tile;
@@ -278,7 +280,7 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
-        bar.setSpacing(30);
+        bar.setSpacing(25);
         Text userNickname = new Text(GameController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
@@ -325,6 +327,13 @@ public class Game {
             });
             bar.getChildren().add(technologyPanelButton);
         }
+        Button diplomacy = new Button("Diplomacy");
+        diplomacy.getStyleClass().add("primary-btn");
+        diplomacy.setMaxWidth(100);
+        diplomacy.setOnMouseClicked(mouseEvent -> {
+            App.changeMenu("Diplomacy");
+        });
+        bar.getChildren().add(diplomacy);
         Button nextTurn = new Button("Next Turn");
         nextTurn.getStyleClass().add("primary-btn");
         nextTurn.setMaxWidth(100);
@@ -382,6 +391,9 @@ public class Game {
         for (int i = 0; i < GameController.getMapHeight(); i++) {
             for (int j = 0; j < GameController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
+                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
+                    showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                }
                     for (City city : GameController.getCurrentPlayer().getCities()) {
                         if(city.getCapital().equals(tiles[i][j].getTile())){
                             Polygon select=tiles[i][j];
@@ -408,6 +420,17 @@ public class Game {
                     }
                 Unit unit;
                 if (!tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
+                    if(tiles[i][j].getTile().isRuin()){
+                        tiles[i][j].getTile().setRuin(false);
+                        int gold=new Random().nextInt(10);
+                        for (City city : GameController.getCurrentPlayer().getCities()) {
+                            city.setCountOfCitizens(city.getCountOfCitizens()+1);
+                        }
+                        GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+gold);
+                        Technology technology=TechnologyDatabase.getTechnologies().get(new Random().nextInt(46));
+                        GameController.getCurrentPlayer().addTechnology(technology);
+                        showMessage("benefits of ruined tile: +1 citizen, technology: "+technology.getName()+" unlocked, +"+gold+" gold");
+                    }
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
                         unit = unitController.getTileNonCombatUnit(i, j);
                     } else {
@@ -421,6 +444,8 @@ public class Game {
                 }
             }
         }
+        bar.getChildren().clear();
+        createTopBar(backgroundSize);
     }
 
     public void selectUnit(Unit unit, GraphicTile tile,BackgroundSize backgroundSize) {
@@ -613,9 +638,6 @@ public class Game {
             reBuildTiles(backgroundSize);
         });
         secondColumnActions.getChildren().add(deleteUnit);
-
-
-
         unitHBox.getChildren().add(firstColumnActions);
         unitHBox.getChildren().add(secondColumnActions);
         if (unit instanceof MilitaryUnit) {
@@ -1062,7 +1084,7 @@ public class Game {
             }
         }
         else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null) {
-            civilizationController.getTiles()[Integer.parseInt(matcher.group("x"))][Integer.parseInt(matcher.group("y"))].setRoad(true);
+            GameController.getTiles()[Integer.parseInt(matcher.group("x"))][Integer.parseInt(matcher.group("y"))].setRoad(true);
         }
         else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null){
             for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
@@ -1118,7 +1140,7 @@ public class Game {
                     graphicTechnology.setFill(technologyImage);
                     technologies.put(technology,graphicTechnology);
                     graphicTechnology.setLayoutX(i*225);
-                    graphicTechnology.setLayoutY(j*55);
+                    graphicTechnology.setLayoutY(j*55+20);
                     scroll.getChildren().add(graphicTechnology);
                     j++;
                     graphicTechnology.setOnMouseClicked(mouseEvent -> {
@@ -1131,7 +1153,12 @@ public class Game {
                             if(GameController.getCurrentPlayer().getCurrentStudy()!=null && GameController.getCurrentPlayer().getCurrentStudy().equals(technology)){
                                 showMessage("you are already studying this technology!");
                             }else
-                            showMessage("you have to study it's prerequisite technologies first!");
+                                if(GameController.getCurrentPlayer().getTechnologies().contains(technology)){
+                                    showMessage("you have already studied this technology");
+                                }
+                                else {
+                                    showMessage("you have to study it's prerequisite technologies first!");
+                                }
                         }
                     });
                 }

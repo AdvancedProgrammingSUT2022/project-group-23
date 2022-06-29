@@ -38,6 +38,8 @@ public class User implements Comparable<User>{
     private String profilePictureURL;
     private String lastWin;
     private String lastOnline;
+    private ArrayList<User> enemies;
+    private ArrayList<User> confederate;
 
     private ArrayList<String> notifications;
 
@@ -175,6 +177,8 @@ public class User implements Comparable<User>{
         improvingTiles = new HashMap<>();
         eliminatingFeatures = new ArrayList<>();
         notifications = new ArrayList<>();
+        enemies=new ArrayList<>();
+        confederate=new ArrayList<>();
         updateUsersInfo();
     }
 
@@ -390,5 +394,20 @@ public class User implements Comparable<User>{
         return null;
     }
 
+    public ArrayList<User> getEnemies () {
+        return enemies;
+    }
+
+    public ArrayList<User> getConfederate () {
+        return confederate;
+    }
+
+    public void addEnemy(User user){
+        enemies.add(user);
+    }
+
+    public void addConfederate(User user){
+        confederate.add(user);
+    }
 }
 

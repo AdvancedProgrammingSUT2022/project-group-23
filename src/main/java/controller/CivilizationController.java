@@ -29,13 +29,16 @@ public class CivilizationController extends GameController{
             for (int j = 0; j < mapWidth; j++) {
                 tiles[i][j] = new Tile(i, j);
                 for (int k = 0; k < players.size(); k++) {
+                    tiles[i][j].setRuin(false);
                     tiles[i][j].setVisibilityForUser("fog of war", k);
                 }
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
                 TerrainDatabase.addRandomResourceToTile(tiles[i][j]);
             }
         }
-
+        for(int i=0;i<(mapWidth*mapHeight)/30;i++){
+            tiles[new Random().nextInt(mapHeight)][new Random().nextInt(mapWidth)].setRuin(true);
+        }
         addRiversToMap();
     }
 

@@ -33,6 +33,7 @@ import view_graphic.component.GraphicTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.regex.Matcher;
 
 public class Game {
@@ -103,8 +104,10 @@ public class Game {
                         x + size, dy + size * Math.sqrt(3),
                         x, dy + size * Math.sqrt(3),
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
-
                 tiles[i][j] = tile;
+                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")){
+                    showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                }
                 int finalI = i;
                 int finalJ = j;
                 Polygon select = tile;
@@ -388,6 +391,9 @@ public class Game {
         for (int i = 0; i < civilizationController.getMapHeight(); i++) {
             for (int j = 0; j < civilizationController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
+                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")){
+                    showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                }
                     for (City city : civilizationController.getCurrentPlayer().getCities()) {
                         if(city.getCapital().equals(tiles[i][j].getTile())){
                             Polygon select=tiles[i][j];
@@ -414,6 +420,17 @@ public class Game {
                     }
                 Unit unit;
                 if (!tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
+                    if(tiles[i][j].getTile().isRuin()){
+                        tiles[i][j].getTile().setRuin(false);
+                        int gold=new Random().nextInt(10);
+                        for (City city : civilizationController.getCurrentPlayer().getCities()) {
+                            city.setCountOfCitizens(city.getCountOfCitizens()+1);
+                        }
+                        civilizationController.getCurrentPlayer().setGold(civilizationController.getCurrentPlayer().getGold()+gold);
+                        Technology technology=TechnologyDatabase.getTechnologies().get(new Random().nextInt(46));
+                        civilizationController.getCurrentPlayer().addTechnology(technology);
+                        showMessage("benefits of ruined tile: +1 citizen, technology: "+technology.getName()+" unlocked, +"+gold+" gold");
+                    }
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
                         unit = unitController.getTileNonCombatUnit(i, j);
                     } else {
@@ -427,6 +444,8 @@ public class Game {
                 }
             }
         }
+        bar.getChildren().clear();
+        createTopBar(backgroundSize);
     }
 
     public void selectUnit(Unit unit, GraphicTile tile,BackgroundSize backgroundSize) {
@@ -1134,7 +1153,12 @@ public class Game {
                             if(civilizationController.getCurrentPlayer().getCurrentStudy()!=null && civilizationController.getCurrentPlayer().getCurrentStudy().equals(technology)){
                                 showMessage("you are already studying this technology!");
                             }else
-                            showMessage("you have to study it's prerequisite technologies first!");
+                                if(civilizationController.getCurrentPlayer().getTechnologies().contains(technology)){
+                                    showMessage("you have already studied this technology");
+                                }
+                                else {
+                                    showMessage("you have to study it's prerequisite technologies first!");
+                                }
                         }
                     });
                 }

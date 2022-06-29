@@ -9,12 +9,11 @@ import database.TechnologyDatabase;
 import enums.Commands;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -25,6 +24,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -52,6 +52,7 @@ public class Game {
     private Text error = new Text();
     private Timeline timelineError=new Timeline();
     private VBox cityPanel;
+    private ScrollPane technologyPanel;
     private boolean putCitizenToTile;
     private boolean deleteCitizen;
     private boolean purchaseTile;
@@ -309,11 +310,24 @@ public class Game {
         scienceAmount.setY(45);
         scienceAmount.getStyleClass().add("info");
         bar.getChildren().add(scienceAmount);
-        VBox nextTurnVBox = new VBox();
+        if(!civilizationController.getCurrentPlayer().getCities().isEmpty()){
+            Button technologyPanelButton = new Button("Technology Panel");
+            technologyPanelButton.getStyleClass().add("primary-btn");
+            technologyPanelButton.setMaxWidth(150);
+            technologyPanelButton.setOnMouseClicked(mouseEvent -> {
+                if(tileMap.getChildren().contains(technologyPanel)){
+                    tileMap.getChildren().remove(technologyPanel);
+                    technologyPanel=null;
+                }else {
+                    fillTechnologyPanel(backgroundSize);
+                    tileMap.getChildren().add(technologyPanel);
+                }
+            });
+            bar.getChildren().add(technologyPanelButton);
+        }
         Button nextTurn = new Button("Next Turn");
         nextTurn.getStyleClass().add("primary-btn");
         nextTurn.setMaxWidth(100);
-        nextTurnVBox.getChildren().add(nextTurn);
         nextTurn.setOnMouseClicked(mouseEvent -> {
             String output = civilizationController.nextTurn();
             if (output.startsWith("it")) App.changeMenu("Game");
@@ -321,7 +335,7 @@ public class Game {
                 showMessage(output);
             }
         });
-        bar.getChildren().add(nextTurnVBox);
+        bar.getChildren().add(nextTurn);
     }
 
     public void move(KeyEvent keyEvent) {
@@ -633,7 +647,6 @@ public class Game {
                     reBuildTiles(backgroundSize);
                     bar.getChildren().clear();
                     createTopBar(backgroundSize);
-                    civilizationController.studyTechnology(TechnologyDatabase.getTechnologies().get(0));
                 }
                 showMessage(output);
             });
@@ -1082,5 +1095,78 @@ public class Game {
         createTopBar(backgroundSize);
         reBuildTiles(backgroundSize);
     }
+
+    public void fillTechnologyPanel(BackgroundSize backgroundSize){
+        Pane scroll=new Pane();
+        technologyPanel=new ScrollPane();
+        technologyPanel.setMinHeight(400);
+        technologyPanel.setPrefWidth(1280);
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                backgroundSize);
+        Platform.runLater(()->scroll.setBackground(new Background(backgroundImage)));
+        HashMap<Technology,Rectangle> technologies=new HashMap<>();
+        int j;
+        for(int i=0;i<13;i++) {
+            j=0;
+            for (Technology technology : TechnologyDatabase.getTechnologies()) {
+                if(technology.getTreePlace()==i) {
+                    Rectangle graphicTechnology = new Rectangle();
+                    graphicTechnology.setHeight(40);
+                    graphicTechnology.setWidth(200);
+                    ImagePattern technologyImage=new ImagePattern(new Image(getClass().getResource("/images/technologyTree/"+technology.getName()+".png").toExternalForm()));
+                    graphicTechnology.setFill(technologyImage);
+                    technologies.put(technology,graphicTechnology);
+                    graphicTechnology.setLayoutX(i*225);
+                    graphicTechnology.setLayoutY(j*55);
+                    scroll.getChildren().add(graphicTechnology);
+                    j++;
+                    graphicTechnology.setOnMouseClicked(mouseEvent -> {
+                        if(civilizationController.getCurrentPlayer().readyTechnologies().contains(technology)) {
+                            tileMap.getChildren().remove(technologyPanel);
+                            technologyPanel = null;
+                            civilizationController.studyTechnology(technology);
+                            showMessage("studying technology!");
+                        }else {
+                            if(civilizationController.getCurrentPlayer().getCurrentStudy()!=null && civilizationController.getCurrentPlayer().getCurrentStudy().equals(technology)){
+                                showMessage("you are already studying this technology!");
+                            }else
+                            showMessage("you have to study it's prerequisite technologies first!");
+                        }
+                    });
+                }
+            }
+        }
+        Text currentStudy=new Text();
+        if(civilizationController.getCurrentPlayer().getCurrentStudy()!=null){
+            int turnsLeft;
+            if (civilizationController.getCurrentPlayer().getWaitedTechnologies().get(civilizationController.getCurrentPlayer().getCurrentStudy().getName()) % civilizationController.getCurrentPlayer().totalCup() == 0) {
+                turnsLeft =  civilizationController.getCurrentPlayer().getWaitedTechnologies().get(civilizationController.getCurrentPlayer().getCurrentStudy().getName()) / civilizationController.getCurrentPlayer().totalCup();
+            } else {
+                turnsLeft = civilizationController.getCurrentPlayer().getWaitedTechnologies().get(civilizationController.getCurrentPlayer().getCurrentStudy().getName()) / civilizationController.getCurrentPlayer().totalCup() + 1;
+            }
+            currentStudy.setText("you are currently studying " + civilizationController.getCurrentPlayer().getCurrentStudy().getName() + " and there is " + turnsLeft + " turns left to unlock");
+        }else {
+            currentStudy.setText("no current study!");
+        }
+        currentStudy.getStyleClass().add("title");
+        currentStudy.setFill(Color.rgb(30,200,80));
+        currentStudy.setX(0);
+        currentStudy.setY(370);
+        scroll.getChildren().add(currentStudy);
+        technologyPanel.setContent(scroll);
+        for (Technology technology : TechnologyDatabase.getTechnologies()) {
+            for (String prerequisiteTechnology : technology.getPrerequisiteTechnologies()) {
+                Line line=new Line();
+                Platform.runLater(()->line.setStartX(225*TechnologyDatabase.getTechnologyByName(prerequisiteTechnology).getTreePlace()+200));
+                Platform.runLater(()->line.setStartY(technologies.get(TechnologyDatabase.getTechnologyByName(prerequisiteTechnology)).getLayoutY()));
+                Platform.runLater(()->line.setEndX(technology.getTreePlace()*225));
+                Platform.runLater(()->line.setEndY(technologies.get(technology).getLayoutY()));
+                Platform.runLater(()->line.setStroke(Color.GREEN));
+                Platform.runLater(()->scroll.getChildren().add(line));
+            }
+        }
+    }
+
 
 }

@@ -12,7 +12,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -278,7 +277,7 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
-        bar.setSpacing(30);
+        bar.setSpacing(25);
         Text userNickname = new Text(civilizationController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
@@ -325,6 +324,13 @@ public class Game {
             });
             bar.getChildren().add(technologyPanelButton);
         }
+        Button diplomacy = new Button("Diplomacy");
+        diplomacy.getStyleClass().add("primary-btn");
+        diplomacy.setMaxWidth(100);
+        diplomacy.setOnMouseClicked(mouseEvent -> {
+            App.changeMenu("Diplomacy");
+        });
+        bar.getChildren().add(diplomacy);
         Button nextTurn = new Button("Next Turn");
         nextTurn.getStyleClass().add("primary-btn");
         nextTurn.setMaxWidth(100);
@@ -613,9 +619,6 @@ public class Game {
             reBuildTiles(backgroundSize);
         });
         secondColumnActions.getChildren().add(deleteUnit);
-
-
-
         unitHBox.getChildren().add(firstColumnActions);
         unitHBox.getChildren().add(secondColumnActions);
         if (unit instanceof MilitaryUnit) {
@@ -1118,7 +1121,7 @@ public class Game {
                     graphicTechnology.setFill(technologyImage);
                     technologies.put(technology,graphicTechnology);
                     graphicTechnology.setLayoutX(i*225);
-                    graphicTechnology.setLayoutY(j*55);
+                    graphicTechnology.setLayoutY(j*55+20);
                     scroll.getChildren().add(graphicTechnology);
                     j++;
                     graphicTechnology.setOnMouseClicked(mouseEvent -> {

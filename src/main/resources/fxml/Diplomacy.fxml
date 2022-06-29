@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.Diplomacy"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+    <top>
+        <HBox alignment="CENTER" styleClass="titleBox">
+            <Text text="Choose Username" styleClass="title" fx:id="title"/>
+        </HBox>
+    </top>
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="vboxUp">
+            <VBox spacing="10" alignment="CENTER" fx:id="vbox">
+
+            </VBox>
+            <Button  fx:id="selectButton" styleClass="primary-btn" text="Discuss"/>
+            <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
+        </VBox>
+
+    </center>
+
+    <bottom>
+        <HBox fx:id="hBox">
+
+        </HBox>
+    </bottom>
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>

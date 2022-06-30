@@ -18,6 +18,7 @@ public class Tile {
     private boolean isRoad;
     private boolean hasLooted;
     private boolean isRuin;
+    private boolean ruinFirst;
     private Improvement lootedImprovement;
 
     public Tile(int x,int y)
@@ -200,4 +201,11 @@ public class Tile {
         isRuin = ruin;
     }
 
+    public boolean isRuinFirst () {
+        return ruinFirst;
+    }
+
+    public void setRuinFirst (boolean ruinFirst) {
+        this.ruinFirst = ruinFirst;
+    }
 }

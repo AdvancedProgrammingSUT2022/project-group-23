@@ -1,5 +1,6 @@
 package controller;
 
+import database.TechnologyDatabase;
 import database.TerrainDatabase;
 import model.*;
 
@@ -30,6 +31,7 @@ public class CivilizationController extends GameController{
                 tiles[i][j] = new Tile(i, j);
                 for (int k = 0; k < players.size(); k++) {
                     tiles[i][j].setRuin(false);
+                    tiles[i][j].setRuinFirst(false);
                     tiles[i][j].setVisibilityForUser("fog of war", k);
                 }
                 TerrainDatabase.addRandomTerrainAndFeatureToTile(tiles[i][j]);
@@ -37,7 +39,9 @@ public class CivilizationController extends GameController{
             }
         }
         for(int i=0;i<(mapWidth*mapHeight)/30;i++){
-            tiles[new Random().nextInt(mapHeight)][new Random().nextInt(mapWidth)].setRuin(true);
+            Tile tile=tiles[new Random().nextInt(mapHeight)][new Random().nextInt(mapWidth)];
+            tile.setRuinFirst(true);
+            tile.setRuin(true);
         }
         addRiversToMap();
     }
@@ -129,6 +133,18 @@ public class CivilizationController extends GameController{
         if(!waitedTechnologies.containsKey(technology.getName())){
             waitedTechnologies.put(technology.getName(),technology.getCost());
         }
+    }
+
+    public String benefitsOfRuin(Tile tile){
+        tile.setRuin(false);
+        int gold=new Random().nextInt(10);
+        for (City city : GameController.getCurrentPlayer().getCities()) {
+            city.setCountOfCitizens(city.getCountOfCitizens()+1);
+        }
+        GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+gold);
+        Technology technology= TechnologyDatabase.getTechnologies().get(new Random().nextInt(46));
+        GameController.getCurrentPlayer().addTechnology(technology);
+        return "benefits of ruined tile: +1 citizen, technology: "+technology.getName()+" unlocked, +"+gold+" gold";
     }
 
 

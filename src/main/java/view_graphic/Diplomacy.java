@@ -48,7 +48,7 @@ public class Diplomacy {
         borderPane.setBackground(new Background(backgroundImage));
         dialog.setFill(Color.rgb(180,160,10));
         ArrayList<String > usersUsernames=new ArrayList<>();
-        for (User user : User.getUsers()) {
+        for (User user : GameController.getPlayers()) {
             if(!user.equals(User.getUserLogged())){
                 usersUsernames.add(user.getUsername());
             }

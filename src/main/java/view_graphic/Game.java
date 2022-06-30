@@ -106,8 +106,9 @@ public class Game {
                         x, dy + size * Math.sqrt(3),
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
                 tiles[i][j] = tile;
-                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
+                if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
                     showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                    tiles[i][j].getTile().setRuinFirst(false);
                 }
                 int finalI = i;
                 int finalJ = j;
@@ -283,7 +284,7 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
-        bar.setSpacing(25);
+        bar.setSpacing(15);
         Text userNickname = new Text(GameController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
@@ -316,9 +317,9 @@ public class Game {
         scienceAmount.getStyleClass().add("info");
         bar.getChildren().add(scienceAmount);
         if(!GameController.getCurrentPlayer().getCities().isEmpty()){
-            Button technologyPanelButton = new Button("Technology Panel");
+            Button technologyPanelButton = new Button("Technology");
             technologyPanelButton.getStyleClass().add("primary-btn");
-            technologyPanelButton.setMaxWidth(150);
+            technologyPanelButton.setMaxWidth(100);
             technologyPanelButton.setOnMouseClicked(mouseEvent -> {
                 if(tileMap.getChildren().contains(technologyPanel)){
                     tileMap.getChildren().remove(technologyPanel);
@@ -403,8 +404,9 @@ public class Game {
         for (int i = 0; i < GameController.getMapHeight(); i++) {
             for (int j = 0; j < GameController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
-                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
+                if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
                     showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                    tiles[i][j].getTile().setRuinFirst(false);
                 }
                     for (City city : GameController.getCurrentPlayer().getCities()) {
                         if(city.getCapital().equals(tiles[i][j].getTile())){
@@ -433,15 +435,7 @@ public class Game {
                 Unit unit;
                 if (!tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
                     if(tiles[i][j].getTile().isRuin()){
-                        tiles[i][j].getTile().setRuin(false);
-                        int gold=new Random().nextInt(10);
-                        for (City city : GameController.getCurrentPlayer().getCities()) {
-                            city.setCountOfCitizens(city.getCountOfCitizens()+1);
-                        }
-                        GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+gold);
-                        Technology technology=TechnologyDatabase.getTechnologies().get(new Random().nextInt(46));
-                        GameController.getCurrentPlayer().addTechnology(technology);
-                        showMessage("benefits of ruined tile: +1 citizen, technology: "+technology.getName()+" unlocked, +"+gold+" gold");
+                        showMessage(civilizationController.benefitsOfRuin(tiles[i][j].getTile()));
                     }
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
                         unit = unitController.getTileNonCombatUnit(i, j);

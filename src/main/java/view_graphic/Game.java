@@ -31,6 +31,7 @@ import javafx.util.Duration;
 import model.*;
 import view_graphic.component.GraphicTile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -93,7 +94,7 @@ public class Game {
             }
         });
         tiles = new GraphicTile[GameController.getMapHeight()][GameController.getMapWidth()];
-        Tile[][] modelTiles = civilizationController.getTiles();
+        Tile[][] modelTiles = GameController.getTiles();
         int i = 0;
         for (double y = 0; i < GameController.getMapHeight(); y += size * Math.sqrt(3), i++) {
             int j = 0;
@@ -105,14 +106,16 @@ public class Game {
                         x, dy + size * Math.sqrt(3),
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
                 tiles[i][j] = tile;
-                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(civilizationController.getTurn()).equals("visible")){
+                if(tiles[i][j].getTile().isRuin() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
                     showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
                 }
                 int finalI = i;
                 int finalJ = j;
                 Polygon select = tile;
                 if (tile.getTile().getFeature() != null) select = tile.getFeature();
+                //System.out.println(select);
                 select.setOnMouseClicked(mouseEvent -> {
+//                    System.out.println(GameController.getSelectedUnit());
                     if (GameController.getSelectedUnit() != null) {
                         if(!unitAttack) {
                             int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
@@ -345,6 +348,15 @@ public class Game {
             }
         });
         bar.getChildren().add(nextTurn);
+        Button save = new Button("Save Game");
+        save.getStyleClass().add("primary-btn");
+        save.setMaxWidth(100);
+        save.setOnMouseClicked(mouseEvent -> {
+            String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+            User.saveGame(timeStamp);
+            showMessage("Game saved");
+        });
+        bar.getChildren().add(save);
     }
 
     public void move(KeyEvent keyEvent) {

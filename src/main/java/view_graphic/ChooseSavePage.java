@@ -8,6 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import model.User;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,14 +31,15 @@ public class ChooseSavePage {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
-        String[] fileNames=new File("src/main/resources/saves").list();
+        String[] fileNames=new File("src/main/resources/saves/gameSaves").list();
         for (String fileName : fileNames) {
-            String name=fileName.toString().replaceAll(".json","");
+            String name= fileName.replaceAll(".json","");
             Button save=new Button(name);
             save.getStyleClass().add("secondary-btn");
             vbox.getChildren().add(save);
             save.setOnMouseClicked(mouseEvent -> {
-                //TODO start game from save
+                User.loadGameInfo(name);
+                App.changeMenu("Game");
             });
         }
     }

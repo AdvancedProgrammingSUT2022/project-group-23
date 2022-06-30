@@ -1,7 +1,9 @@
 package model;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.GsonBuilder;
+
+import com.google.gson.graph.GraphAdapterBuilder;
 import controller.CivilizationController;
 import controller.GameController;
 import database.SaveDatabase;
@@ -194,11 +196,12 @@ public class User implements Comparable<User>{
     public static void loadGameInfo(String saveName){
         try {
             String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json")));
-            SaveDatabase saveDatabase = new Gson().fromJson(json, SaveDatabase.class);
+            Gson gson = getGson();
+            SaveDatabase saveDatabase = gson.fromJson(json, SaveDatabase.class);
             GameController.setMapWidth(saveDatabase.getMapWidth());
             GameController.setMapHeight(saveDatabase.getMapHeight());
-            GameController.setSelectedUnit(saveDatabase.getSelectedUnit());
-            GameController.setSelectedCity(saveDatabase.getSelectedCity());
+            GameController.setSelectedUnit(null);
+            GameController.setSelectedCity(null);
             GameController.setCivilizationController(saveDatabase.getCivilizationController());
             GameController.setPlayers(saveDatabase.getPlayers());
             GameController.setTiles(saveDatabase.getTiles());
@@ -230,11 +233,18 @@ public class User implements Comparable<User>{
         try {
             FileWriter writer=new FileWriter("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json");
             SaveDatabase saveDatabase = new SaveDatabase();
-            writer.write(new Gson().toJson(saveDatabase));
+            Gson gson = getGson();
+            writer.write(gson.toJson(saveDatabase));
             writer.close();
         } catch (IOException e) {
             System.out.println("ERROR saving game info");
         }
+    }
+
+    private static Gson getGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        new GraphAdapterBuilder().addType(SaveDatabase.class).addType(User.class).addType(Unit.class).addType(City.class).addType(Tile.class).addType(Building.class).addType(Technology.class).addType(Improvement.class).addType(River.class).addType(Resource.class).registerOn(gsonBuilder);
+        return gsonBuilder.create();
     }
 
     public ArrayList<String> getNotifications() {
@@ -408,6 +418,19 @@ public class User implements Comparable<User>{
 
     public void addConfederate(User user){
         confederate.add(user);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return score == user.score && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(nickname, user.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password, nickname, score);
     }
 }
 

@@ -1,5 +1,6 @@
 package view_graphic;
 
+import controller.GameController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -85,9 +86,9 @@ public class Diplomacy {
         declareWar.getStyleClass().add("primary-btn");
         vbox.getChildren().add(declareWar);
         declareWar.setOnMouseClicked(mouseEvent -> {
-            if(!Game.civilizationController.getCurrentPlayer().getEnemies().contains(discussedCivilization)){
-                Game.civilizationController.getCurrentPlayer().getEnemies().add(discussedCivilization);
-                Game.civilizationController.getCurrentPlayer().getConfederate().remove(discussedCivilization);
+            if(!GameController.getCurrentPlayer().getEnemies().contains(discussedCivilization)){
+                GameController.getCurrentPlayer().getEnemies().add(discussedCivilization);
+                GameController.getCurrentPlayer().getConfederate().remove(discussedCivilization);
                 discussedCivilization.getEnemies().add(discussedCivilization);
                 discussedCivilization.getConfederate().remove(discussedCivilization);
                 dialog.setText("you declared war with this civilization");
@@ -99,9 +100,9 @@ public class Diplomacy {
         peace.getStyleClass().add("primary-btn");
         vbox.getChildren().add(peace);
         peace.setOnMouseClicked(mouseEvent -> {
-            if(!Game.civilizationController.getCurrentPlayer().getConfederate().contains(discussedCivilization)){
-                Game.civilizationController.getCurrentPlayer().getConfederate().add(discussedCivilization);
-                Game.civilizationController.getCurrentPlayer().getEnemies().remove(discussedCivilization);
+            if(!GameController.getCurrentPlayer().getConfederate().contains(discussedCivilization)){
+                GameController.getCurrentPlayer().getConfederate().add(discussedCivilization);
+                GameController.getCurrentPlayer().getEnemies().remove(discussedCivilization);
                 discussedCivilization.getConfederate().add(discussedCivilization);
                 discussedCivilization.getEnemies().remove(discussedCivilization);
                 dialog.setText("you made peace with this civilization");
@@ -117,7 +118,7 @@ public class Diplomacy {
         givingVBox.getChildren().add(givingText);
         ArrayList<String> giving=new ArrayList<>();
         giving.add("+5 Gold");
-        for (City city : Game.civilizationController.getCurrentPlayer().getCities()) {
+        for (City city : GameController.getCurrentPlayer().getCities()) {
             for (Tile tile : city.getTiles()) {
                 if(tile.getResource()!=null){
                     giving.add(tile.getResource().getName());

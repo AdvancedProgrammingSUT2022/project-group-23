@@ -4,7 +4,7 @@ import model.Building;
 
 import java.util.ArrayList;
 
-public class BuildingDataBase {
+public class BuildingDatabase {
     private static ArrayList<Building> buildings=new ArrayList<>();
     static {
         buildings.add(new Building("Palace",0,0,0,0,0,0,"none","none"));

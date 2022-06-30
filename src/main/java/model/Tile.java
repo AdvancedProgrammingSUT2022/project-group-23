@@ -3,6 +3,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Tile {
     private int x;
@@ -198,4 +199,5 @@ public class Tile {
     public void setRuin (boolean ruin) {
         isRuin = ruin;
     }
+
 }

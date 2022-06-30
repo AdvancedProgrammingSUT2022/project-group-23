@@ -14,8 +14,6 @@ public class SaveDatabase {
     private int mapHeight ;
     private ArrayList<User> players;
     private Tile[][] tiles;
-    private Unit selectedUnit;
-    private City selectedCity;
     private int turn;
     private User currentPlayer;
     private CivilizationController civilizationController;
@@ -24,8 +22,6 @@ public class SaveDatabase {
         mapWidth = GameController.getMapWidth();
         players = GameController.getPlayers();
         tiles = GameController.getTiles();
-        selectedUnit = GameController.getSelectedUnit();
-        selectedCity = GameController.getSelectedCity();
         turn = GameController.getTurn();
         currentPlayer = GameController.getCurrentPlayer();
         civilizationController = GameController.getCivilizationController();
@@ -47,13 +43,7 @@ public class SaveDatabase {
         return tiles;
     }
 
-    public Unit getSelectedUnit() {
-        return selectedUnit;
-    }
 
-    public City getSelectedCity() {
-        return selectedCity;
-    }
 
     public int getTurn() {
         return turn;

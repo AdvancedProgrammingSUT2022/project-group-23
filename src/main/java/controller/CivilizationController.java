@@ -4,6 +4,7 @@ import database.TechnologyDatabase;
 import database.TerrainDatabase;
 import model.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -84,10 +85,11 @@ public class CivilizationController extends GameController{
         if(currentPlayer.getCurrentStudy() != null) {
             currentPlayer.getWaitedTechnologies().put(currentPlayer.getCurrentStudy().getName(), currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName()) - currentPlayer.totalCup());
             if (currentPlayer.getWaitedTechnologies().get(currentPlayer.getCurrentStudy().getName()) <= 0) {
-                currentPlayer.addNotification("you know have technology : " + currentPlayer.getCurrentStudy().getName());
+                currentPlayer.addNotification("you now have technology : " + currentPlayer.getCurrentStudy().getName());
                 currentPlayer.addTechnology(currentPlayer.getCurrentStudy());
                 currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
                 currentPlayer.setCurrentStudy(null);
+                currentPlayer.setScore(currentPlayer.getScore()+100);
             }
         }
 
@@ -100,6 +102,7 @@ public class CivilizationController extends GameController{
         unitController.checkVisibility();
         selectedCity=null;
         selectedUnit=null;
+        currentYear+=100;
         return "it's " + currentPlayer.getNickname() + " turn";
     }
 
@@ -145,6 +148,36 @@ public class CivilizationController extends GameController{
         Technology technology= TechnologyDatabase.getTechnologies().get(new Random().nextInt(46));
         GameController.getCurrentPlayer().addTechnology(technology);
         return "benefits of ruined tile: +1 citizen, technology: "+technology.getName()+" unlocked, +"+gold+" gold";
+    }
+
+    public boolean isWin(){
+        boolean isWin=false;
+        if(players.size()==1) isWin=true;
+        int countOfCapitalRemained=0;
+        for (User player : players) {
+            if(!player.isHasCapitalFallen())countOfCapitalRemained++;
+        }
+        if(countOfCapitalRemained==1)isWin=true;
+        return isWin;
+    }
+
+    public void winner (User user){
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+        user.setLastWin(timeStamp);
+        user.setScore(user.getScore()+500);
+    }
+
+    public void endGame(){
+        for (User player : players) {
+            if(player.getHighScore()<player.getScore()){
+                player.setHighScore(player.getScore());
+            }
+        }
+        for (User player : lostPlayers) {
+            if(player.getHighScore()<player.getScore()){
+                player.setHighScore(player.getScore());
+            }
+        }
     }
 
 

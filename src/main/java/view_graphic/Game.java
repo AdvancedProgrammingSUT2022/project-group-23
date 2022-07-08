@@ -171,27 +171,38 @@ public class Game {
                                 which.getChildren().add(annex);
                                 unitInformation.getChildren().add(which);
                                 eliminate.setOnMouseClicked(mouseEvent1 -> {
-                                    cityController.getCityOwner(city).getCities().remove(city);
-                                    showMessage("city eliminated!");
+                                    showMessage(cityController.eliminateCity(city));
                                     tileMap.getChildren().remove(unitInformation);
                                     tiles[x1][y1].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
                                     GameController.setSelectedUnit(null);
                                     reBuildTiles(backgroundSize);
                                     bar.getChildren().clear();
                                     createTopBar(backgroundSize);
+                                    if(civilizationController.isWin()){
+                                        civilizationController.winner(GameController.getCurrentPlayer());
+                                        civilizationController.endGame();
+                                        timelineError.setOnFinished(actionEvent -> {
+                                            App.changeMenu("MainMenuPage");
+                                        });
+                                        showMessage("you won!");
+                                    }
                                 });
                                 annex.setOnMouseClicked(mouseEvent1 -> {
-                                    cityController.getCityOwner(city).getCities().remove(city);
-                                    city.setHealth(20);
-                                    GameController.getCurrentPlayer().setHappiness(GameController.getCurrentPlayer().getHappiness() - 5);
-                                    GameController.getCurrentPlayer().getCities().add(city);
-                                    showMessage("you annexed this city to your cities!");
+                                    showMessage(cityController.annexCity(city));
                                     tileMap.getChildren().remove(unitInformation);
                                     tiles[x1][y1].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
                                     GameController.setSelectedUnit(null);
                                     reBuildTiles(backgroundSize);
                                     bar.getChildren().clear();
                                     createTopBar(backgroundSize);
+                                    if(civilizationController.isWin()){
+                                        civilizationController.winner(GameController.getCurrentPlayer());
+                                        civilizationController.endGame();
+                                        timelineError.setOnFinished(actionEvent -> {
+                                            App.changeMenu("MainMenuPage");
+                                        });
+                                        showMessage("you won!");
+                                    }
                                 });
                             }else {
                                 tileMap.getChildren().remove(unitInformation);
@@ -274,6 +285,20 @@ public class Game {
                 }
                 dy = dy == y ? dy + size * v : y;
             }
+        }
+        if(GameController.getCurrentYear()>=2050){
+            User winner=GameController.getCurrentPlayer();
+            for (User player : GameController.getPlayers()) {
+                if(player.getScore()>winner.getScore()){
+                    winner=player;
+                }
+            }
+            civilizationController.winner(winner);
+            civilizationController.endGame();
+            timelineError.setOnFinished(actionEvent -> {
+                App.changeMenu("MainMenuPage");
+            });
+            showMessage("player "+winner.getNickname()+" won the game!");
         }
     }
 

@@ -8,7 +8,9 @@ public class GameController {
 
     protected static int mapWidth ;
     protected static int mapHeight ;
+    protected static int currentYear=0;
     protected static ArrayList<User> players;
+    protected static ArrayList<User> lostPlayers=new ArrayList<>();
     protected static Tile[][] tiles;
 
     protected static Unit selectedUnit;
@@ -117,5 +119,9 @@ public class GameController {
 
     public static CivilizationController getCivilizationController() {
         return civilizationController;
+    }
+
+    public static int getCurrentYear () {
+        return currentYear;
     }
 }

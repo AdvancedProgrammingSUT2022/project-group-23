@@ -23,6 +23,7 @@ public class CityController extends GameController{
             if(getCityAtCoordinate(tile.getX(),tile.getY()) == null)
                 city.addTile(tile);
         }
+        currentPlayer.setScore(currentPlayer.getScore()+100);
         return "city founded";
     }
 
@@ -298,6 +299,7 @@ public class CityController extends GameController{
         }
         currentPlayer.setGold(currentPlayer.getGold()-price);
         selectedCity.addTile(tile);
+        currentPlayer.setScore(currentPlayer.getScore()+10);
         return "tile purchased successfully";
     }
 
@@ -346,6 +348,57 @@ public class CityController extends GameController{
         }else {
             return "you attacked the unit, but its still alive!";
         }
+    }
+
+    public String eliminateCity(City city){
+        String output="you eliminate the city";
+        if(!getCityOwner(city).isHasCapitalFallen() && city.getBuildings().contains(BuildingDatabase.findBuilding("Palace"))){
+            getCityOwner(city).setHasCapitalFallen(true);
+        }
+        if(getCityOwner(city).getCities().size()==1) {
+            output += " and the city owner lost the game!";
+            lostPlayers.add(getCityOwner(city));
+            players.remove(getCityOwner(city));
+            currentPlayer.setScore(currentPlayer.getScore()+200);
+        }else {
+            if(city.getBuildings().contains(BuildingDatabase.findBuilding("Palace"))) {
+                for (City city1 : getCityOwner(city).getCities()) {
+                    if (!city1.equals(city)) {
+                        city1.getBuildings().add(BuildingDatabase.findBuilding("Palace"));
+                    }
+                }
+            }
+            getCityOwner(city).getCities().remove(city);
+        }
+        currentPlayer.setScore(currentPlayer.getScore()+50);
+        return output;
+    }
+
+    public String annexCity(City city){
+        String output="you annexed this city to your cities";
+        if(!getCityOwner(city).isHasCapitalFallen() && city.getBuildings().contains(BuildingDatabase.findBuilding("Palace"))){
+            getCityOwner(city).setHasCapitalFallen(true);
+        }
+        city.setHealth(20);
+        GameController.getCurrentPlayer().setHappiness(GameController.getCurrentPlayer().getHappiness() - 5);
+        GameController.getCurrentPlayer().getCities().add(city);
+        if(getCityOwner(city).getCities().size()==1){
+            output+=" and the owner lost the game!";
+            lostPlayers.add(getCityOwner(city));
+            players.remove(getCityOwner(city));
+            currentPlayer.setScore(currentPlayer.getScore()+200);
+        }else {
+            if(city.getBuildings().contains(BuildingDatabase.findBuilding("Palace"))) {
+                for (City city1 : getCityOwner(city).getCities()) {
+                    if (!city1.equals(city)) {
+                        city1.getBuildings().add(BuildingDatabase.findBuilding("Palace"));
+                    }
+                }
+            }
+            getCityOwner(city).getCities().remove(city);
+        }
+        currentPlayer.setScore(currentPlayer.getScore()+50);
+        return output;
     }
 
 }

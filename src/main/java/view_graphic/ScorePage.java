@@ -39,7 +39,7 @@ public class ScorePage {
             Circle circle=new Circle(20);
             ImagePattern imagePattern=new ImagePattern(new Image(user.getProfilePictureURL()));
             circle.setFill(imagePattern);
-            Text text=new Text(i+"-  "+user.getNickname()+"     Score:  "+user.getScore()+"    Last Win:  "+user.getLastWin()+"     Last Online:    "+user.getLastOnline());
+            Text text=new Text(i+"-  "+user.getNickname()+"     Score:  "+user.getHighScore()+"    Last Win:  "+user.getLastWin()+"     Last Online:    "+user.getLastOnline());
             text.getStyleClass().add("text2");
             text.setFill(Color.rgb(200,50,50));
             if(user.equals(User.getUserLogged())){

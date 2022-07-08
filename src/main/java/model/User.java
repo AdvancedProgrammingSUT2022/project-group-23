@@ -22,9 +22,11 @@ public class User implements Comparable<User>{
     private String password;
     private String nickname;
     private int score;
+    private int highScore;
     private int gold;
     private int happiness;
     private int isUnhappy;
+    private boolean hasCapitalFallen;
     private static ArrayList<User> users = new ArrayList<>();
     private ArrayList<Unit> units;
     private ArrayList<City> cities;
@@ -165,9 +167,12 @@ public class User implements Comparable<User>{
 
 
     public void newGame(){
+        score=0;
+        highScore=0;
         gold = 0;
         isUnhappy = 0;
         happiness = 20;
+        hasCapitalFallen=false;
         units = new ArrayList<>();
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
@@ -257,6 +262,14 @@ public class User implements Comparable<User>{
 
     public void setScore (int score) {
         this.score = score;
+    }
+
+    public int getHighScore () {
+        return highScore;
+    }
+
+    public void setHighScore (int highScore) {
+        this.highScore = highScore;
     }
 
     public void setGold (int gold) {
@@ -418,6 +431,14 @@ public class User implements Comparable<User>{
 
     public void addConfederate(User user){
         confederate.add(user);
+    }
+
+    public boolean isHasCapitalFallen () {
+        return hasCapitalFallen;
+    }
+
+    public void setHasCapitalFallen (boolean hasCapitalFallen) {
+        this.hasCapitalFallen = hasCapitalFallen;
     }
 
     @Override

@@ -2,6 +2,7 @@ package controller;
 
 import database.UnitsDatabase;
 import model.*;
+import view_graphic.AutoSaveMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -290,7 +291,7 @@ public class UnitController extends GameController {
         }
         return false;
     }
-    public String isTurnPossible(){
+    public String nextTurn(){
         for(City city : currentPlayer.getCities()){
             if(hasTwoUnitsInSameTile(city.getCapital()))
                 return "you have more than 1 military or non-military unit in your city";
@@ -348,6 +349,8 @@ public class UnitController extends GameController {
                         workingWorkers.get(entry.getKey()).setState("ready");
                         workingWorkers.remove(entry.getKey());
                         improvingTiles.remove(entry.getKey());
+                        if(AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after every improvement"))
+                            User.autoSave();
                     }
                 }else {
                     map.put(entry.getKey(),entry.getValue());

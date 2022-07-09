@@ -10,8 +10,9 @@ public class GameController {
     protected static int mapHeight ;
     protected static int currentYear=0;
     protected static ArrayList<User> players;
-    protected static ArrayList<User> lostPlayers=new ArrayList<>();
+    protected static ArrayList<User> lostPlayers;
     protected static Tile[][] tiles;
+    protected static int saveNumber;
 
     protected static Unit selectedUnit;
     protected static City selectedCity;
@@ -123,5 +124,25 @@ public class GameController {
 
     public static int getCurrentYear () {
         return currentYear;
+    }
+
+    public static void setCurrentYear(int currentYear) {
+        GameController.currentYear = currentYear;
+    }
+
+    public static ArrayList<User> getLostPlayers() {
+        return lostPlayers;
+    }
+
+    public static void setLostPlayers(ArrayList<User> lostPlayers) {
+        GameController.lostPlayers = lostPlayers;
+    }
+
+    public static int getSaveNumber() {
+        return saveNumber;
+    }
+
+    public static void setSaveNumber(int saveNumber) {
+        GameController.saveNumber = saveNumber;
     }
 }

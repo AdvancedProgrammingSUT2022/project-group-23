@@ -3,6 +3,7 @@ package controller;
 import database.BuildingDatabase;
 import database.UnitsDatabase;
 import model.*;
+import view_graphic.AutoSaveMenu;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,8 @@ public class CityController extends GameController{
                 city.addTile(tile);
         }
         currentPlayer.setScore(currentPlayer.getScore()+100);
+        if(AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after founding a city"))
+            User.autoSave();
         return "city founded";
     }
 
@@ -146,6 +149,8 @@ public class CityController extends GameController{
                     currentPlayer.addNotification("you have constructed unit : " + city.getConstructingUnit());
                     waitedUnits.remove(city.getConstructingUnit());
                     city.setConstructingUnit(null);
+                    if(AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after building a unit"))
+                        User.autoSave();
                 }
             }else {
                 HashMap<String, Integer> waitedBuildings = city.getWaitedBuildings();

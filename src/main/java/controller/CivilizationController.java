@@ -3,6 +3,7 @@ package controller;
 import database.TechnologyDatabase;
 import database.TerrainDatabase;
 import model.*;
+import view_graphic.AutoSaveMenu;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class CivilizationController extends GameController{
     public CivilizationController(ArrayList<User> players) {
         GameController.players = players;
         GameController.civilizationController = this;
+        GameController.saveNumber = 1;
+        GameController.lostPlayers = new ArrayList<>();
         tiles = new Tile[mapHeight][mapWidth];
         for (User user : players) user.newGame();
         currentPlayer = players.get(0);
@@ -79,7 +82,7 @@ public class CivilizationController extends GameController{
 
 
         String message;
-        if(!(message = unitController.isTurnPossible()).equals("ok"))return message;
+        if(!(message = unitController.nextTurn()).equals("ok"))return message;
         if(currentPlayer.getCurrentStudy() == null && !(currentPlayer.getCities().isEmpty()))return "you have to choose a technology to research";
         if(!(message = cityController.nextTurn()).equals("ok"))return message;
         if(currentPlayer.getCurrentStudy() != null) {
@@ -90,6 +93,8 @@ public class CivilizationController extends GameController{
                 currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
                 currentPlayer.setCurrentStudy(null);
                 currentPlayer.setScore(currentPlayer.getScore()+100);
+                if(AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after studying a technology"))
+                    User.autoSave();
             }
         }
 

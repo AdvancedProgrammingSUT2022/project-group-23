@@ -12,6 +12,9 @@ import java.util.ArrayList;
 public class SaveDatabase {
     private int mapWidth ;
     private int mapHeight ;
+    private int currentYear;
+    protected ArrayList<User> lostPlayers;
+    protected int saveNumber;
     private ArrayList<User> players;
     private Tile[][] tiles;
     private int turn;
@@ -25,6 +28,9 @@ public class SaveDatabase {
         turn = GameController.getTurn();
         currentPlayer = GameController.getCurrentPlayer();
         civilizationController = GameController.getCivilizationController();
+        currentYear = GameController.getCurrentYear();
+        lostPlayers = GameController.getLostPlayers();
+        saveNumber = GameController.getSaveNumber();
     }
 
     public int getMapWidth() {
@@ -55,5 +61,17 @@ public class SaveDatabase {
 
     public CivilizationController getCivilizationController() {
         return civilizationController;
+    }
+
+    public int getCurrentYear() {
+        return currentYear;
+    }
+
+    public ArrayList<User> getLostPlayers() {
+        return lostPlayers;
+    }
+
+    public int getSaveNumber() {
+        return saveNumber;
     }
 }

@@ -8,6 +8,8 @@ import controller.CivilizationController;
 import controller.GameController;
 import database.SaveDatabase;
 import database.TechnologyDatabase;
+import database.UnitsDatabase;
+import view_graphic.AutoSaveMenu;
 import view_graphic.Game;
 
 import java.io.FileWriter;
@@ -212,6 +214,9 @@ public class User implements Comparable<User>{
             GameController.setTiles(saveDatabase.getTiles());
             GameController.setTurn(saveDatabase.getTurn());
             GameController.setCurrentPlayer(saveDatabase.getCurrentPlayer());
+            GameController.setCurrentYear(saveDatabase.getCurrentYear());
+            GameController.setLostPlayers(saveDatabase.getLostPlayers());
+            GameController.setSaveNumber(saveDatabase.getSaveNumber());
             CivilizationController civilizationController = GameController.getCivilizationController();
             for(int j = 0; j < GameController.getPlayers().size(); j++){
                 User player = GameController.getPlayers().get(j);
@@ -226,6 +231,43 @@ public class User implements Comparable<User>{
                         player.setProfilePictureURL(user.getProfilePictureURL());
                         users.set(i, player);
                         break;
+                    }
+                }
+            }
+            for(User user : GameController.getPlayers()){
+                for (int i = 0; i < user.getUnits().size(); i++) {
+                    Unit unit = user.getUnits().get(i);
+                    if(user.getUnits().get(i).getName().equals("Settler")) {
+                        SettlerUnit settlerUnit = new SettlerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
+                        settlerUnit.setState(unit.getState());
+                        settlerUnit.setRemainingMoves(unit.getRemainingMoves());
+                        settlerUnit.setHealth(unit.getHealth());
+                        settlerUnit.setMoves(unit.getMoves());
+                        user.getUnits().set(i, settlerUnit);
+                    }
+                    else if(user.getUnits().get(i).equals("Worker")) {
+                        WorkerUnit workerUnit = new WorkerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
+                        workerUnit.setState(unit.getState());
+                        workerUnit.setRemainingMoves(unit.getRemainingMoves());
+                        workerUnit.setHealth(unit.getHealth());
+                        workerUnit.setMoves(unit.getMoves());
+                        user.getUnits().set(i, workerUnit);
+                    }
+                    else {
+                        ArrayList<Unit> allUnits = UnitsDatabase.getUnits();
+                        for(Unit currentUnit : allUnits){
+                            if(currentUnit.getName().equals(unit.getName())){
+                                MilitaryUnit militaryUnit = ((MilitaryUnit) currentUnit).getCopy();
+                                militaryUnit.setX(unit.getX());
+                                militaryUnit.setY(unit.getY());
+                                militaryUnit.setState(unit.getState());
+                                militaryUnit.setRemainingMoves(unit.getRemainingMoves());
+                                militaryUnit.setHealth(unit.getHealth());
+                                militaryUnit.setMoves(unit.getMoves());
+                                user.getUnits().set(i, militaryUnit);
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -245,10 +287,16 @@ public class User implements Comparable<User>{
             System.out.println("ERROR saving game info");
         }
     }
+    public static void autoSave(){
+        GameController.setSaveNumber(GameController.getSaveNumber() + 1);
+        if(GameController.getSaveNumber() > AutoSaveMenu.getAutoSaveNumber())
+            GameController.setSaveNumber(1);
+        User.saveGame("AutoSave" + GameController.getSaveNumber());
+    }
 
     private static Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        new GraphAdapterBuilder().addType(SaveDatabase.class).addType(User.class).addType(Unit.class).addType(City.class).addType(Tile.class).addType(Building.class).addType(Technology.class).addType(Improvement.class).addType(River.class).addType(Resource.class).registerOn(gsonBuilder);
+        new GraphAdapterBuilder().addType(SaveDatabase.class).addType(User.class).addType(Unit.class).addType(WorkerUnit.class).addType(SettlerUnit.class).addType(MilitaryUnit.class).addType(City.class).addType(Tile.class).addType(Building.class).addType(Technology.class).addType(Terrain.class).addType(Improvement.class).addType(River.class).addType(Resource.class).registerOn(gsonBuilder);
         return gsonBuilder.create();
     }
 

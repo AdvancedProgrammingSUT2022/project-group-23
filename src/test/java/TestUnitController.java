@@ -60,7 +60,7 @@ public class TestUnitController extends GameController {
         currentPlayer.addTechnology(TechnologyDatabase.getTechnologies().get(8));
         unitController.buildRoad("Road");
         for(int i=0;i<3;i++){
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         assertTrue(tiles[9][9].isRoad());
     }
@@ -82,7 +82,7 @@ public class TestUnitController extends GameController {
         currentPlayer.addTechnology(TechnologyDatabase.getTechnologies().get(8));
         unitController.buildRoad("Road");
         for(int i=0;i<3;i++){
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         unit.setRemainingMoves(2);
         unit.setState("ready");
@@ -108,7 +108,7 @@ public class TestUnitController extends GameController {
         tiles[9][9].setFeature(feature);
         unitController.eliminateFeature();
         for(int i=0;i<7;i++){
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         assertEquals(tiles[9][9].getFeature(),null);
     }
@@ -133,7 +133,7 @@ public class TestUnitController extends GameController {
         tiles[9][9].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
         unitController.improveTile(improvement);
         for(int i=0;i<10;i++){
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         assertEquals(tiles[9][9].getImprovement().getName(),improvement.getName());
         assertEquals(tiles[9][9].getFeature(),null);
@@ -159,7 +159,7 @@ public class TestUnitController extends GameController {
         tiles[9][9].setFeature(new Feature("Forest", 0, 1 ,1, 2, 25,10));
         unitController.improveTile(improvement);
         for(int i=0;i<10;i++){
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         MilitaryUnit unit1=new MilitaryUnit("Archer", 70, "Archery", 2, 4, 6, 2, "Archery", null);
         currentPlayer.getUnits().add(unit1);
@@ -174,7 +174,7 @@ public class TestUnitController extends GameController {
             for (Unit currentPlayerUnit : currentPlayer.getUnits()) {
                 currentPlayerUnit.setState("no");
             }
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         assertEquals(tiles[9][9].getImprovement().getName(),improvement.getName());
     }
@@ -202,7 +202,7 @@ public class TestUnitController extends GameController {
         unitController.moveSelectedUnit(4,4);
         int size=unit.getMoves().size();
         for(int i=0;i<=size;i++){
-            unitController.isTurnPossible();
+            unitController.nextTurn();
         }
         assertEquals(unit.getX(),4);
     }
@@ -297,7 +297,7 @@ public class TestUnitController extends GameController {
         unitController.selectUnit(9,9,true);
         unitController.alert();
         assertEquals(unit.getState(),"alert");
-        unitController.isTurnPossible();
+        unitController.nextTurn();
         unitController.sleep();
         assertEquals(unit.getState(),"sleep");
         unitController.wake();

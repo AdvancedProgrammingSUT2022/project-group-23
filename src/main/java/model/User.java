@@ -225,7 +225,7 @@ public class User implements Comparable<User>{
                         User user = users.get(i);
                         player.setPassword(user.getPassword());
                         player.setNickname(user.getNickname());
-                        player.setScore(user.getScore());
+                        player.setHighScore(user.getHighScore());
                         player.setLastOnline(user.getLastOnline());
                         player.setLastWin(user.getLastWin());
                         player.setProfilePictureURL(user.getProfilePictureURL());

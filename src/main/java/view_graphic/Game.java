@@ -34,7 +34,6 @@ import view_graphic.component.GraphicTile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.regex.Matcher;
 
 public class Game {
@@ -73,10 +72,13 @@ public class Game {
         bar.setMinWidth(1280);
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
         createTopBar(backgroundSize);
+        BackgroundImage messageBackground = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/message.png").toExternalForm()),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                backgroundSize);
         vBoxError.getChildren().add(error);
         vBoxError.setLayoutX(0);
         vBoxError.setLayoutY(20);
-        vBoxError.setBackground(bar.getBackground());
+        vBoxError.setBackground(new Background(messageBackground));
         error.setFill(Color.rgb(250, 250, 0));
         error.getStyleClass().add("vBoxError");
         timelineError.getKeyFrames().add(new KeyFrame(Duration.seconds(2)));
@@ -107,7 +109,7 @@ public class Game {
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
                 tiles[i][j] = tile;
                 if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
-                    showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                    showMessage("there is a ruin in tile : "+i+" , "+j);
                     tiles[i][j].getTile().setRuinFirst(false);
                 }
                 Unit unit;
@@ -147,11 +149,15 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
-        bar.setSpacing(15);
+        bar.setSpacing(13);
         Text userNickname = new Text(GameController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
         bar.getChildren().add(userNickname);
+        Text score = new Text("Score: " + GameController.getCurrentPlayer().getScore());
+        score.setY(45);
+        score.getStyleClass().add("info");
+        bar.getChildren().add(score);
         Circle gold = new Circle(30);
         gold.setCenterY(15);
         ImagePattern goldImage = new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
@@ -570,7 +576,7 @@ public class Game {
         VBox unitInfo = new VBox();
         unitInfo.setAlignment(Pos.CENTER);
         unitInfo.setSpacing(15);
-        BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+        BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/unitInfo.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         unitInfo.setBackground(new Background(backgroundImage1));
@@ -590,6 +596,16 @@ public class Game {
         unitSpec.getStyleClass().add("tileInfo");
         unitValues.getChildren().add(unitName);
         unitValues.getChildren().add(unitSpec);
+        if(unit instanceof MilitaryUnit){
+            MilitaryUnit militaryUnit=(MilitaryUnit) unit;
+            int rangeStrength;
+            if(militaryUnit.getRange()==-1) rangeStrength=0;
+            else rangeStrength=militaryUnit.getRangeStrength();
+            Text unitStrength = new Text("Strength: "+militaryUnit.getStrength()+"  Range Strength: "+rangeStrength);
+            unitStrength.setFill(Color.WHITE);
+            unitStrength.getStyleClass().add("tileInfo");
+            unitValues.getChildren().add(unitStrength);
+        }
         unitHBox.getChildren().add(unitValues);
         unitInfo.getChildren().add(unitHBox);
         VBox firstColumnActions=new VBox();
@@ -858,11 +874,11 @@ public class Game {
         if(getGraphicByModel(city.getCapital()).getPoints().get(0)<600){
             cityPanel.setLayoutX(800);
         }
-        cityPanel.setSpacing(10);
+        cityPanel.setSpacing(5);
         cityPanel.setMinWidth(400);
         cityPanel.setMinHeight(600);
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
-        BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/cityPanel.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         cityPanel.setBackground(new Background(backgroundImage));
@@ -871,7 +887,7 @@ public class Game {
         cityPanel.getChildren().add(cityId);
         HBox goldHBox=new HBox();
         goldHBox.setSpacing(20);
-        Circle gold = new Circle(30);
+        Circle gold = new Circle(20);
         gold.setCenterY(15);
         ImagePattern goldImage = new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
         gold.setFill(goldImage);
@@ -883,7 +899,7 @@ public class Game {
         cityPanel.getChildren().add(goldHBox);
         HBox productionHBox =new HBox();
         productionHBox.setSpacing(20);
-        Circle production = new Circle(30);
+        Circle production = new Circle(20);
         production.setCenterY(15);
         ImagePattern productionImage = new ImagePattern(new Image(getClass().getResource("/images/info/Production.png").toExternalForm()));
         production.setFill(productionImage);
@@ -895,7 +911,7 @@ public class Game {
         cityPanel.getChildren().add(productionHBox);
         HBox FoodHBox =new HBox();
         FoodHBox.setSpacing(20);
-        Circle food = new Circle(30);
+        Circle food = new Circle(20);
         food.setCenterY(15);
         ImagePattern foodImage = new ImagePattern(new Image(getClass().getResource("/images/info/Food.png").toExternalForm()));
         food.setFill(foodImage);
@@ -908,6 +924,27 @@ public class Game {
         Text health=new Text("Remaining Health: "+city.getHealth());
         health.getStyleClass().add("info");
         cityPanel.getChildren().add(health);
+        Text strength =new Text("Strength: "+city.strength());
+        strength.getStyleClass().add("info");
+        cityPanel.getChildren().add(strength);
+        Text uCitizens =new Text("Number of Workless Citizens:"+(city.getCountOfCitizens()-city.getTilesWithCitizen().size()));
+        uCitizens.getStyleClass().add("info");
+        cityPanel.getChildren().add(uCitizens);
+        Text wCitizens =new Text("Tile With Working Citizens:");
+        wCitizens.getStyleClass().add("info");
+        cityPanel.getChildren().add(wCitizens);
+        Text workingCitizens=new Text();
+        String citizens="";
+        for (Tile tile : city.getTilesWithCitizen()) {
+            citizens+=" (";
+            citizens+=Integer.toString(tile.getX());
+            citizens+=",";
+            citizens+=Integer.toString(tile.getY());
+            citizens+=")";
+        }
+        workingCitizens.setText(citizens);
+        workingCitizens.getStyleClass().add("info");
+        cityPanel.getChildren().add(workingCitizens);
         Button purchaseTileButton =new Button("Purchase Tile");
         purchaseTileButton.setMaxWidth(150);
         purchaseTileButton.getStyleClass().add("secondary-btn");
@@ -1114,6 +1151,10 @@ public class Game {
             deleteCitizen=false;
             putCitizenToTile=false;
             cityAttack=false;
+            if(tileMap.getChildren().contains(tileInformation)) {
+                tileMap.getChildren().remove(tileInformation);
+                tileInformation=null;
+            }
         });
     }
 
@@ -1190,7 +1231,7 @@ public class Game {
         technologyPanel=new ScrollPane();
         technologyPanel.setMinHeight(400);
         technologyPanel.setPrefWidth(1280);
-        BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+        BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/technologyPanel.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         Platform.runLater(()->scroll.setBackground(new Background(backgroundImage)));
@@ -1244,7 +1285,7 @@ public class Game {
             currentStudy.setText("no current study!");
         }
         currentStudy.getStyleClass().add("title");
-        currentStudy.setFill(Color.rgb(30,200,80));
+        currentStudy.setFill(Color.rgb(100,250,0));
         currentStudy.setX(0);
         currentStudy.setY(370);
         scroll.getChildren().add(currentStudy);
@@ -1256,7 +1297,7 @@ public class Game {
                 Platform.runLater(()->line.setStartY(technologies.get(TechnologyDatabase.getTechnologyByName(prerequisiteTechnology)).getLayoutY()));
                 Platform.runLater(()->line.setEndX(technology.getTreePlace()*225));
                 Platform.runLater(()->line.setEndY(technologies.get(technology).getLayoutY()));
-                Platform.runLater(()->line.setStroke(Color.GREEN));
+                Platform.runLater(()->line.setStroke(Color.RED));
                 Platform.runLater(()->scroll.getChildren().add(line));
             }
         }

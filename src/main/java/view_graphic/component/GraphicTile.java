@@ -15,7 +15,6 @@ import model.Tile;
 import model.Unit;
 import model.User;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +64,7 @@ public class GraphicTile extends Polygon {
                 feature.setEffect(lighting);
             else feature.setEffect(null);
         }
+        if(!tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war"))
         checkCapital();
     }
 
@@ -197,7 +197,7 @@ public class GraphicTile extends Polygon {
             infos=new VBox();
             infos.setMinHeight(60);
             infos.setMinWidth(200);
-            BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/loginBackground.png").toExternalForm()),
+            BackgroundImage backgroundImage1 = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/tileInfo.png").toExternalForm()),
                     BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     backgroundSize);
             infos.setBackground(new Background(backgroundImage1));
@@ -225,6 +225,16 @@ public class GraphicTile extends Polygon {
             tileInfo.setFill(Color.WHITE);
             tileInfo.getStyleClass().add("tileInfo");
             infos.getChildren().add(tileInfo);
+            Text terrain = new Text("Terrain Type: "+this.getTile().getTerrain().getName());
+            terrain.setFill(Color.WHITE);
+            terrain.getStyleClass().add("tileInfo");
+            infos.getChildren().add(terrain);
+            if(this.getTile().getFeature()!=null) {
+                Text feature = new Text("Feature Type: " + this.getTile().getFeature().getName());
+                feature.setFill(Color.WHITE);
+                feature.getStyleClass().add("tileInfo");
+                infos.getChildren().add(feature);
+            }
             infos.setOpacity(0.8);
         }
         infos.setLayoutX(this.getPoints().get(10));

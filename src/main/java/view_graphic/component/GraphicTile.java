@@ -235,6 +235,12 @@ public class GraphicTile extends Polygon {
                 feature.getStyleClass().add("tileInfo");
                 infos.getChildren().add(feature);
             }
+            if(this.getTile().getImprovement()!=null) {
+                Text improvement = new Text("Improvement : " + this.getTile().getImprovement().getName());
+                improvement.setFill(Color.WHITE);
+                improvement.getStyleClass().add("tileInfo");
+                infos.getChildren().add(improvement);
+            }
             infos.setOpacity(0.8);
         }
         infos.setLayoutX(this.getPoints().get(10));

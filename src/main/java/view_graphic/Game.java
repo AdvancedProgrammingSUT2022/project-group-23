@@ -108,10 +108,6 @@ public class Game {
                         x, dy + size * Math.sqrt(3),
                         x - (size / 2.0), dy + size * v, modelTiles[i][j], tileMap, civilizationController);
                 tiles[i][j] = tile;
-                if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
-                    showMessage("there is a ruin in tile : "+i+" , "+j);
-                    tiles[i][j].getTile().setRuinFirst(false);
-                }
                 Unit unit;
                 if (!tile.getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
@@ -274,7 +270,7 @@ public class Game {
             for (int j = 0; j < GameController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
                 if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
-                    showMessage("there is a ruin in tile with x: "+i+" and y: "+j);
+                    showMessage("there is a ruin in tile : "+i+" , "+j);
                     tiles[i][j].getTile().setRuinFirst(false);
                 }
                     for (City city : GameController.getCurrentPlayer().getCities()) {
@@ -780,6 +776,11 @@ public class Game {
                     improvementButton.getStyleClass().add("secondary-btn");
                     improvementButton.setMinWidth(70);
                     unitInformation.getChildren().add(improvementButton);
+                    String toolTip="needed technology: "+improvement.getNeededTechnology()+" , needed tile: ";
+                    for (String s : improvement.getPlacesItCanBeBuild()) {
+                        toolTip+=s+", ";
+                    }
+                    improvementButton.setTooltip(new Tooltip(toolTip));
                     improvementButton.setOnMouseClicked(mouseEvent2 -> {
                         showMessage(unitController.improveTile(improvement));
                         unitInformation.getChildren().clear();
@@ -887,7 +888,7 @@ public class Game {
         cityPanel.getChildren().add(cityId);
         HBox goldHBox=new HBox();
         goldHBox.setSpacing(20);
-        Circle gold = new Circle(20);
+        Circle gold = new Circle(17);
         gold.setCenterY(15);
         ImagePattern goldImage = new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
         gold.setFill(goldImage);
@@ -899,7 +900,7 @@ public class Game {
         cityPanel.getChildren().add(goldHBox);
         HBox productionHBox =new HBox();
         productionHBox.setSpacing(20);
-        Circle production = new Circle(20);
+        Circle production = new Circle(17);
         production.setCenterY(15);
         ImagePattern productionImage = new ImagePattern(new Image(getClass().getResource("/images/info/Production.png").toExternalForm()));
         production.setFill(productionImage);
@@ -911,7 +912,7 @@ public class Game {
         cityPanel.getChildren().add(productionHBox);
         HBox FoodHBox =new HBox();
         FoodHBox.setSpacing(20);
-        Circle food = new Circle(20);
+        Circle food = new Circle(17);
         food.setCenterY(15);
         ImagePattern foodImage = new ImagePattern(new Image(getClass().getResource("/images/info/Food.png").toExternalForm()));
         food.setFill(foodImage);
@@ -945,6 +946,13 @@ public class Game {
         workingCitizens.setText(citizens);
         workingCitizens.getStyleClass().add("info");
         cityPanel.getChildren().add(workingCitizens);
+        int turn=0;
+        if(city.totalFood()>0) {
+            turn = (int) (((Math.pow(2, city.getCountOfCitizens()) - city.getFoodLeft())) / city.totalFood());
+        }
+        Text turnLeft=new Text("+1 Citizen in "+turn+" turns");
+        turnLeft.getStyleClass().add("info");
+        cityPanel.getChildren().add(turnLeft);
         Button purchaseTileButton =new Button("Purchase Tile");
         purchaseTileButton.setMaxWidth(150);
         purchaseTileButton.getStyleClass().add("secondary-btn");
@@ -1246,6 +1254,9 @@ public class Game {
                     graphicTechnology.setWidth(200);
                     ImagePattern technologyImage=new ImagePattern(new Image(getClass().getResource("/images/technologyTree/"+technology.getName()+".png").toExternalForm()));
                     graphicTechnology.setFill(technologyImage);
+                    if(GameController.getCurrentPlayer().getTechnologies().contains(technology)){
+                        graphicTechnology.setOpacity(0.7);
+                    }
                     technologies.put(technology,graphicTechnology);
                     graphicTechnology.setLayoutX(i*225);
                     graphicTechnology.setLayoutY(j*55+20);

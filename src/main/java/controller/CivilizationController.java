@@ -42,7 +42,7 @@ public class CivilizationController extends GameController{
                 TerrainDatabase.addRandomResourceToTile(tiles[i][j]);
             }
         }
-        for(int i=0;i<(mapWidth*mapHeight)/30;i++){
+        for(int i=0;i<(mapWidth*mapHeight)/35;i++){
             Tile tile=tiles[new Random().nextInt(mapHeight)][new Random().nextInt(mapWidth)];
             tile.setRuinFirst(true);
             tile.setRuin(true);

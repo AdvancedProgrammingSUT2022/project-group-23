@@ -61,10 +61,11 @@ public class GraphicTile extends Polygon {
         if (tile.getFeature() != null && !tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
             ImagePattern imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getFeature().getName() + ".png").toExternalForm()));
             feature.setFill(imagePattern);
-            checkCapital();
             if (tile.getVisibilityForUser(GameController.getTurn()).equals("revealed"))
                 feature.setEffect(lighting);
+            else feature.setEffect(null);
         }
+        checkCapital();
     }
 
     public Text getLocation() {
@@ -134,6 +135,7 @@ public class GraphicTile extends Polygon {
             this.setEffect(lighting);
         } else {
             imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/" + tile.getTerrain().getName() + ".png").toExternalForm()));
+            this.setEffect(null);
         }
         this.setFill(imagePattern);
     }
@@ -149,6 +151,7 @@ public class GraphicTile extends Polygon {
         }
         if(imagePattern != null){
             feature.setFill(imagePattern);
+            this.setFill(imagePattern);
         }
     }
 

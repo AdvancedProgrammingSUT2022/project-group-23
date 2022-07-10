@@ -317,18 +317,20 @@ public class Game {
                 select.setOnMouseClicked(mouseEvent -> {
                     if (GameController.getSelectedUnit() != null) {
                         if(!unitAttack) {
-                            int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
-                            String output = unitController.moveSelectedUnit(finalI, finalJ);
-                            if (output.equals("unit is moving")) {
-                                tiles[x1][y1].deleteUnit(GameController.getSelectedUnit());
-                                tileMap.getChildren().remove(unitInformation);
-                                GameController.setSelectedUnit(null);
-                                reBuildTiles(backgroundSize);
-                            } else {
-                                showMessage(output);
-                                tiles[GameController.getSelectedUnit().getX()][GameController.getSelectedUnit().getY()].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
-                                tileMap.getChildren().remove(unitInformation);
-                                GameController.setSelectedUnit(null);
+                            if(!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
+                                int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
+                                String output = unitController.moveSelectedUnit(finalI, finalJ);
+                                if (output.equals("unit is moving")) {
+                                    tiles[x1][y1].deleteUnit(GameController.getSelectedUnit());
+                                    tileMap.getChildren().remove(unitInformation);
+                                    GameController.setSelectedUnit(null);
+                                    reBuildTiles(backgroundSize);
+                                } else {
+                                    showMessage(output);
+                                    tiles[GameController.getSelectedUnit().getX()][GameController.getSelectedUnit().getY()].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
+                                    tileMap.getChildren().remove(unitInformation);
+                                    GameController.setSelectedUnit(null);
+                                }
                             }
                         }else {
                             String output="";

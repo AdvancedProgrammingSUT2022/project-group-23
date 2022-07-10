@@ -989,10 +989,28 @@ public class Game {
                 cityPanel.getChildren().add(unit);
                 int finalI = i;
                 unit.setOnMouseClicked(mouseEvent1 -> {
-                    showMessage(cityController.constructUnit(unitController.getConstructableUnits().get(finalI).getName()));
-                    tileMap.getChildren().remove(cityPanel);
-                    fillCityPanel(city);
-                    tileMap.getChildren().add(cityPanel);
+                    cityPanel.getChildren().clear();
+                    Text purchaseText=new Text("purchase this unit with gold?");
+                    purchaseText.getStyleClass().add("info");
+                    cityPanel.getChildren().add(purchaseText);
+                    Button yes=new Button("Yes");
+                    yes.getStyleClass().add("secondary-btn");
+                    Button no=new Button("No");
+                    no.getStyleClass().add("secondary-btn");
+                    no.setOnMouseClicked(mouseEvent2 -> {
+                        showMessage(cityController.constructUnit(unitController.getConstructableUnits().get(finalI).getName()));
+                        tileMap.getChildren().remove(cityPanel);
+                        fillCityPanel(city);
+                        tileMap.getChildren().add(cityPanel);
+                    });
+                    yes.setOnMouseClicked(mouseEvent2 -> {
+                        showMessage(cityController.purchaseUnitWithGold(unitController.getConstructableUnits().get(finalI).getName()));
+                        tileMap.getChildren().remove(cityPanel);
+                        fillCityPanel(city);
+                        tileMap.getChildren().add(cityPanel);
+                    });
+                    cityPanel.getChildren().add(no);
+                    cityPanel.getChildren().add(yes);
                 });
             }
             Button back =new Button("Back");
@@ -1044,10 +1062,28 @@ public class Game {
                 cityPanel.getChildren().add(building);
                 int finalI = i;
                 building.setOnMouseClicked(mouseEvent1 -> {
-                    showMessage(cityController.constructBuilding(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
-                    tileMap.getChildren().remove(cityPanel);
-                    fillCityPanel(city);
-                    tileMap.getChildren().add(cityPanel);
+                    cityPanel.getChildren().clear();
+                    Text purchaseText=new Text("purchase this building with gold?");
+                    purchaseText.getStyleClass().add("info");
+                    cityPanel.getChildren().add(purchaseText);
+                    Button yes=new Button("Yes");
+                    yes.getStyleClass().add("secondary-btn");
+                    Button no=new Button("No");
+                    no.getStyleClass().add("secondary-btn");
+                    no.setOnMouseClicked(mouseEvent2 -> {
+                        showMessage(cityController.constructBuilding(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
+                        tileMap.getChildren().remove(cityPanel);
+                        fillCityPanel(city);
+                        tileMap.getChildren().add(cityPanel);
+                    });
+                    yes.setOnMouseClicked(mouseEvent2 -> {
+                        showMessage(cityController.purchaseBuildingWithGold(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
+                        tileMap.getChildren().remove(cityPanel);
+                        fillCityPanel(city);
+                        tileMap.getChildren().add(cityPanel);
+                    });
+                    cityPanel.getChildren().add(no);
+                    cityPanel.getChildren().add(yes);
                 });
             }
             Button back =new Button("Back");

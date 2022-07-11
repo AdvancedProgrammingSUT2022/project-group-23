@@ -1,7 +1,10 @@
 package view_graphic;
 
 import controller.RegisterController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,6 +19,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import view.RegisterMenu;
 
 public class LoginPage {
@@ -54,20 +58,24 @@ public class LoginPage {
     }
 
     public void initialize() {
-        Platform.runLater(() -> introMediaView.requestFocus());
-        borderPane.getChildren().add(introMediaView);
-        Platform.runLater(() -> introMediaView.setFitHeight(borderPane.getHeight()));
-        Platform.runLater(() -> introMediaView.setFitWidth(borderPane.getWidth()));
-        introMediaPlayer.setAutoPlay(true);
-        introMediaPlayer.play();
-        introMediaPlayer.setOnEndOfMedia(this::stopIntroVideo);
-        introMediaView.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode().getName().equals("Space")) {
-                introMediaPlayer.stop();
-                stopIntroVideo();
-            }
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), actionEvent -> {}));
+        timeline.setCycleCount(1);
+        timeline.play();
+        timeline.setOnFinished(actionEvent -> {
+            borderPane.getChildren().add(introMediaView);
+            introMediaView.requestFocus();
+            introMediaView.setFitWidth(borderPane.getWidth());
+            introMediaView.setFitHeight(borderPane.getHeight());
+            introMediaPlayer.setAutoPlay(true);
+            introMediaPlayer.play();
+            introMediaPlayer.setOnEndOfMedia(this::stopIntroVideo);
+            introMediaView.setOnKeyPressed(keyEvent -> {
+                if (keyEvent.getCode().getName().equals("Space")) {
+                    introMediaPlayer.stop();
+                    stopIntroVideo();
+                }
+            });
         });
-
         usernameLabel.setTextFill(Color.rgb(232, 200, 22));
         nicknameLabel.setTextFill(Color.rgb(232, 200, 22));
         passwordLabel.setTextFill(Color.rgb(232, 200, 22));

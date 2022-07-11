@@ -2,13 +2,19 @@ package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import model.User;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.*;
 
 public class RegisterController {
     private static RegisterController instance;
@@ -54,6 +60,18 @@ public class RegisterController {
                     return "Username and password didn't match!";
                 }
                 User.setUserLogged(user);
+
+
+                ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+                scheduledExecutorService.scheduleAtFixedRate(() -> {
+                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm").format(new java.util.Date());
+                    user.setLastOnline(timeStamp);
+                    User.updateUsersInfo();
+                    if(!User.getUserLogged().equals(user))
+                        scheduledExecutorService.shutdown();
+                }, 0, 60, TimeUnit.SECONDS);
+
+
                 return "user logged in successfully!";
             }
         }

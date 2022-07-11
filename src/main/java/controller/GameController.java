@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class GameController {
 
-    protected static int mapWidth ;
-    protected static int mapHeight ;
-    protected static int currentYear=0;
+    protected static int mapWidth;
+    protected static int mapHeight;
+    protected static int currentYear = 0;
     protected static ArrayList<User> players;
     protected static ArrayList<User> lostPlayers;
     protected static Tile[][] tiles;
@@ -28,25 +28,35 @@ public class GameController {
         Graph graph = new Graph(mapHeight, mapWidth, tiles);
         for (int i = 0; i < mapHeight; i++) {
             for (int j = 0; j < mapHeight; j++) {
-                if(isCoordinateValid(i - 1, j)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j));
-                if(isCoordinateValid(i + 1, j)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i + 1, j));
-                if(j % 2 == 0){
-                    if(isCoordinateValid(i - 1, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j - 1));
-                    if(isCoordinateValid(i - 1, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i - 1, j + 1));
-                    if(isCoordinateValid(i, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j - 1));
-                    if(isCoordinateValid(i, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j + 1));
+                if (isCoordinateValid(i - 1, j))
+                    graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i - 1, j));
+                if (isCoordinateValid(i + 1, j))
+                    graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i + 1, j));
+                if (j % 2 == 0) {
+                    if (isCoordinateValid(i - 1, j - 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i - 1, j - 1));
+                    if (isCoordinateValid(i - 1, j + 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i - 1, j + 1));
+                    if (isCoordinateValid(i, j - 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i, j - 1));
+                    if (isCoordinateValid(i, j + 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i, j + 1));
                 } else {
-                    if(isCoordinateValid(i, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j - 1));
-                    if(isCoordinateValid(i, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i, j + 1));
-                    if(isCoordinateValid(i + 1, j - 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i + 1, j - 1));
-                    if(isCoordinateValid(i + 1, j + 1)) graph.addEdge(coordinatesToNumber(i, j),coordinatesToNumber(i + 1, j + 1));
+                    if (isCoordinateValid(i, j - 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i, j - 1));
+                    if (isCoordinateValid(i, j + 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i, j + 1));
+                    if (isCoordinateValid(i + 1, j - 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i + 1, j - 1));
+                    if (isCoordinateValid(i + 1, j + 1))
+                        graph.addEdge(coordinatesToNumber(i, j), coordinatesToNumber(i + 1, j + 1));
                 }
             }
         }
         return graph;
     }
 
-    protected static int coordinatesToNumber(int x, int y){
+    protected static int coordinatesToNumber(int x, int y) {
         return x * mapWidth + y;
     }
 
@@ -59,14 +69,14 @@ public class GameController {
     }
 
     public static void setSelectedCity(City city) {
-        selectedCity=city;
+        selectedCity = city;
     }
 
-    public static void setMapWidth (int mapWidth) {
+    public static void setMapWidth(int mapWidth) {
         GameController.mapWidth = mapWidth;
     }
 
-    public static void setMapHeight (int mapHeight) {
+    public static void setMapHeight(int mapHeight) {
         GameController.mapHeight = mapHeight;
     }
 
@@ -122,7 +132,7 @@ public class GameController {
         return civilizationController;
     }
 
-    public static int getCurrentYear () {
+    public static int getCurrentYear() {
         return currentYear;
     }
 

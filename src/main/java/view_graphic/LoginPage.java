@@ -46,20 +46,23 @@ public class LoginPage {
     private static MediaPlayer introMediaPlayer;
     private static MediaView introMediaView;
     private static MediaPlayer audioMediaPlayer;
+
     static {
         introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
         introMediaView = new MediaView(introMediaPlayer);
         audioMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/menuMusic1.mp3").toExternalForm()));
     }
+
     public void initialize() {
         Platform.runLater(() -> introMediaView.requestFocus());
         borderPane.getChildren().add(introMediaView);
         Platform.runLater(() -> introMediaView.setFitHeight(borderPane.getHeight()));
         Platform.runLater(() -> introMediaView.setFitWidth(borderPane.getWidth()));
+        introMediaPlayer.setAutoPlay(true);
         introMediaPlayer.play();
         introMediaPlayer.setOnEndOfMedia(this::stopIntroVideo);
         introMediaView.setOnKeyPressed(keyEvent -> {
-            if(keyEvent.getCode().getName().equals("Space")) {
+            if (keyEvent.getCode().getName().equals("Space")) {
                 introMediaPlayer.stop();
                 stopIntroVideo();
             }
@@ -124,8 +127,8 @@ public class LoginPage {
         if (output.equals("user logged in successfully!")) {
             App.changeMenu("MainMenuPage");
         } else {
-                text.setFill(Color.RED);
-                text.setText(output);
+            text.setFill(Color.RED);
+            text.setText(output);
         }
     }
 

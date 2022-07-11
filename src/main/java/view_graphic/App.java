@@ -12,6 +12,7 @@ import java.net.URL;
 public class App extends Application {
     private static Scene scene;
     private static Stage stage;
+
     @Override
     public void start(Stage stage) throws Exception {
         App.setStage(stage);
@@ -24,15 +25,16 @@ public class App extends Application {
         stage.show();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 
-    public static void changeMenu(String name){
+    public static void changeMenu(String name) {
         Parent root = loadFXML(name);
         App.scene.setRoot(root);
     }
-    private static Parent loadFXML(String name){
+
+    private static Parent loadFXML(String name) {
         try {
             URL address = new URL(App.class.getResource("/fxml/" + name + ".fxml").toExternalForm());
             return FXMLLoader.load(address);
@@ -42,11 +44,11 @@ public class App extends Application {
         return null;
     }
 
-    public static Stage getStage () {
+    public static Stage getStage() {
         return stage;
     }
 
-    public static void setStage (Stage stage) {
+    public static void setStage(Stage stage) {
         App.stage = stage;
     }
 }

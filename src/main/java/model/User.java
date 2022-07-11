@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.time.LocalTime;
 import java.util.*;
 
-public class User implements Comparable<User>{
+public class User implements Comparable<User> {
     private String username;
     private String password;
     private String nickname;
@@ -35,11 +35,11 @@ public class User implements Comparable<User>{
     private Technology currentStudy;
     private ArrayList<Technology> technologies;
     private static User userLogged;
-    private HashMap<String ,Integer> waitedTechnologies;
+    private HashMap<String, Integer> waitedTechnologies;
     private ArrayList<String> luxuryResources;
-    private HashMap<Tile,Integer> processingTiles;
-    private HashMap<Tile,WorkerUnit> workingWorkers;
-    private HashMap<Tile,Improvement> improvingTiles;
+    private HashMap<Tile, Integer> processingTiles;
+    private HashMap<Tile, WorkerUnit> workingWorkers;
+    private HashMap<Tile, Improvement> improvingTiles;
     private ArrayList<Tile> eliminatingFeatures;
     private String profilePictureURL;
     private String lastWin;
@@ -49,117 +49,116 @@ public class User implements Comparable<User>{
 
     private ArrayList<String> notifications;
 
-    public User(String username,String password,String nickname)
-    {
-        this.username=username;
-        this.password=password;
-        this.nickname=nickname;
-        this.profilePictureURL=getClass().getResource("/images/profilePictures/"+new Random().nextInt(6)+".png").toString();
-        this.lastOnline="";
-        this.lastWin="";
+    private HashMap<String, ArrayList<String>> messages;
+
+    public User(String username, String password, String nickname) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.profilePictureURL = getClass().getResource("/images/profilePictures/" + new Random().nextInt(6) + ".png").toString();
+        this.lastOnline = "";
+        this.lastWin = "";
         users.add(this);
         User.updateUsersInfo();
     }
 
-    public static void setUsers (ArrayList<User> users) {
+    public static void setUsers(ArrayList<User> users) {
         User.users = users;
     }
 
-    public String getUsername () {
+    public String getUsername() {
         return username;
     }
 
-    public String getPassword () {
+    public String getPassword() {
         return password;
     }
 
-    public String getNickname () {
+    public String getNickname() {
         return nickname;
     }
 
-    public int getScore () {
+    public int getScore() {
         return score;
     }
 
-    public int getGold () {
+    public int getGold() {
         return gold;
     }
 
-    public int getHappiness () {
+    public int getHappiness() {
         return happiness;
     }
 
-    public ArrayList<Unit> getUnits () {
+    public ArrayList<Unit> getUnits() {
         return units;
     }
-    public void removeUnit(Unit unit){
+
+    public void removeUnit(Unit unit) {
         units.remove(unit);
     }
 
-    public ArrayList<City> getCities () {
+    public ArrayList<City> getCities() {
         return cities;
     }
 
-    public void addCity(City city)
-    {
+    public void addCity(City city) {
         cities.add(city);
     }
 
-    public void addUnit(Unit unit)
-    {
+    public void addUnit(Unit unit) {
         units.add(unit);
     }
 
-    public ArrayList<Technology> getTechnologies () {
+    public ArrayList<Technology> getTechnologies() {
         return technologies;
     }
 
-    public void addTechnology(Technology technology)
-    {
+    public void addTechnology(Technology technology) {
         technologies.add(technology);
     }
 
-    public boolean hasTechnology(String technologyName){
-        for(Technology technology : technologies){
-            if(technology.getName().equals(technologyName)) return true;
+    public boolean hasTechnology(String technologyName) {
+        for (Technology technology : technologies) {
+            if (technology.getName().equals(technologyName)) return true;
         }
         return false;
     }
-    public boolean hasResource(String resourceName){
-        for(City city : cities){
-            for(Tile tile : city.getTiles()){
-                if(tile.getResource() != null && tile.getResource().getName().equals(resourceName))return true;
+
+    public boolean hasResource(String resourceName) {
+        for (City city : cities) {
+            for (Tile tile : city.getTiles()) {
+                if (tile.getResource() != null && tile.getResource().getName().equals(resourceName)) return true;
             }
         }
         return false;
     }
 
-    public static ArrayList<User> getUsers () {
+    public static ArrayList<User> getUsers() {
         return users;
     }
 
-    public static void addUser(User user)
-    {
+    public static void addUser(User user) {
         users.add(user);
     }
 
-    public Technology getCurrentStudy () {
+    public Technology getCurrentStudy() {
         return currentStudy;
     }
 
-    public static User getUserLogged () {
+    public static User getUserLogged() {
         return userLogged;
     }
 
-    public static void setUserLogged (User userLogged) {
+    public static void setUserLogged(User userLogged) {
         User.userLogged = userLogged;
     }
 
-    public void setPassword (String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setNickname (String nickname) {
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
@@ -168,41 +167,43 @@ public class User implements Comparable<User>{
     }
 
 
-    public void newGame(){
-        score=0;
-        highScore=0;
+    public void newGame() {
+        score = 0;
+        highScore = 0;
         gold = 0;
         isUnhappy = 0;
         happiness = 20;
-        hasCapitalFallen=false;
+        hasCapitalFallen = false;
         units = new ArrayList<>();
         cities = new ArrayList<>();
         technologies = new ArrayList<>();
         currentStudy = null;
         waitedTechnologies = new HashMap<>();
-        luxuryResources= new ArrayList<>();
+        luxuryResources = new ArrayList<>();
         processingTiles = new HashMap<>();
         workingWorkers = new HashMap<>();
         improvingTiles = new HashMap<>();
         eliminatingFeatures = new ArrayList<>();
         notifications = new ArrayList<>();
-        enemies=new ArrayList<>();
-        confederate=new ArrayList<>();
+        enemies = new ArrayList<>();
+        confederate = new ArrayList<>();
+        this.messages = new HashMap<>();
         updateUsersInfo();
     }
 
     public static void updateUsersInfo() {
         try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\saves\\userInfo\\UserInfo.json");
+            FileWriter writer = new FileWriter("src\\main\\resources\\saves\\userInfo\\UserInfo.json");
             writer.write(new Gson().toJson(User.getUsers()));
             writer.close();
         } catch (IOException e) {
             System.out.println("ERROR updating info");
         }
     }
-    public static void loadGameInfo(String saveName){
+
+    public static void loadGameInfo(String saveName) {
         try {
-            String json= new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json")));
+            String json = new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json")));
             Gson gson = getGson();
             SaveDatabase saveDatabase = gson.fromJson(json, SaveDatabase.class);
             GameController.setMapWidth(saveDatabase.getMapWidth());
@@ -218,10 +219,10 @@ public class User implements Comparable<User>{
             GameController.setLostPlayers(saveDatabase.getLostPlayers());
             GameController.setSaveNumber(saveDatabase.getSaveNumber());
             CivilizationController civilizationController = GameController.getCivilizationController();
-            for(int j = 0; j < GameController.getPlayers().size(); j++){
+            for (int j = 0; j < GameController.getPlayers().size(); j++) {
                 User player = GameController.getPlayers().get(j);
                 for (int i = 0; i < users.size(); i++) {
-                    if(users.get(i).getUsername().equals(player.getUsername())){
+                    if (users.get(i).getUsername().equals(player.getUsername())) {
                         User user = users.get(i);
                         player.setPassword(user.getPassword());
                         player.setNickname(user.getNickname());
@@ -234,29 +235,27 @@ public class User implements Comparable<User>{
                     }
                 }
             }
-            for(User user : GameController.getPlayers()){
+            for (User user : GameController.getPlayers()) {
                 for (int i = 0; i < user.getUnits().size(); i++) {
                     Unit unit = user.getUnits().get(i);
-                    if(user.getUnits().get(i).getName().equals("Settler")) {
+                    if (user.getUnits().get(i).getName().equals("Settler")) {
                         SettlerUnit settlerUnit = new SettlerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
                         settlerUnit.setState(unit.getState());
                         settlerUnit.setRemainingMoves(unit.getRemainingMoves());
                         settlerUnit.setHealth(unit.getHealth());
                         settlerUnit.setMoves(unit.getMoves());
                         user.getUnits().set(i, settlerUnit);
-                    }
-                    else if(user.getUnits().get(i).equals("Worker")) {
+                    } else if (user.getUnits().get(i).equals("Worker")) {
                         WorkerUnit workerUnit = new WorkerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
                         workerUnit.setState(unit.getState());
                         workerUnit.setRemainingMoves(unit.getRemainingMoves());
                         workerUnit.setHealth(unit.getHealth());
                         workerUnit.setMoves(unit.getMoves());
                         user.getUnits().set(i, workerUnit);
-                    }
-                    else {
+                    } else {
                         ArrayList<Unit> allUnits = UnitsDatabase.getUnits();
-                        for(Unit currentUnit : allUnits){
-                            if(currentUnit.getName().equals(unit.getName())){
+                        for (Unit currentUnit : allUnits) {
+                            if (currentUnit.getName().equals(unit.getName())) {
                                 MilitaryUnit militaryUnit = ((MilitaryUnit) currentUnit).getCopy();
                                 militaryUnit.setX(unit.getX());
                                 militaryUnit.setY(unit.getY());
@@ -276,9 +275,10 @@ public class User implements Comparable<User>{
             System.out.println("ERROR reading save file");
         }
     }
-    public static void saveGame(String saveName){
+
+    public static void saveGame(String saveName) {
         try {
-            FileWriter writer=new FileWriter("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json");
+            FileWriter writer = new FileWriter("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json");
             SaveDatabase saveDatabase = new SaveDatabase();
             Gson gson = getGson();
             writer.write(gson.toJson(saveDatabase));
@@ -287,9 +287,10 @@ public class User implements Comparable<User>{
             System.out.println("ERROR saving game info");
         }
     }
-    public static void autoSave(){
+
+    public static void autoSave() {
         GameController.setSaveNumber(GameController.getSaveNumber() + 1);
-        if(GameController.getSaveNumber() > AutoSaveMenu.getAutoSaveNumber())
+        if (GameController.getSaveNumber() > AutoSaveMenu.getAutoSaveNumber())
             GameController.setSaveNumber(1);
         User.saveGame("AutoSave" + GameController.getSaveNumber());
     }
@@ -304,63 +305,63 @@ public class User implements Comparable<User>{
         return notifications;
     }
 
-    public void addNotification(String notification){
+    public void addNotification(String notification) {
         notifications.add(notification);
     }
 
-    public void setScore (int score) {
+    public void setScore(int score) {
         this.score = score;
     }
 
-    public int getHighScore () {
+    public int getHighScore() {
         return highScore;
     }
 
-    public void setHighScore (int highScore) {
+    public void setHighScore(int highScore) {
         this.highScore = highScore;
     }
 
-    public void setGold (int gold) {
+    public void setGold(int gold) {
         this.gold = gold;
     }
 
-    public void setHappiness (int happiness) {
+    public void setHappiness(int happiness) {
         this.happiness = happiness;
-        if(this.happiness<0) setIsUnhappy(1);
-        if(this.happiness>=0) setIsUnhappy(0);
+        if (this.happiness < 0) setIsUnhappy(1);
+        if (this.happiness >= 0) setIsUnhappy(0);
     }
 
-    public int totalCup(){
-        int cup=0;
+    public int totalCup() {
+        int cup = 0;
         for (City city : cities) {
-            cup=+3;
+            cup = +3;
             cup += city.getCountOfCitizens();
             for (Building building : city.getBuildings()) {
-                cup+=building.getCup();
+                cup += building.getCup();
             }
         }
-        if(gold<0){
+        if (gold < 0) {
             cup += gold;
-            if(cup<0) cup=0;
-            gold=0;
+            if (cup < 0) cup = 0;
+            gold = 0;
         }
         return cup;
     }
 
-    public void setCurrentStudy (Technology currentStudy) {
+    public void setCurrentStudy(Technology currentStudy) {
         this.currentStudy = currentStudy;
     }
 
-    public HashMap<String, Integer> getWaitedTechnologies () {
+    public HashMap<String, Integer> getWaitedTechnologies() {
         return waitedTechnologies;
     }
 
-    public ArrayList<Technology> readyTechnologies(){
-        ArrayList<Technology> readyTechnology=new ArrayList<>();
+    public ArrayList<Technology> readyTechnologies() {
+        ArrayList<Technology> readyTechnology = new ArrayList<>();
         for (Technology technology : TechnologyDatabase.getTechnologies()) {
             ArrayList<String> prerequisiteTechnologies = technology.getPrerequisiteTechnologies();
             boolean hasAllPrerequisiteTechnologies = true;
-            for(String technologyName : prerequisiteTechnologies) {
+            for (String technologyName : prerequisiteTechnologies) {
                 boolean hasTechnology = false;
                 for (Technology technology1 : technologies) {
                     if (technology1.getName().equals(technologyName)) {
@@ -373,7 +374,7 @@ public class User implements Comparable<User>{
                     break;
                 }
             }
-            if(hasAllPrerequisiteTechnologies && !technologies.contains(technology) && (currentStudy == null || !technology.getName().equals(currentStudy.getName()))){
+            if (hasAllPrerequisiteTechnologies && !technologies.contains(technology) && (currentStudy == null || !technology.getName().equals(currentStudy.getName()))) {
                 readyTechnology.add(technology);
             }
         }
@@ -381,111 +382,111 @@ public class User implements Comparable<User>{
     }
 
 
-    public int getIsUnhappy () {
+    public int getIsUnhappy() {
         return isUnhappy;
     }
 
-    public void setIsUnhappy (int isUnhappy) {
+    public void setIsUnhappy(int isUnhappy) {
         this.isUnhappy = isUnhappy;
     }
 
-    public ArrayList<String> getLuxuryResources () {
+    public ArrayList<String> getLuxuryResources() {
         return luxuryResources;
     }
 
-    public void addLuxuryResource(String name){
+    public void addLuxuryResource(String name) {
         luxuryResources.add(name);
     }
 
-    public HashMap<Tile, Integer> getProcessingTiles () {
+    public HashMap<Tile, Integer> getProcessingTiles() {
         return processingTiles;
     }
 
-    public void setProcessingTiles (HashMap<Tile, Integer> processingTiles) {
+    public void setProcessingTiles(HashMap<Tile, Integer> processingTiles) {
         this.processingTiles = processingTiles;
     }
 
-    public HashMap<Tile, WorkerUnit> getWorkingWorkers () {
+    public HashMap<Tile, WorkerUnit> getWorkingWorkers() {
         return workingWorkers;
     }
 
-    public HashMap<Tile, Improvement> getImprovingTiles () {
+    public HashMap<Tile, Improvement> getImprovingTiles() {
         return improvingTiles;
     }
 
-    public void setImprovingTiles (HashMap<Tile, Improvement> improvingTiles) {
+    public void setImprovingTiles(HashMap<Tile, Improvement> improvingTiles) {
         this.improvingTiles = improvingTiles;
     }
 
-    public ArrayList<Tile> getEliminatingFeatures () {
+    public ArrayList<Tile> getEliminatingFeatures() {
         return eliminatingFeatures;
     }
 
-    public String getProfilePictureURL () {
+    public String getProfilePictureURL() {
         return profilePictureURL;
     }
 
-    public void setProfilePictureURL (String profilePictureURL) {
+    public void setProfilePictureURL(String profilePictureURL) {
         this.profilePictureURL = profilePictureURL;
     }
 
-    public String getLastWin () {
+    public String getLastWin() {
         return lastWin;
     }
 
-    public void setLastWin (String lastWin) {
+    public void setLastWin(String lastWin) {
         this.lastWin = lastWin;
     }
 
-    public String getLastOnline () {
+    public String getLastOnline() {
         return lastOnline;
     }
 
-    public void setLastOnline (String lastOnline) {
+    public void setLastOnline(String lastOnline) {
         this.lastOnline = lastOnline;
     }
 
     @Override
     public int compareTo(User o) {
-        if(this.getScore() > o.getScore()) return 1;
-        else if(this.getScore() < o.getScore())return -1;
-        else if(this.getLastWin().compareTo(o.lastWin) > 0)return 1;
-        else if(this.getLastWin().compareTo(o.lastWin) < 0)return -1;
-        else if(this.getNickname().compareTo(o.getNickname()) > 0)return 1;
-        else if(this.getNickname().compareTo(o.getNickname()) < 0)return -1;
+        if (this.getScore() > o.getScore()) return 1;
+        else if (this.getScore() < o.getScore()) return -1;
+        else if (this.getLastWin().compareTo(o.lastWin) > 0) return 1;
+        else if (this.getLastWin().compareTo(o.lastWin) < 0) return -1;
+        else if (this.getNickname().compareTo(o.getNickname()) > 0) return 1;
+        else if (this.getNickname().compareTo(o.getNickname()) < 0) return -1;
         return 0;
     }
 
-    public static User getUserByUsername(String username){
+    public static User getUserByUsername(String username) {
         for (User user : users) {
-            if(user.getUsername().equals(username)){
+            if (user.getUsername().equals(username)) {
                 return user;
             }
         }
         return null;
     }
 
-    public ArrayList<User> getEnemies () {
+    public ArrayList<User> getEnemies() {
         return enemies;
     }
 
-    public ArrayList<User> getConfederate () {
+    public ArrayList<User> getConfederate() {
         return confederate;
     }
 
-    public void addEnemy(User user){
+    public void addEnemy(User user) {
         enemies.add(user);
     }
 
-    public void addConfederate(User user){
+    public void addConfederate(User user) {
         confederate.add(user);
     }
 
-    public boolean isHasCapitalFallen () {
+    public boolean isHasCapitalFallen() {
         return hasCapitalFallen;
     }
 
-    public void setHasCapitalFallen (boolean hasCapitalFallen) {
+    public void setHasCapitalFallen(boolean hasCapitalFallen) {
         this.hasCapitalFallen = hasCapitalFallen;
     }
 

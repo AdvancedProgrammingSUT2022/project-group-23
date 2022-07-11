@@ -36,7 +36,7 @@ public class Diplomacy {
     private ArrayList<String> messages=new ArrayList<>();
     private ArrayList<String> givingTrade=new ArrayList<>();
     private ArrayList<String> receivingTrade=new ArrayList<>();
-    private Text dialog=new Text();
+    private Text dialog = new Text();
 
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());

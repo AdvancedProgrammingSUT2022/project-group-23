@@ -58,6 +58,8 @@ public class Game {
     private boolean purchaseTile;
     private boolean unitAttack;
     private boolean cityAttack;
+    private VBox notificationsVBox;
+    private VBox demographicVBox;
 
     public void initialize() {
         Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
@@ -223,6 +225,84 @@ public class Game {
             showMessage("Game saved");
         });
         bar.getChildren().add(save);
+        Button notifications = new Button("notifs");
+        notifications.getStyleClass().add("primary-btn");
+        notifications.setMaxWidth(100);
+        notifications.setOnMouseClicked(mouseEvent -> {
+            if(notificationsVBox==null){
+                notificationsVBox=new VBox();
+                notificationsVBox.setMinWidth(400);
+                notificationsVBox.setMinHeight(600);
+                notificationsVBox.setSpacing(20);
+                BackgroundImage notificationBackground = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/cityPanel.png").toExternalForm()),
+                        BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                        backgroundSize);
+                notificationsVBox.setBackground(new Background(notificationBackground));
+                for (String notification : GameController.getCurrentPlayer().getNotifications()) {
+                    Text notif=new Text(notification);
+                    notif.getStyleClass().add("info");
+                    notif.setFill(Color.rgb(10,10,100));
+                    notificationsVBox.getChildren().add(notif);
+                }
+                tileMap.getChildren().add(notificationsVBox);
+            }else {
+                tileMap.getChildren().remove(notificationsVBox);
+                notificationsVBox=null;
+            }
+
+        });
+        bar.getChildren().add(notifications);
+        Button demographic = new Button("Demog");
+        demographic.getStyleClass().add("primary-btn");
+        demographic.setMaxWidth(100);
+        demographic.setOnMouseClicked(mouseEvent -> {
+            if(demographicVBox==null){
+                demographicVBox=new VBox();
+                demographicVBox.setMinWidth(400);
+                demographicVBox.setMinHeight(600);
+                demographicVBox.setSpacing(20);
+                BackgroundImage demographicBackground = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/cityPanel.png").toExternalForm()),
+                        BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                        backgroundSize);
+                demographicVBox.setBackground(new Background(demographicBackground));
+                demographicVBox.setAlignment(Pos.CENTER);
+                int population=0,tileCount=0,cities=0;
+                for (City city : GameController.getCurrentPlayer().getCities()) {
+                    population+=city.getCountOfCitizens();
+                    tileCount+=city.getTiles().size();
+                    cities++;
+                }
+                ArrayList<String> militaryUnits=new ArrayList<>();
+                for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
+                    if(unit instanceof MilitaryUnit) militaryUnits.add(unit.getName());
+                }
+                Text populationText=new Text("Population: "+population);
+                populationText.getStyleClass().add("info");
+                demographicVBox.getChildren().add(populationText);
+                Text tileCountText=new Text("Total Tiles: "+tileCount);
+                tileCountText.getStyleClass().add("info");
+                demographicVBox.getChildren().add(tileCountText);
+                Text totalCities=new Text("Total Cities: "+cities);
+                totalCities.getStyleClass().add("info");
+                demographicVBox.getChildren().add(totalCities);
+                Text militaryText =new Text("Military Units: ");
+                militaryText.getStyleClass().add("info");
+                demographicVBox.getChildren().add(militaryText);
+                String military="";
+                for (String militaryUnit : militaryUnits) {
+                    military+=" ";
+                    military+=militaryUnit;
+                }
+                Text militaryNameText =new Text(military);
+                militaryNameText.getStyleClass().add("info");
+                demographicVBox.getChildren().add(militaryNameText);
+                tileMap.getChildren().add(demographicVBox);
+            }else {
+                tileMap.getChildren().remove(demographicVBox);
+                demographicVBox=null;
+            }
+        });
+        bar.getChildren().add(demographic);
     }
 
     public void move(KeyEvent keyEvent) {

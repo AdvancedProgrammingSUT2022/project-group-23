@@ -10,15 +10,13 @@ import enums.Commands;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -303,6 +301,14 @@ public class Game {
             }
         });
         bar.getChildren().add(demographic);
+
+        Button exitGame = new Button("Exit");
+        exitGame.getStyleClass().add("primary-btn");
+        exitGame.setMaxWidth(100);
+        exitGame.setOnMouseClicked(mouseEvent -> {
+            App.changeMenu("GameMenu");
+        });
+        bar.getChildren().add(exitGame);
     }
 
     public void move(KeyEvent keyEvent) {

@@ -16,7 +16,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         App.setStage(stage);
-        Parent root = loadFXML("LoginPage");
+        Parent root = loadFXML("IntroPage");
         Scene scene = new Scene(root);
         App.scene = scene;
         stage.setScene(scene);

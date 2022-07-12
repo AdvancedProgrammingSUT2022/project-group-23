@@ -15,37 +15,35 @@ public class IntroPage {
     @FXML
     private BorderPane pane;
 
-    private static MediaView introMediaView;
-    private static MediaPlayer introMediaPlayer;
+//    private static MediaView introMediaView;
+//    private static MediaPlayer introMediaPlayer;
 
-    static {
-        introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
-        introMediaView = new MediaView(introMediaPlayer);
-    }
+//    static {
+//        introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
+//        introMediaView = new MediaView(introMediaPlayer);
+//    }
 
     public void initialize() {
+        MediaPlayer introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
+        MediaView introMediaView = new MediaView(introMediaPlayer);
         pane.setStyle("-fx-background-color: black");
+        introMediaView.getMediaPlayer().play();
+        introMediaPlayer.setOnEndOfMedia(this::stopIntroVideo);
+        introMediaView.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().getName().equals("Space")) {
+                introMediaPlayer.stop();
+                stopIntroVideo();
+            }
+        });
         pane.getChildren().add(introMediaView);
         Platform.runLater(() -> {
             introMediaView.requestFocus();
             introMediaView.setFitWidth(pane.getWidth());
             introMediaView.setFitHeight(pane.getHeight());
-            introMediaPlayer.setAutoPlay(true);
-            introMediaPlayer.play();
-            introMediaPlayer.setOnEndOfMedia(this::stopIntroVideo);
-            introMediaView.setOnKeyPressed(keyEvent -> {
-                if (keyEvent.getCode().getName().equals("Space")) {
-                    introMediaPlayer.stop();
-                    stopIntroVideo();
-                }
-            });
         });
     }
 
     private void stopIntroVideo() {
-        pane.getChildren().remove(introMediaView);
-        introMediaView = null;
-        introMediaPlayer = null;
         App.changeMenu("LoginPage");
     }
 }

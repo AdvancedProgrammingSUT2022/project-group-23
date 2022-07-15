@@ -32,7 +32,7 @@ public class Diplomacy {
     private HBox hBox;
     @FXML
     private Button selectButton;
-    private static User discussedCivilization;
+    private  User discussedCivilization;
     private ArrayList<String> messages=new ArrayList<>();
     private ArrayList<String> givingTrade=new ArrayList<>();
     private ArrayList<String> receivingTrade=new ArrayList<>();
@@ -49,7 +49,7 @@ public class Diplomacy {
         dialog.setFill(Color.rgb(180,160,10));
         ArrayList<String > usersUsernames=new ArrayList<>();
         for (User user : GameController.getPlayers()) {
-            if(!user.equals(User.getUserLogged())){
+            if(!user.equals(GameController.getCurrentPlayer())){
                 usersUsernames.add(user.getUsername());
             }
         }
@@ -65,6 +65,8 @@ public class Diplomacy {
     }
 
     private void openDiscussion(){
+        messages=discussedCivilization.getMessages().get(GameController.getCurrentPlayer().getNickname());
+        if(messages==null) messages=new ArrayList<>();
         title.setText("Discussion");
         vboxUp.getChildren().remove(selectButton);
         vbox.getChildren().clear();
@@ -78,6 +80,7 @@ public class Diplomacy {
         chatButton.setOnMouseClicked(mouseEvent -> {
             if(chatBox.getText().length()>0){
                 messages.add(chatBox.getText());
+                discussedCivilization.getMessages().put(GameController.getCurrentPlayer().getUsername(),messages);
                 chatBox.clear();
                 dialog.setText("Message Sent!");
             }
@@ -95,6 +98,8 @@ public class Diplomacy {
             }else {
                 dialog.setText("you already have declared war with this civilization");
             }
+            messages.add("i declared war with you");
+            discussedCivilization.getMessages().put(GameController.getCurrentPlayer().getUsername(),messages);
         });
         Button peace =new Button("Make Peace");
         peace.getStyleClass().add("primary-btn");
@@ -109,6 +114,8 @@ public class Diplomacy {
             }else {
                 dialog.setText("you already have made peace with this civilization");
             }
+            messages.add("i make peace with you");
+            discussedCivilization.getMessages().put(GameController.getCurrentPlayer().getUsername(),messages);
         });
         HBox trade=new HBox();
         trade.setSpacing(10);
@@ -176,6 +183,8 @@ public class Diplomacy {
         tradeButton.getStyleClass().add("primary-btn");
         tradeButton.setOnMouseClicked(mouseEvent -> {
             dialog.setText("Trade Sent To Civilization!");
+            discussedCivilization.getReceiving().put(GameController.getCurrentPlayer().getUsername(),givingTrade);
+            discussedCivilization.getGiving().put(GameController.getCurrentPlayer().getUsername(),receivingTrade);
         });
         vbox.getChildren().add(tradeButton);
         vbox.getChildren().add(dialog);

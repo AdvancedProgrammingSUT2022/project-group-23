@@ -31,4 +31,13 @@ public class ResourceDatabase {
     public static ArrayList<Resource> getResources() {
         return resources;
     }
+
+    public static Resource getResourceByName(String name){
+        for (Resource resource : resources) {
+            if(resource.getName().equals(name)){
+                return resource;
+            }
+        }
+        return null;
+    }
 }

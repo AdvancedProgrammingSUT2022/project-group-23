@@ -16,7 +16,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalTime;
 import java.util.*;
 
 public class User implements Comparable<User> {
@@ -50,6 +49,8 @@ public class User implements Comparable<User> {
     private ArrayList<String> notifications;
 
     private HashMap<String, ArrayList<String>> messages;
+    private HashMap<String,ArrayList<String>> giving;
+    private HashMap<String,ArrayList<String>> receiving;
 
     public User(String username, String password, String nickname) {
         this.username = username;
@@ -188,6 +189,8 @@ public class User implements Comparable<User> {
         enemies = new ArrayList<>();
         confederate = new ArrayList<>();
         this.messages = new HashMap<>();
+        giving=new HashMap<>();
+        receiving=new HashMap<>();
         updateUsersInfo();
     }
 
@@ -446,6 +449,14 @@ public class User implements Comparable<User> {
         this.lastOnline = lastOnline;
     }
 
+    public HashMap<String, ArrayList<String>> getGiving () {
+        return giving;
+    }
+
+    public HashMap<String, ArrayList<String>> getReceiving () {
+        return receiving;
+    }
+
     @Override
     public int compareTo(User o) {
         if (this.getScore() > o.getScore()) return 1;
@@ -488,6 +499,10 @@ public class User implements Comparable<User> {
 
     public void setHasCapitalFallen(boolean hasCapitalFallen) {
         this.hasCapitalFallen = hasCapitalFallen;
+    }
+
+    public HashMap<String, ArrayList<String>> getMessages () {
+        return messages;
     }
 
     @Override

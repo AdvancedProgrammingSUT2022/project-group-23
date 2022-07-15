@@ -5,6 +5,7 @@ import controller.CivilizationController;
 import controller.GameController;
 import controller.UnitController;
 import database.ImprovementDatabase;
+import database.ResourceDatabase;
 import database.TechnologyDatabase;
 import enums.Commands;
 import javafx.animation.KeyFrame;
@@ -15,10 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -34,6 +32,7 @@ import view_graphic.component.GraphicTile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 public class Game {
@@ -138,6 +137,148 @@ public class Game {
             });
             showMessage("player "+winner.getNickname()+" won the game!");
         }
+        if(!GameController.getCurrentPlayer().getMessages().isEmpty() || !GameController.getCurrentPlayer().getGiving().isEmpty() || !GameController.getCurrentPlayer().getReceiving().isEmpty()){
+            VBox discussionVBox=new VBox();
+            discussionVBox.setAlignment(Pos.CENTER);
+            discussionVBox.setSpacing(20);
+            discussionVBox.setMinWidth(400);
+            discussionVBox.setMinHeight(600);
+            BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/cityPanel.png").toExternalForm()),
+                    BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    backgroundSize);
+            discussionVBox.setBackground(new Background(backgroundImage));
+            HashMap<String,ArrayList<String>> messages=GameController.getCurrentPlayer().getMessages();
+            for(Map.Entry<String,ArrayList<String>> entry:messages.entrySet()){
+                Text sender=new Text("this civilization have sent you this messages: "+entry.getKey());
+                sender.getStyleClass().add("info");
+                discussionVBox.getChildren().add(sender);
+                for (String s : messages.get(entry.getKey())) {
+                    Text message=new Text(s);
+                    message.getStyleClass().add("info");
+                    discussionVBox.getChildren().add(message);
+                }
+            }
+            HashMap<String,ArrayList<String >> giving=GameController.getCurrentPlayer().getGiving();
+            HashMap<String,ArrayList<String >> receiving=GameController.getCurrentPlayer().getReceiving();
+            for(Map.Entry<String,ArrayList<String>> entry:giving.entrySet()){
+                Text sender=new Text("this civilization have sent you this trade: "+entry.getKey());
+                sender.getStyleClass().add("info");
+                discussionVBox.getChildren().add(sender);
+                HBox givingHBox=new HBox();
+                givingHBox.setSpacing(10);
+                givingHBox.setAlignment(Pos.CENTER);
+                Text give=new Text("you give: ");
+                give.getStyleClass().add("info");
+                givingHBox.getChildren().add(give);
+                for (String s : giving.get(entry.getKey())) {
+                    Text message=new Text(s);
+                    message.getStyleClass().add("info");
+                    givingHBox.getChildren().add(message);
+                }
+                discussionVBox.getChildren().add(givingHBox);
+                HBox receiveHBox=new HBox();
+                receiveHBox.setSpacing(10);
+                receiveHBox.setAlignment(Pos.CENTER);
+                Text receive=new Text("you receive: ");
+                receive.getStyleClass().add("info");
+                receiveHBox.getChildren().add(receive);
+                for (String s : receiving.get(entry.getKey())) {
+                    Text message=new Text(s);
+                    message.getStyleClass().add("info");
+                    receiveHBox.getChildren().add(message);
+                }
+                discussionVBox.getChildren().add(receiveHBox);
+                HBox buttons=new HBox();
+                buttons.setSpacing(10);
+                buttons.setAlignment(Pos.CENTER);
+                Button accept=new Button("Accept");
+                accept.getStyleClass().add("primary-btn");
+                accept.setMaxWidth(100);
+                buttons.getChildren().add(accept);
+                Button deny =new Button("Deny");
+                deny.getStyleClass().add("primary-btn");
+                deny.setMaxWidth(100);
+                buttons.getChildren().add(deny);
+                discussionVBox.getChildren().add(buttons);
+                accept.setOnMouseClicked(mouseEvent -> {
+                    User user=User.getUserByUsername(entry.getKey());
+                    for (String s : giving.get(entry.getKey())) {
+                        if(s.equals("+5 Gold")){
+                            GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()-5);
+                            user.setGold(user.getGold()+5);
+                        }else {
+                            mainLoop:
+                            for (City city : GameController.getCurrentPlayer().getCities()) {
+                                for (Tile tile : city.getTiles()) {
+                                    if(tile.getResource()!=null && tile.getResource().getName().equals(s)){
+                                        tile.setResource(null);
+                                        break mainLoop;
+                                    }
+                                }
+                            }
+                            mainLoop:
+                            for (City city : user.getCities()) {
+                                for (Tile tile : city.getTiles()) {
+                                    if(tile.getResource()==null){
+                                        tile.setResource(ResourceDatabase.getResourceByName(s));
+                                        break mainLoop;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (String s : receiving.get(entry.getKey())) {
+                        if(s.equals("+5 Gold")){
+                            GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+5);
+                            user.setGold(user.getGold()-5);
+                        }else {
+                            mainLoop:
+                            for (City city : user.getCities()) {
+                                for (Tile tile : city.getTiles()) {
+                                    if(tile.getResource()!=null && tile.getResource().getName().equals(s)){
+                                        tile.setResource(null);
+                                        break mainLoop;
+                                    }
+                                }
+                            }
+                            mainLoop:
+                            for (City city : GameController.getCurrentPlayer().getCities()) {
+                                for (Tile tile : city.getTiles()) {
+                                    if(tile.getResource()==null){
+                                        tile.setResource(ResourceDatabase.getResourceByName(s));
+                                        break mainLoop;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    bar.getChildren().clear();
+                    createTopBar(backgroundSize);
+                    giving.clear();
+                    receiving.clear();
+                    showMessage("accepted");
+                    discussionVBox.getChildren().remove(buttons);
+                });
+                deny.setOnMouseClicked(mouseEvent -> {
+                    giving.clear();
+                    receiving.clear();
+                    showMessage("denied");
+                    discussionVBox.getChildren().remove(buttons);
+                });
+            }
+            Button exit=new Button("Exit");
+            exit.getStyleClass().add("secondary-btn");
+            exit.setMaxWidth(100);
+            discussionVBox.getChildren().add(exit);
+            exit.setOnMouseClicked(mouseEvent -> {
+                tileMap.getChildren().remove(discussionVBox);
+                giving.clear();
+                receiving.clear();
+                messages.clear();
+            });
+            tileMap.getChildren().add(discussionVBox);
+
+        }
     }
 
 
@@ -147,7 +288,8 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
-        bar.setSpacing(13);
+        bar.setSpacing(10);
+        bar.setMaxWidth(1280);
         Text userNickname = new Text(GameController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
@@ -156,7 +298,7 @@ public class Game {
         score.setY(45);
         score.getStyleClass().add("info");
         bar.getChildren().add(score);
-        Circle gold = new Circle(30);
+        Circle gold = new Circle(22);
         gold.setCenterY(15);
         ImagePattern goldImage = new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
         gold.setFill(goldImage);
@@ -165,7 +307,7 @@ public class Game {
         goldAmount.setY(45);
         goldAmount.getStyleClass().add("info");
         bar.getChildren().add(goldAmount);
-        Circle happiness = new Circle(30);
+        Circle happiness = new Circle(22);
         happiness.setCenterY(15);
         ImagePattern happinessImage = new ImagePattern(new Image(getClass().getResource("/images/info/Happiness.png").toExternalForm()));
         happiness.setFill(happinessImage);
@@ -174,7 +316,7 @@ public class Game {
         happinessAmount.setY(45);
         happinessAmount.getStyleClass().add("info");
         bar.getChildren().add(happinessAmount);
-        Circle science = new Circle(30);
+        Circle science = new Circle(22);
         science.setCenterY(15);
         ImagePattern scienceImage = new ImagePattern(new Image(getClass().getResource("/images/info/Science.png").toExternalForm()));
         science.setFill(scienceImage);
@@ -303,6 +445,14 @@ public class Game {
             }
         });
         bar.getChildren().add(demographic);
+
+        Button exitGame = new Button("Exit");
+        exitGame.getStyleClass().add("primary-btn");
+        exitGame.setMaxWidth(100);
+        exitGame.setOnMouseClicked(mouseEvent -> {
+            App.changeMenu("GameMenu");
+        });
+        bar.getChildren().add(exitGame);
     }
 
     public void move(KeyEvent keyEvent) {
@@ -533,25 +683,25 @@ public class Game {
                                         }
                                     }
                                 }else {
-                                    showMessage(cityController.purchaseTile(tiles[finalI][finalJ].getTile()));
                                     tileMap.getChildren().remove(cityPanel);
                                     fillCityPanel(GameController.getSelectedCity());
                                     tileMap.getChildren().add(cityPanel);
                                     purchaseTile=false;
+                                    showMessage(cityController.purchaseTile(tiles[finalI][finalJ].getTile()));
                                 }
                             }else {
-                                showMessage(cityController.removeCitizen(finalI,finalJ));
                                 tileMap.getChildren().remove(cityPanel);
                                 fillCityPanel(GameController.getSelectedCity());
                                 tileMap.getChildren().add(cityPanel);
                                 deleteCitizen=false;
+                                showMessage(cityController.removeCitizen(finalI,finalJ));
                             }
                         }else {
-                            showMessage(cityController.putCitizenToWork(finalI, finalJ));
                             tileMap.getChildren().remove(cityPanel);
                             fillCityPanel(GameController.getSelectedCity());
                             tileMap.getChildren().add(cityPanel);
                             putCitizenToTile=false;
+                            showMessage(cityController.putCitizenToWork(finalI, finalJ));
                         }
                     }
                 });
@@ -1125,16 +1275,16 @@ public class Game {
                     Button no=new Button("No");
                     no.getStyleClass().add("secondary-btn");
                     no.setOnMouseClicked(mouseEvent2 -> {
-                        showMessage(cityController.constructUnit(unitController.getConstructableUnits().get(finalI).getName()));
                         tileMap.getChildren().remove(cityPanel);
                         fillCityPanel(city);
                         tileMap.getChildren().add(cityPanel);
+                        showMessage(cityController.constructUnit(unitController.getConstructableUnits().get(finalI).getName()));
                     });
                     yes.setOnMouseClicked(mouseEvent2 -> {
-                        showMessage(cityController.purchaseUnitWithGold(unitController.getConstructableUnits().get(finalI).getName()));
                         tileMap.getChildren().remove(cityPanel);
                         fillCityPanel(city);
                         tileMap.getChildren().add(cityPanel);
+                        showMessage(cityController.purchaseUnitWithGold(unitController.getConstructableUnits().get(finalI).getName()));
                     });
                     cityPanel.getChildren().add(no);
                     cityPanel.getChildren().add(yes);
@@ -1198,16 +1348,16 @@ public class Game {
                     Button no=new Button("No");
                     no.getStyleClass().add("secondary-btn");
                     no.setOnMouseClicked(mouseEvent2 -> {
-                        showMessage(cityController.constructBuilding(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
                         tileMap.getChildren().remove(cityPanel);
                         fillCityPanel(city);
                         tileMap.getChildren().add(cityPanel);
+                        showMessage(cityController.constructBuilding(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
                     });
                     yes.setOnMouseClicked(mouseEvent2 -> {
-                        showMessage(cityController.purchaseBuildingWithGold(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
                         tileMap.getChildren().remove(cityPanel);
                         fillCityPanel(city);
                         tileMap.getChildren().add(cityPanel);
+                        showMessage(cityController.purchaseBuildingWithGold(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
                     });
                     cityPanel.getChildren().add(no);
                     cityPanel.getChildren().add(yes);

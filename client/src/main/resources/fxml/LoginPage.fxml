@@ -6,13 +6,14 @@
 
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
+<?import javafx.scene.media.MediaView?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="view_graphic.LoginPage"
             prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
     <top>
         <HBox alignment="CENTER" styleClass="titleBox">
-            <Text text="Welcome to Civilization VI!" styleClass="title" fx:id="title"/>
+            <Text text="Welcome to Civilization V" styleClass="title" fx:id="title"/>
         </HBox>
         <!--        <GridPane fx:id="grid" alignment="CENTER">-->
 

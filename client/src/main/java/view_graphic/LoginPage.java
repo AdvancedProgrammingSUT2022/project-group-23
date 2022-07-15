@@ -1,7 +1,10 @@
 package view_graphic;
 
 import controller.RegisterController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,7 +19,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import view.RegisterMenu;
+import javafx.util.Duration;
+
 
 public class LoginPage {
     private RegisterController registerController;
@@ -43,31 +47,13 @@ public class LoginPage {
     private Label nicknameLabel;
     @FXML
     private Label passwordLabel;
-    private static MediaPlayer introMediaPlayer;
-    private static MediaView introMediaView;
-    private static MediaPlayer audioMediaPlayer;
 
-    static {
-        introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
-        introMediaView = new MediaView(introMediaPlayer);
-        audioMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/menuMusic1.mp3").toExternalForm()));
-    }
+    private static MediaPlayer audioMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/menuMusic1.mp3").toExternalForm()));
 
     public void initialize() {
-        Platform.runLater(() -> introMediaView.requestFocus());
-        borderPane.getChildren().add(introMediaView);
-        Platform.runLater(() -> introMediaView.setFitHeight(borderPane.getHeight()));
-        Platform.runLater(() -> introMediaView.setFitWidth(borderPane.getWidth()));
-        introMediaPlayer.setAutoPlay(true);
-        introMediaPlayer.play();
-        introMediaPlayer.setOnEndOfMedia(this::stopIntroVideo);
-        introMediaView.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode().getName().equals("Space")) {
-                introMediaPlayer.stop();
-                stopIntroVideo();
-            }
-        });
-
+        Platform.runLater(() -> borderPane.requestFocus());
+        audioMediaPlayer.setCycleCount(-1);
+        audioMediaPlayer.play();
         usernameLabel.setTextFill(Color.rgb(232, 200, 22));
         nicknameLabel.setTextFill(Color.rgb(232, 200, 22));
         passwordLabel.setTextFill(Color.rgb(232, 200, 22));
@@ -84,14 +70,7 @@ public class LoginPage {
         vbox.getChildren().add(text);
     }
 
-    private void stopIntroVideo() {
-        borderPane.getChildren().remove(introMediaView);
-        introMediaView = null;
-        introMediaPlayer = null;
-        Platform.runLater(() -> borderPane.requestFocus());
-        audioMediaPlayer.setCycleCount(-1);
-        audioMediaPlayer.play();
-    }
+
 
     public void type(KeyEvent keyEvent) {
         int strength = password.getText().length();

@@ -165,9 +165,10 @@ public class CivilizationController extends GameController {
     }
 
     public void winner(User user) {
-        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm").format(new java.util.Date());
         user.setLastWin(timeStamp);
         user.setScore(user.getScore() + 500);
+        User.updateUsersInfo();
     }
 
     public void endGame() {

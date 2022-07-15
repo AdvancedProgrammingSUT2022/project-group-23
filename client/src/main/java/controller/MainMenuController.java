@@ -1,5 +1,6 @@
 package controller;
 
+import model.Request;
 import model.User;
 
 public class MainMenuController {
@@ -9,25 +10,16 @@ public class MainMenuController {
 
     }
 
-    public static MainMenuController getInstance()
-    {
-        if(instance==null)
-        {
+    public static MainMenuController getInstance() {
+        if(instance==null) {
             instance=new MainMenuController();
         }
         return instance;
     }
 
-    public String logout()
-    {
-        User.setUserLogged(null);
-        return "user logged out successfully!";
+    public String logout() {
+        Request request = new Request("logout");
+        return NetworkController.sendRequest(request);
     }
 
-    public boolean hasUser(String username){
-        for(User user : User.getUsers()){
-            if(user.getUsername().equals(username))
-                return true;}
-        return false;
-    }
 }

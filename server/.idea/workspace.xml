@@ -4,43 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="43a52e93-3227-4042-829d-fe33f6756169" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../client/src/main/java/controller/NetworkController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../client/src/main/java/model/Request.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/controller/NetworkController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/controller/CivilizationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controller/CivilizationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/controller/MainMenuController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controller/MainMenuController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controller/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/controller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/controller/RegisterController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/database/ResourceDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/database/ResourceDatabase.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/model/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/model/Building.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/model/Feature.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/model/Feature.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/model/Technology.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/model/Technology.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/model/Terrain.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/model/Terrain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view/GameView.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view/MainMenu.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view/ProfileMenu.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view/RegisterMenu.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view_graphic/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/view_graphic/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view_graphic/Diplomacy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/view_graphic/Diplomacy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view_graphic/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/view_graphic/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/java/view_graphic/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/java/view_graphic/LoginPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/fxml/LoginPage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/fxml/LoginPage.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/main/resources/saves/userInfo/UserInfo.json" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/main/resources/saves/userInfo/UserInfo.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/test/java/TestCityController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/test/java/TestCivilizationController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/test/java/TestMainMenuController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/test/java/TestProfileController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/test/java/TestRegisterController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/src/test/java/TestUnitController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Main.class" afterDir="false" />
-    </list>
+    <list default="true" id="43a52e93-3227-4042-829d-fe33f6756169" name="Changes" comment="register and login added for server and client" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -109,8 +73,16 @@
       <workItem from="1657737128956" duration="624000" />
       <workItem from="1657796567176" duration="937000" />
       <workItem from="1657797752372" duration="1591000" />
-      <workItem from="1657831818112" duration="14500000" />
+      <workItem from="1657831818112" duration="14989000" />
     </task>
+    <task id="LOCAL-00001" summary="register and login added for server and client">
+      <created>1657911265644</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1657911265644</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -126,5 +98,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="register and login added for server and client" />
+    <option name="LAST_COMMIT_MESSAGE" value="register and login added for server and client" />
   </component>
 </project>

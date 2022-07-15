@@ -1,8 +1,139 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../testprojjj" />
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="ChangeListManager">
+    <list default="true" id="af353e1b-273b-46e9-883b-0a452a781ac0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/target/classes/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/BuildingDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ImprovementDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/ResourceDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$14.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$15.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$16.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$17.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$18.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$19.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$20.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$21.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$22.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$23.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$24.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$25.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$26.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$27.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$28.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$29.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$30.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$31.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$32.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$33.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$34.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$35.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$36.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$37.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$38.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$39.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$40.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$41.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$42.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$43.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$44.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$45.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TechnologyDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$14.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$15.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$16.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$17.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$18.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$19.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$20.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/TerrainDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/UnitsDatabase.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Building.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/City.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Feature.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Improvement.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/MilitaryUnit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Resource.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/River.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/SettlerUnit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Technology.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Terrain.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Tile.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/Unit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/model/WorkerUnit.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/saves/gameSaves/blank.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/saves/userInfo/UserInfo.json" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="2BzcOPz5AVcCuaRJK7vqhL3v1cD" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/sharif/Advanced programming/projectPhase3/project-group-23/server"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -16,5 +147,31 @@
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="af353e1b-273b-46e9-883b-0a452a781ac0" name="Changes" comment="" />
+      <created>1657912322548</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1657912322548</updated>
+      <workItem from="1657912324156" duration="424000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

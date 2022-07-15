@@ -248,7 +248,7 @@ public class User implements Comparable<User> {
                         settlerUnit.setHealth(unit.getHealth());
                         settlerUnit.setMoves(unit.getMoves());
                         user.getUnits().set(i, settlerUnit);
-                    } else if (user.getUnits().get(i).equals("Worker")) {
+                    } else if (user.getUnits().get(i).getName().equals("Worker")) {
                         WorkerUnit workerUnit = new WorkerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
                         workerUnit.setState(unit.getState());
                         workerUnit.setRemainingMoves(unit.getRemainingMoves());

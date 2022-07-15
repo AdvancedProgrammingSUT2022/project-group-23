@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Feature {
     private String name;
@@ -68,5 +69,13 @@ public class Feature {
 
     public int getPrice () {
         return price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Feature feature = (Feature) o;
+        return Objects.equals(name, feature.name);
     }
 }

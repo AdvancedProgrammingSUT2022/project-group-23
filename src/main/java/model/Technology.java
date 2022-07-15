@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Technology {
     private String name;
@@ -39,4 +40,13 @@ public class Technology {
     public int getTreePlace () {
         return treePlace;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Technology that = (Technology) o;
+        return Objects.equals(name, that.name);
+    }
+
 }

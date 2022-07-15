@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class Building {
     private String name;
     private int cost;
@@ -59,4 +61,13 @@ public class Building {
     public String getNeededBuilding () {
         return neededBuilding;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Building building = (Building) o;
+        return Objects.equals(name, building.name);
+    }
+
 }

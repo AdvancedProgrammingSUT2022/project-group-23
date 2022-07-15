@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Terrain {
     private String name;
@@ -68,4 +69,13 @@ public class Terrain {
     public int getPrice () {
         return price;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Terrain terrain = (Terrain) o;
+        return Objects.equals(name, terrain.name);
+    }
+
 }

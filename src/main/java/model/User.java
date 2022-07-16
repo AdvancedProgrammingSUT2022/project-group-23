@@ -170,7 +170,6 @@ public class User implements Comparable<User> {
 
     public void newGame() {
         score = 0;
-        highScore = 0;
         gold = 0;
         isUnhappy = 0;
         happiness = 20;
@@ -188,7 +187,7 @@ public class User implements Comparable<User> {
         notifications = new ArrayList<>();
         enemies = new ArrayList<>();
         confederate = new ArrayList<>();
-        this.messages = new HashMap<>();
+        messages = new HashMap<>();
         giving=new HashMap<>();
         receiving=new HashMap<>();
         updateUsersInfo();
@@ -459,8 +458,8 @@ public class User implements Comparable<User> {
 
     @Override
     public int compareTo(User o) {
-        if (this.getScore() > o.getScore()) return 1;
-        else if (this.getScore() < o.getScore()) return -1;
+        if (this.getHighScore() > o.getHighScore()) return 1;
+        else if (this.getHighScore() < o.getHighScore()) return -1;
         else if (this.getLastWin().compareTo(o.lastWin) > 0) return 1;
         else if (this.getLastWin().compareTo(o.lastWin) < 0) return -1;
         else if (this.getNickname().compareTo(o.getNickname()) > 0) return 1;
@@ -510,12 +509,12 @@ public class User implements Comparable<User> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return score == user.score && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(nickname, user.nickname);
+        return highScore == user.highScore && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(nickname, user.nickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, nickname, score);
+        return Objects.hash(username, password, nickname, highScore);
     }
 }
 

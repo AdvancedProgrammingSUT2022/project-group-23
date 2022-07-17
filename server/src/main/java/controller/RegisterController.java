@@ -45,7 +45,7 @@ public class RegisterController {
                 return "user with nickname " + nickname + " already exists";
             }
         }
-        new User(username,password,nickname);
+        new User(username, password, nickname, request.getInfo().get("profilePictureURL"));
         return "user created successfully!";
     }
     public String login(Request request) {

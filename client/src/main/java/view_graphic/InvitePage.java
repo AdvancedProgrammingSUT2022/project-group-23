@@ -23,9 +23,10 @@ public class InvitePage {
     private VBox vbox;
     @FXML
     private Button selectButton;
+
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
-        GameMenuPage.players=new ArrayList<>();
+        GameMenuPage.players = new ArrayList<>();
         GameMenuPage.players.add(User.getUserLogged());
         title.setFill(Color.rgb(1, 231, 212));
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
@@ -33,17 +34,17 @@ public class InvitePage {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
-        ArrayList<String > usersUsernames=new ArrayList<>();
+        ArrayList<String> usersUsernames = new ArrayList<>();
         for (User user : User.getUsers()) {
-            if(!user.equals(User.getUserLogged())){
+            if (!user.equals(User.getUserLogged())) {
                 usersUsernames.add(user.getUsername());
             }
         }
-        ComboBox<String> comboBox=new ComboBox<>(FXCollections.observableArrayList(usersUsernames));
+        ComboBox<String> comboBox = new ComboBox<>(FXCollections.observableArrayList(usersUsernames));
         comboBox.setMinWidth(100);
         vbox.getChildren().add(comboBox);
         selectButton.setOnMouseClicked(mouseEvent -> {
-            if(comboBox.getValue() != null && !GameMenuPage.players.contains(User.getUserByUsername(comboBox.getValue().toString()))) {
+            if (comboBox.getValue() != null && !GameMenuPage.players.contains(User.getUserByUsername(comboBox.getValue().toString()))) {
                 Text text = new Text(comboBox.getValue().toString() + " selected");
                 text.getStyleClass().add("text2");
                 text.setFill(Color.rgb(70, 210, 25));

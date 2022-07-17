@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.Game;
 import model.Request;
 import model.User;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 public class NetworkController extends Thread{
     private static ArrayList<NetworkController> networkControllers = new ArrayList<>();
 
+    private Game game;
     private User user;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
@@ -23,7 +25,8 @@ public class NetworkController extends Thread{
         this.dataInputStream = dataInputStream;
         this.dataOutputStream = dataOutputStream;
         networkControllers.add(this);
-        user = null;
+        this.user = null;
+        this.game = null;
     }
 
 
@@ -51,6 +54,41 @@ public class NetworkController extends Thread{
                 case "logout" -> {
                     response = MainMenuController.getInstance().logout();
                     this.user = null;
+                }
+                case "lobbyGames" ->{
+                    ArrayList<ArrayList<String>> gameList = new ArrayList<>();
+                    for(Game game1 : Game.getGames()){
+                        ArrayList<String> gameArray = new ArrayList<>();
+                        gameList.add(gameArray);
+                        gameArray.add(String.valueOf(game1.getCapacity()));
+                        for(NetworkController player : game1.getPlayers()){
+                            String nickname = player.getUser().getNickname();
+                            gameArray.add(nickname);
+                        }
+                    }
+                    response = new Gson().toJson(gameList);
+                }
+                case "createGame" -> {
+                    if(this.game != null) response = "you've already joined/created a game";
+                    else {
+                        game = new Game(Integer.parseInt(request.getInfo().get("capacity")));
+                        game.addPlayer(this);
+                        response = "Game created successfully";
+                    }
+                }
+                case "joinGame" -> {
+                    if(this.game != null) response = "you've already joined/created a game";
+                    else {
+                        game = Game.getGames().get(Integer.parseInt(request.getInfo().get("gameNumber")));
+                        if(game.addPlayer(this)){
+                            game.start();
+                        }
+                        response = "You successfully joined this game";
+                    }
+                }
+                case "nextTurn" -> {
+                    game.notify();
+                    game.setWaiting(false);
                 }
             }
 
@@ -80,5 +118,13 @@ public class NetworkController extends Thread{
 
     public void setSecondInputStream(DataInputStream secondInputStream) {
         this.secondInputStream = secondInputStream;
+    }
+
+    public DataOutputStream getSecondOutputStream() {
+        return secondOutputStream;
+    }
+
+    public DataInputStream getSecondInputStream() {
+        return secondInputStream;
     }
 }

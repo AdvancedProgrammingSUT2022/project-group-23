@@ -35,6 +35,7 @@ public class RegisterController {
         request.getInfo().put("nickname", nickname);
         request.getInfo().put("username", username);
         request.getInfo().put("password", password);
+        request.getInfo().put("profilePictureURL", getClass().getResource("/images/profilePictures/" + new Random().nextInt(6) + ".png").toString());
         return NetworkController.sendRequest(request);
     }
     public String login(String username,String password) {

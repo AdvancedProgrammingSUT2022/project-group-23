@@ -17,7 +17,7 @@ public class Graph {
 
 
     public Graph(int mapHeight, int mapWidth, Tile[][] tiles) {
-        V = mapHeight * mapWidth;
+        V = mapHeight * mapWidth + 1;
         this.mapHeight = mapHeight;
         this.mapWidth = mapWidth;
         adj = new LinkedList[V];

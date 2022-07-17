@@ -73,18 +73,13 @@ public class GameMenuPage {
         App.changeMenu("ChooseSavePage");
     }
 
-    public void newGame (MouseEvent mouseEvent) {
-        if(players.size()<2){
-            if(!vbox.getChildren().contains(error))
-                vbox.getChildren().add(error);
-        }else {
-            if(GameController.getMapWidth()==0 && GameController.getMapHeight()==0){
-                GameController.setMapHeight(5*players.size());
-                GameController.setMapWidth(5*players.size());
-            }
-            Game.setCivilizationController(new CivilizationController(players));
-            App.changeMenu("Game");
+    public void Lobby (MouseEvent mouseEvent) {
+        if(GameController.getMapWidth()==0 && GameController.getMapHeight()==0){
+            GameController.setMapHeight(5*players.size());
+            GameController.setMapWidth(5*players.size());
         }
+//        Game.setCivilizationController(new CivilizationController(players)); TODO check this line
+        App.changeMenu("Lobby");
     }
 
     public void map (MouseEvent mouseEvent) {

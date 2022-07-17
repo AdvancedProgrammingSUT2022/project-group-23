@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.Lobby"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+    <top>
+        <HBox alignment="CENTER" styleClass="titleBox">
+            <Text text="Lobby" styleClass="title" fx:id="title"/>
+        </HBox>
+    </top>
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="350">
+            <VBox spacing="10" alignment="CENTER" fx:id="vbox">
+            </VBox>
+            <Label text="Game capacity" textFill="#e8c816"/>
+            <TextField fx:id="capacityTextField" promptText="how many players should participate?" onKeyTyped="#typeCapacity"/>
+            <Button styleClass="primary-btn" text="Create Game" fx:id="createButton" onMouseClicked="#createGame"/>
+            <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
+        </VBox>
+
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>
+
+

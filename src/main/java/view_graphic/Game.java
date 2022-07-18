@@ -39,7 +39,7 @@ public class Game {
     @FXML
     private AnchorPane tileMap;
     @FXML
-    private HBox bar;
+    private VBox bar;
     private GraphicTile[][] tiles;
     private double size = 100, v = Math.sqrt(3) / 2.0;
     private static CivilizationController civilizationController;
@@ -59,6 +59,8 @@ public class Game {
     private boolean cityAttack;
     private VBox notificationsVBox;
     private VBox demographicVBox;
+    private VBox militaryVBox;
+    private VBox economyVBox;
 
     public void initialize() {
         Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
@@ -288,47 +290,52 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         bar.setBackground(new Background(backgroundImage));
-        bar.setSpacing(10);
+        bar.setSpacing(5);
         bar.setMaxWidth(1280);
+        bar.setMinHeight(100);
+        HBox topBar=new HBox();
+        HBox buttonBar=new HBox();
+        buttonBar.setSpacing(10);
+        topBar.setSpacing(10);
         Text userNickname = new Text(GameController.getCurrentPlayer().getNickname());
         userNickname.setY(45);
         userNickname.getStyleClass().add("info");
-        bar.getChildren().add(userNickname);
+        topBar.getChildren().add(userNickname);
         Text score = new Text("Score: " + GameController.getCurrentPlayer().getScore());
         score.setY(45);
         score.getStyleClass().add("info");
-        bar.getChildren().add(score);
+        topBar.getChildren().add(score);
         Circle gold = new Circle(22);
         gold.setCenterY(15);
         ImagePattern goldImage = new ImagePattern(new Image(getClass().getResource("/images/info/Gold.png").toExternalForm()));
         gold.setFill(goldImage);
-        bar.getChildren().add(gold);
+        topBar.getChildren().add(gold);
         Text goldAmount = new Text("Gold:  " + GameController.getCurrentPlayer().getGold());
         goldAmount.setY(45);
         goldAmount.getStyleClass().add("info");
-        bar.getChildren().add(goldAmount);
+        topBar.getChildren().add(goldAmount);
         Circle happiness = new Circle(22);
         happiness.setCenterY(15);
         ImagePattern happinessImage = new ImagePattern(new Image(getClass().getResource("/images/info/Happiness.png").toExternalForm()));
         happiness.setFill(happinessImage);
-        bar.getChildren().add(happiness);
+        topBar.getChildren().add(happiness);
         Text happinessAmount = new Text("Happiness:  " + GameController.getCurrentPlayer().getHappiness());
         happinessAmount.setY(45);
         happinessAmount.getStyleClass().add("info");
-        bar.getChildren().add(happinessAmount);
+        topBar.getChildren().add(happinessAmount);
         Circle science = new Circle(22);
         science.setCenterY(15);
         ImagePattern scienceImage = new ImagePattern(new Image(getClass().getResource("/images/info/Science.png").toExternalForm()));
         science.setFill(scienceImage);
-        bar.getChildren().add(science);
+        topBar.getChildren().add(science);
         Text scienceAmount = new Text("Science:  " + GameController.getCurrentPlayer().totalCup());
         scienceAmount.setY(45);
         scienceAmount.getStyleClass().add("info");
-        bar.getChildren().add(scienceAmount);
+        topBar.getChildren().add(scienceAmount);
         if(!GameController.getCurrentPlayer().getCities().isEmpty()){
-            Button technologyPanelButton = new Button("Technology");
+            Button technologyPanelButton = new Button("Technology Panel");
             technologyPanelButton.getStyleClass().add("primary-btn");
-            technologyPanelButton.setMaxWidth(100);
+            technologyPanelButton.setMaxWidth(150);
             technologyPanelButton.setOnMouseClicked(mouseEvent -> {
                 if(tileMap.getChildren().contains(technologyPanel)){
                     tileMap.getChildren().remove(technologyPanel);
@@ -338,7 +345,7 @@ public class Game {
                     tileMap.getChildren().add(technologyPanel);
                 }
             });
-            bar.getChildren().add(technologyPanelButton);
+            buttonBar.getChildren().add(technologyPanelButton);
         }
         Button diplomacy = new Button("Diplomacy");
         diplomacy.getStyleClass().add("primary-btn");
@@ -346,7 +353,7 @@ public class Game {
         diplomacy.setOnMouseClicked(mouseEvent -> {
             App.changeMenu("Diplomacy");
         });
-        bar.getChildren().add(diplomacy);
+        topBar.getChildren().add(diplomacy);
         Button nextTurn = new Button("Next Turn");
         nextTurn.getStyleClass().add("primary-btn");
         nextTurn.setMaxWidth(100);
@@ -357,7 +364,7 @@ public class Game {
                 showMessage(output);
             }
         });
-        bar.getChildren().add(nextTurn);
+        topBar.getChildren().add(nextTurn);
         Button save = new Button("Save Game");
         save.getStyleClass().add("primary-btn");
         save.setMaxWidth(100);
@@ -366,10 +373,10 @@ public class Game {
             User.saveGame(timeStamp);
             showMessage("Game saved");
         });
-        bar.getChildren().add(save);
-        Button notifications = new Button("notifs");
+        topBar.getChildren().add(save);
+        Button notifications = new Button("Notifications");
         notifications.getStyleClass().add("primary-btn");
-        notifications.setMaxWidth(100);
+        notifications.setMaxWidth(150);
         notifications.setOnMouseClicked(mouseEvent -> {
             if(notificationsVBox==null){
                 notificationsVBox=new VBox();
@@ -393,10 +400,10 @@ public class Game {
             }
 
         });
-        bar.getChildren().add(notifications);
-        Button demographic = new Button("Demog");
+        buttonBar.getChildren().add(notifications);
+        Button demographic = new Button("Demographic Panel");
         demographic.getStyleClass().add("primary-btn");
-        demographic.setMaxWidth(100);
+        demographic.setMaxWidth(150);
         demographic.setOnMouseClicked(mouseEvent -> {
             if(demographicVBox==null){
                 demographicVBox=new VBox();
@@ -444,8 +451,97 @@ public class Game {
                 demographicVBox=null;
             }
         });
-        bar.getChildren().add(demographic);
-
+        buttonBar.getChildren().add(demographic);
+        Button military=new Button("Military Overview");
+        military.getStyleClass().add("primary-btn");
+        military.setMaxWidth(150);
+        military.setOnMouseClicked(mouseEvent -> {
+            if(militaryVBox==null){
+                militaryVBox=new VBox();
+                militaryVBox.setMinWidth(400);
+                militaryVBox.setMinHeight(600);
+                militaryVBox.setSpacing(10);
+                BackgroundImage militaryBackground = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/cityPanel.png").toExternalForm()),
+                        BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                        backgroundSize);
+                militaryVBox.setBackground(new Background(militaryBackground));
+                militaryVBox.setAlignment(Pos.CENTER);
+                int num=1;
+                for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
+                    Text unitName=new Text("Unit "+num+": "+unit.getName());
+                    unitName.getStyleClass().add("info");
+                    militaryVBox.getChildren().add(unitName);
+                    Text unitLocation =new Text("Location: ("+unit.getX()+","+unit.getY()+")");
+                    unitLocation.getStyleClass().add("info");
+                    militaryVBox.getChildren().add(unitLocation);
+                    Text unitHealth =new Text("Health: "+unit.getHealth());
+                    unitHealth.getStyleClass().add("info");
+                    militaryVBox.getChildren().add(unitHealth);
+                    Text unitState =new Text("Unit State: "+unit.getState());
+                    unitState.getStyleClass().add("info");
+                    militaryVBox.getChildren().add(unitState);
+                    if(unit instanceof MilitaryUnit){
+                        MilitaryUnit militaryUnit=(MilitaryUnit) unit;
+                        Text unitStrength =new Text("Unit Strength: "+militaryUnit.getStrength());
+                        unitStrength.getStyleClass().add("info");
+                        militaryVBox.getChildren().add(unitStrength);
+                    }
+                    num++;
+                }
+                tileMap.getChildren().add(militaryVBox);
+            }else{
+                tileMap.getChildren().remove(militaryVBox);
+                militaryVBox=null;
+            }
+        });
+        buttonBar.getChildren().add(military);
+        Button economy =new Button("Economy Overview");
+        economy.getStyleClass().add("primary-btn");
+        economy.setMaxWidth(150);
+        economy.setOnMouseClicked(mouseEvent -> {
+            if(economyVBox==null){
+                economyVBox=new VBox();
+                economyVBox.setMinWidth(400);
+                economyVBox.setMinHeight(600);
+                economyVBox.setSpacing(10);
+                BackgroundImage militaryBackground = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/cityPanel.png").toExternalForm()),
+                        BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                        backgroundSize);
+                economyVBox.setBackground(new Background(militaryBackground));
+                economyVBox.setAlignment(Pos.CENTER);
+                for (City city : GameController.getCurrentPlayer().getCities()) {
+                    Text cityId =new Text("City "+city.getId());
+                    cityId.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityId);
+                    Text cityLocation =new Text("Location: ("+city.getCapital().getX()+","+city.getCapital().getY()+")");
+                    cityLocation.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityLocation);
+                    Text cityHealth =new Text("Health: "+city.getHealth());
+                    cityHealth.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityHealth);
+                    Text cityStrength =new Text("Strength: "+city.strength());
+                    cityStrength.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityStrength);
+                    Text cityNumOfCitizen =new Text("Number of Citizens: "+city.getCountOfCitizens());
+                    cityNumOfCitizen.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityNumOfCitizen);
+                    Text cityGold =new Text("Gold: "+city.gold());
+                    cityGold.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityGold);
+                    Text cityProduction =new Text("Production: "+city.production());
+                    cityProduction.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityProduction);
+                    Text cityFood =new Text("Food: "+city.totalFood());
+                    cityFood.getStyleClass().add("info");
+                    economyVBox.getChildren().add(cityFood);
+                }
+                tileMap.getChildren().add(economyVBox);
+            }else{
+                tileMap.getChildren().remove(economyVBox);
+                economyVBox=null;
+            }
+        });
+        buttonBar.getChildren().add(economy);
         Button exitGame = new Button("Exit");
         exitGame.getStyleClass().add("primary-btn");
         exitGame.setMaxWidth(100);
@@ -455,7 +551,9 @@ public class Game {
             GameController.setMapHeight(0);
             App.changeMenu("GameMenu");
         });
-        bar.getChildren().add(exitGame);
+        topBar.getChildren().add(exitGame);
+        bar.getChildren().add(topBar);
+        bar.getChildren().add(buttonBar);
     }
 
     public void move(KeyEvent keyEvent) {

@@ -14,4 +14,8 @@ public class Request {
     public HashMap<String, String> getInfo() {
         return info;
     }
+
+    public String getType() {
+        return type;
+    }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="view_graphic.WaitingPage"
+            prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
+
+    <center>
+
+        <VBox spacing="10" alignment="CENTER" maxWidth="350">
+            <VBox spacing="10" alignment="CENTER" fx:id="vbox">
+
+            </VBox>
+            <Button  styleClass="secondary-btn" text="Exit Game" onMouseClicked="#exit"/>
+        </VBox>
+
+    </center>
+
+    <stylesheets>
+        <URL value="@../css/style.css" />
+    </stylesheets>
+</BorderPane>

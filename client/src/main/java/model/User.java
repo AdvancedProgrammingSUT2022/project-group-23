@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import com.google.gson.graph.GraphAdapterBuilder;
+import com.google.gson.reflect.TypeToken;
 import controller.CivilizationController;
 import controller.GameController;
 import database.SaveDatabase;
@@ -22,8 +23,13 @@ public class User implements Comparable<User> {
     private String username;
     private String password;
     private String nickname;
-    private int score;
     private int highScore;
+    private String lastWin;
+    private String lastOnline;
+
+    private String profilePictureURL;
+
+    private int score;
     private int gold;
     private int happiness;
     private int isUnhappy;
@@ -33,35 +39,26 @@ public class User implements Comparable<User> {
     private ArrayList<City> cities;
     private Technology currentStudy;
     private ArrayList<Technology> technologies;
+
+    //remove userLogged later
     private static User userLogged;
+
+    private static String usernameLogged;
     private HashMap<String, Integer> waitedTechnologies;
     private ArrayList<String> luxuryResources;
     private HashMap<Tile, Integer> processingTiles;
     private HashMap<Tile, WorkerUnit> workingWorkers;
     private HashMap<Tile, Improvement> improvingTiles;
     private ArrayList<Tile> eliminatingFeatures;
-    private String profilePictureURL;
-    private String lastWin;
-    private String lastOnline;
     private ArrayList<User> enemies;
     private ArrayList<User> confederate;
 
     private ArrayList<String> notifications;
 
     private HashMap<String, ArrayList<String>> messages;
-    private HashMap<String,ArrayList<String>> giving;
-    private HashMap<String,ArrayList<String>> receiving;
+    private HashMap<String, ArrayList<String>> giving;
+    private HashMap<String, ArrayList<String>> receiving;
 
-    public User(String username, String password, String nickname) {
-        this.username = username;
-        this.password = password;
-        this.nickname = nickname;
-        this.profilePictureURL = getClass().getResource("/images/profilePictures/" + new Random().nextInt(6) + ".png").toString();
-        this.lastOnline = "";
-        this.lastWin = "";
-        users.add(this);
-        User.updateUsersInfo();
-    }
 
     public static void setUsers(ArrayList<User> users) {
         User.users = users;
@@ -147,6 +144,15 @@ public class User implements Comparable<User> {
         return currentStudy;
     }
 
+
+    public static String getUsernameLogged() {
+        return usernameLogged;
+    }
+
+    public static void setUsernameLogged(String usernameLogged) {
+        User.usernameLogged = usernameLogged;
+    }
+
     public static User getUserLogged() {
         return userLogged;
     }
@@ -188,114 +194,92 @@ public class User implements Comparable<User> {
         enemies = new ArrayList<>();
         confederate = new ArrayList<>();
         this.messages = new HashMap<>();
-        giving=new HashMap<>();
-        receiving=new HashMap<>();
-        updateUsersInfo();
+        giving = new HashMap<>();
+        receiving = new HashMap<>();
     }
 
+    //old remove later
     public static void updateUsersInfo() {
         try {
             FileWriter writer = new FileWriter("src\\main\\resources\\saves\\userInfo\\UserInfo.json");
             writer.write(new Gson().toJson(User.getUsers()));
             writer.close();
         } catch (IOException e) {
-            System.out.println("ERROR updating info");
+            System.out.println("ERROR updating info - old");
         }
     }
 
-    public static void loadGameInfo(String saveName) {
-        try {
-            String json = new String(Files.readAllBytes(Paths.get("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json")));
-            Gson gson = getGson();
-            SaveDatabase saveDatabase = gson.fromJson(json, SaveDatabase.class);
-            GameController.setMapWidth(saveDatabase.getMapWidth());
-            GameController.setMapHeight(saveDatabase.getMapHeight());
-            GameController.setSelectedUnit(null);
-            GameController.setSelectedCity(null);
-            GameController.setCivilizationController(saveDatabase.getCivilizationController());
-            GameController.setPlayers(saveDatabase.getPlayers());
-            GameController.setTiles(saveDatabase.getTiles());
-            GameController.setTurn(saveDatabase.getTurn());
-            GameController.setCurrentPlayer(saveDatabase.getCurrentPlayer());
-            GameController.setCurrentYear(saveDatabase.getCurrentYear());
-            GameController.setLostPlayers(saveDatabase.getLostPlayers());
-            GameController.setSaveNumber(saveDatabase.getSaveNumber());
-            CivilizationController civilizationController = GameController.getCivilizationController();
-            for (int j = 0; j < GameController.getPlayers().size(); j++) {
-                User player = GameController.getPlayers().get(j);
-                for (int i = 0; i < users.size(); i++) {
-                    if (users.get(i).getUsername().equals(player.getUsername())) {
-                        User user = users.get(i);
-                        player.setPassword(user.getPassword());
-                        player.setNickname(user.getNickname());
-                        player.setHighScore(user.getHighScore());
-                        player.setLastOnline(user.getLastOnline());
-                        player.setLastWin(user.getLastWin());
-                        player.setProfilePictureURL(user.getProfilePictureURL());
-                        users.set(i, player);
-                        break;
-                    }
-                }
-            }
-            for (User user : GameController.getPlayers()) {
-                for (int i = 0; i < user.getUnits().size(); i++) {
-                    Unit unit = user.getUnits().get(i);
-                    if (user.getUnits().get(i).getName().equals("Settler")) {
-                        SettlerUnit settlerUnit = new SettlerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
-                        settlerUnit.setState(unit.getState());
-                        settlerUnit.setRemainingMoves(unit.getRemainingMoves());
-                        settlerUnit.setHealth(unit.getHealth());
-                        settlerUnit.setMoves(unit.getMoves());
-                        user.getUnits().set(i, settlerUnit);
-                    } else if (user.getUnits().get(i).getName().equals("Worker")) {
-                        WorkerUnit workerUnit = new WorkerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
-                        workerUnit.setState(unit.getState());
-                        workerUnit.setRemainingMoves(unit.getRemainingMoves());
-                        workerUnit.setHealth(unit.getHealth());
-                        workerUnit.setMoves(unit.getMoves());
-                        user.getUnits().set(i, workerUnit);
-                    } else {
-                        ArrayList<Unit> allUnits = UnitsDatabase.getUnits();
-                        for (Unit currentUnit : allUnits) {
-                            if (currentUnit.getName().equals(unit.getName())) {
-                                MilitaryUnit militaryUnit = ((MilitaryUnit) currentUnit).getCopy();
-                                militaryUnit.setX(unit.getX());
-                                militaryUnit.setY(unit.getY());
-                                militaryUnit.setState(unit.getState());
-                                militaryUnit.setRemainingMoves(unit.getRemainingMoves());
-                                militaryUnit.setHealth(unit.getHealth());
-                                militaryUnit.setMoves(unit.getMoves());
-                                user.getUnits().set(i, militaryUnit);
-                                break;
-                            }
+    public static void loadUserInfo(String json){
+        users = new Gson().fromJson(json, new TypeToken<List<User>>(){}.getType());
+    }
+
+    public static void loadGameInfo(String json) {
+        Gson gson = getGson();
+        SaveDatabase saveDatabase = gson.fromJson(json, SaveDatabase.class);
+        GameController.setMapWidth(saveDatabase.getMapWidth());
+        GameController.setMapHeight(saveDatabase.getMapHeight());
+        GameController.setSelectedUnit(null);
+        GameController.setSelectedCity(null);
+        GameController.setCivilizationController(saveDatabase.getCivilizationController());
+        GameController.setPlayers(saveDatabase.getPlayers());
+        GameController.setTiles(saveDatabase.getTiles());
+        GameController.setTurn(saveDatabase.getTurn());
+        GameController.setCurrentPlayer(saveDatabase.getCurrentPlayer());
+        GameController.setCurrentYear(saveDatabase.getCurrentYear());
+        GameController.setLostPlayers(saveDatabase.getLostPlayers());
+        GameController.setSaveNumber(saveDatabase.getSaveNumber());
+        CivilizationController civilizationController = GameController.getCivilizationController();
+        for (User user : GameController.getPlayers()) {
+            for (int i = 0; i < user.getUnits().size(); i++) {
+                Unit unit = user.getUnits().get(i);
+                if (user.getUnits().get(i).getName().equals("Settler")) {
+                    SettlerUnit settlerUnit = new SettlerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
+                    settlerUnit.setState(unit.getState());
+                    settlerUnit.setRemainingMoves(unit.getRemainingMoves());
+                    settlerUnit.setHealth(unit.getHealth());
+                    settlerUnit.setMoves(unit.getMoves());
+                    user.getUnits().set(i, settlerUnit);
+                } else if (user.getUnits().get(i).getName().equals("Worker")) {
+                    WorkerUnit workerUnit = new WorkerUnit(user.getUnits().get(i).getX(), user.getUnits().get(i).getY());
+                    workerUnit.setState(unit.getState());
+                    workerUnit.setRemainingMoves(unit.getRemainingMoves());
+                    workerUnit.setHealth(unit.getHealth());
+                    workerUnit.setMoves(unit.getMoves());
+                    user.getUnits().set(i, workerUnit);
+                } else {
+                    ArrayList<Unit> allUnits = UnitsDatabase.getUnits();
+                    for (Unit currentUnit : allUnits) {
+                        if (currentUnit.getName().equals(unit.getName())) {
+                            MilitaryUnit militaryUnit = ((MilitaryUnit) currentUnit).getCopy();
+                            militaryUnit.setX(unit.getX());
+                            militaryUnit.setY(unit.getY());
+                            militaryUnit.setState(unit.getState());
+                            militaryUnit.setRemainingMoves(unit.getRemainingMoves());
+                            militaryUnit.setHealth(unit.getHealth());
+                            militaryUnit.setMoves(unit.getMoves());
+                            user.getUnits().set(i, militaryUnit);
+                            break;
                         }
                     }
                 }
             }
-            Game.setCivilizationController(civilizationController);
-        } catch (IOException e) {
-            System.out.println("ERROR reading save file");
         }
+        Game.setCivilizationController(civilizationController);
     }
 
-    public static void saveGame(String saveName) {
-        try {
-            FileWriter writer = new FileWriter("src\\main\\resources\\saves\\gameSaves\\" + saveName + ".json");
-            SaveDatabase saveDatabase = new SaveDatabase();
-            Gson gson = getGson();
-            writer.write(gson.toJson(saveDatabase));
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("ERROR saving game info");
-        }
+    public static String getGameData() {
+        SaveDatabase saveDatabase = new SaveDatabase();
+        Gson gson = getGson();
+        return gson.toJson(saveDatabase);
+
     }
 
-    public static void autoSave() {
-        GameController.setSaveNumber(GameController.getSaveNumber() + 1);
-        if (GameController.getSaveNumber() > AutoSaveMenu.getAutoSaveNumber())
-            GameController.setSaveNumber(1);
-        User.saveGame("AutoSave" + GameController.getSaveNumber());
-    }
+//    public static void autoSave() {
+//        GameController.setSaveNumber(GameController.getSaveNumber() + 1);
+//        if (GameController.getSaveNumber() > AutoSaveMenu.getAutoSaveNumber())
+//            GameController.setSaveNumber(1);
+//        User.saveGame("AutoSave" + GameController.getSaveNumber());
+//    }
 
     private static Gson getGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -448,11 +432,11 @@ public class User implements Comparable<User> {
         this.lastOnline = lastOnline;
     }
 
-    public HashMap<String, ArrayList<String>> getGiving () {
+    public HashMap<String, ArrayList<String>> getGiving() {
         return giving;
     }
 
-    public HashMap<String, ArrayList<String>> getReceiving () {
+    public HashMap<String, ArrayList<String>> getReceiving() {
         return receiving;
     }
 
@@ -500,7 +484,7 @@ public class User implements Comparable<User> {
         this.hasCapitalFallen = hasCapitalFallen;
     }
 
-    public HashMap<String, ArrayList<String>> getMessages () {
+    public HashMap<String, ArrayList<String>> getMessages() {
         return messages;
     }
 

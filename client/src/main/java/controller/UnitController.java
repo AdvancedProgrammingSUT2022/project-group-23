@@ -349,8 +349,6 @@ public class UnitController extends GameController {
                         workingWorkers.get(entry.getKey()).setState("ready");
                         workingWorkers.remove(entry.getKey());
                         improvingTiles.remove(entry.getKey());
-                        if(AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after every improvement"))
-                            User.autoSave();
                     }
                 }else {
                     map.put(entry.getKey(),entry.getValue());

@@ -86,8 +86,16 @@ public class NetworkController extends Thread{
                         response = "You successfully joined this game";
                     }
                 }
+                case "exitWaitingForGame" -> {
+                    if(this.game == null)response = "You're not in a game";
+                    else {
+                        game.getPlayers().remove(this);
+                        game = null;
+                        response = "You successfully exited the game";
+                    }
+                }
                 case "nextTurn" -> {
-                    game.notify();
+                    game.setData(request.getInfo().get("gameData"));
                     game.setWaiting(false);
                 }
             }

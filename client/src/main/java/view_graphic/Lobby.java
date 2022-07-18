@@ -71,7 +71,9 @@ public class Lobby {
             gameVbox.setOnMouseClicked(mouseEvent -> {
                 Request request = new Request("joinGame");
                 request.getInfo().put("gameNumber", String.valueOf(finalI));
-                responseText.setText(NetworkController.sendRequest(request));
+                String responseToJoin = NetworkController.sendRequest(request);
+                responseText.setText(responseToJoin);
+                if(responseToJoin.contains("successful"))App.changeMenu("WaitingPage");
             });
         }
         responseText = new Text("");
@@ -87,8 +89,9 @@ public class Lobby {
     public void createGame(MouseEvent mouseEvent) {
         Request request = new Request("createGame");
         request.getInfo().put("capacity", capacityTextField.getText());
-        responseText.setText(NetworkController.sendRequest(request));
-        App.changeMenu("Lobby");
+        String response = NetworkController.sendRequest(request);
+        responseText.setText(response);
+        if(response.contains("successful"))App.changeMenu("WaitingPage");
     }
 
     public void typeCapacity(KeyEvent keyEvent) {

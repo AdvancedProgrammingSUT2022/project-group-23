@@ -11,7 +11,7 @@ public class Game extends Thread{
     private String data;
     private int capacity;
     private boolean hasStarted;
-    private boolean waiting;
+    private volatile boolean waiting;
     private ArrayList<NetworkController> players;
 
     public Game(int capacity) {
@@ -19,7 +19,7 @@ public class Game extends Thread{
         this.capacity = capacity;
         this.players = new ArrayList<>();
         this.hasStarted = false;
-        this.waiting = false;
+        this.waiting = true;
         games.add(this);
     }
     public boolean addPlayer(NetworkController player){
@@ -44,19 +44,23 @@ public class Game extends Thread{
     }
 
     @Override
-    public synchronized void run(){
+    public void run(){
         Gson gson = new Gson();
         this.hasStarted = true;
         try {
             Request request = new Request("startGame");
-            request.getInfo().put("userData", gson.toJson(User.getUsers()));
+            ArrayList<User> playingUsers = new ArrayList<>();
+            for(NetworkController player : players){
+                playingUsers.add(player.getUser());
+            }
+            request.getInfo().put("userData", gson.toJson(playingUsers));
             players.get(0).getSecondOutputStream().writeUTF(gson.toJson(request));
             players.get(0).getSecondOutputStream().flush();
             data = players.get(0).getSecondInputStream().readUTF();
             for (int i = 1; i < players.size(); i++) {
                 NetworkController player = players.get(i);
                 request = new Request("gameStarted");
-                request.getInfo().put("data", data);
+                request.getInfo().put("gameData", data);
                 player.getSecondOutputStream().writeUTF(gson.toJson(request));
                 player.getSecondOutputStream().flush();
             }
@@ -67,17 +71,17 @@ public class Game extends Thread{
         try {
             while (true) {
                 while (waiting) {
-                    wait();
-                    this.waiting = true;
+                    Thread.onSpinWait();
                 }
+                waiting = true;
+                Request request = new Request("nextTurn");
+                request.getInfo().put("gameData", data);
                 for(NetworkController player : players){
-                    Request request = new Request("nextTurn");
-                    request.getInfo().put("data", data);
                     player.getSecondOutputStream().writeUTF(gson.toJson(request));
                     player.getSecondOutputStream().flush();
                 }
             }
-        } catch (InterruptedException | IOException e) {
+        } catch (IOException e) {
             System.out.println("can't connect to client");
         }
 
@@ -85,5 +89,9 @@ public class Game extends Thread{
 
     public void setWaiting(boolean waiting) {
         this.waiting = waiting;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 }

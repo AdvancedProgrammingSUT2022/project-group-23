@@ -61,5 +61,11 @@ public class NetworkController {
         }
     }
 
+    public static DataInputStream getSecondInputStream() {
+        return secondInputStream;
+    }
 
+    public static DataOutputStream getSecondOutputStream() {
+        return secondOutputStream;
+    }
 }

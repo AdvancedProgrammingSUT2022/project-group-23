@@ -94,8 +94,6 @@ public class CivilizationController extends GameController {
                 currentPlayer.getWaitedTechnologies().remove(currentPlayer.getCurrentStudy().getName());
                 currentPlayer.setCurrentStudy(null);
                 currentPlayer.setScore(currentPlayer.getScore() + 100);
-                if (AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after studying a technology"))
-                    User.autoSave();
             }
         }
 
@@ -107,7 +105,12 @@ public class CivilizationController extends GameController {
         unitController.checkVisibility();
         selectedCity = null;
         selectedUnit = null;
-        currentYear += 100;
+        currentYear += 50;
+
+        Request request = new Request("nextTurn");
+        request.getInfo().put("gameData", User.getGameData());
+        NetworkController.sendRequest(request);
+
         return "it's " + currentPlayer.getNickname() + " turn";
     }
 

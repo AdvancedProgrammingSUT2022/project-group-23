@@ -12,9 +12,9 @@
             fx:controller="view_graphic.Game"
             prefHeight="720.0" prefWidth="1280.0" fx:id="borderPane">
     <top>
-        <HBox fx:id="bar">
+        <VBox fx:id="bar">
 
-        </HBox>
+        </VBox>
     </top>
     <center>
         <AnchorPane fx:id="tileMap">

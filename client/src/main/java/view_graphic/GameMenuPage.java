@@ -75,10 +75,9 @@ public class GameMenuPage {
 
     public void Lobby (MouseEvent mouseEvent) {
         if(GameController.getMapWidth()==0 && GameController.getMapHeight()==0){
-            GameController.setMapHeight(5*players.size());
-            GameController.setMapWidth(5*players.size());
+            GameController.setMapHeight(10);
+            GameController.setMapWidth(10);
         }
-//        Game.setCivilizationController(new CivilizationController(players)); TODO check this line
         App.changeMenu("Lobby");
     }
 

@@ -19,7 +19,9 @@ public class MainMenuController {
 
     public String logout() {
         Request request = new Request("logout");
-        return NetworkController.sendRequest(request);
+        String response = NetworkController.sendRequest(request);
+        if(response.contains("successful"))User.setUsernameLogged(null);
+        return response;
     }
 
 }

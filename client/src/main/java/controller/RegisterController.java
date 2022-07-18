@@ -42,6 +42,8 @@ public class RegisterController {
         Request request = new Request("login");
         request.getInfo().put("username", username);
         request.getInfo().put("password", password);
-        return NetworkController.sendRequest(request);
+        String response = NetworkController.sendRequest(request);
+        if(response.contains("successful")) User.setUsernameLogged(username);
+        return response;
     }
 }

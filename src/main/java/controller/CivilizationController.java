@@ -65,7 +65,7 @@ public class CivilizationController extends GameController {
                             else if (k == 3 && isCoordinateValid(i, j + 1)) tiles[i][j + 1].addRiver(6);
                             else if (k == 5 && isCoordinateValid(i, j - 1)) tiles[i][j - 1].addRiver(2);
                             else if (k == 6 && isCoordinateValid(i - 1, j - 1)) tiles[i - 1][j - 1].addRiver(3);
-                        } else {
+                        } else {               
                             if (k == 2 && isCoordinateValid(i, j + 1)) tiles[i][j + 1].addRiver(5);
                             else if (k == 3 && isCoordinateValid(i + 1, j + 1)) tiles[i + 1][j + 1].addRiver(6);
                             else if (k == 5 && isCoordinateValid(i + 1, j - 1)) tiles[i + 1][j - 1].addRiver(2);
@@ -107,7 +107,7 @@ public class CivilizationController extends GameController {
         unitController.checkVisibility();
         selectedCity = null;
         selectedUnit = null;
-        currentYear += 100;
+        currentYear += 50;
         return "it's " + currentPlayer.getNickname() + " turn";
     }
 

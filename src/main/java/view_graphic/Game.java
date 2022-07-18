@@ -450,6 +450,9 @@ public class Game {
         exitGame.getStyleClass().add("primary-btn");
         exitGame.setMaxWidth(100);
         exitGame.setOnMouseClicked(mouseEvent -> {
+            GameMenuPage.players=new ArrayList<>();
+            GameController.setMapWidth(0);
+            GameController.setMapHeight(0);
             App.changeMenu("GameMenu");
         });
         bar.getChildren().add(exitGame);
@@ -683,25 +686,28 @@ public class Game {
                                         }
                                     }
                                 }else {
+                                    String output=cityController.purchaseTile(tiles[finalI][finalJ].getTile());
                                     tileMap.getChildren().remove(cityPanel);
                                     fillCityPanel(GameController.getSelectedCity());
                                     tileMap.getChildren().add(cityPanel);
                                     purchaseTile=false;
-                                    showMessage(cityController.purchaseTile(tiles[finalI][finalJ].getTile()));
+                                    showMessage(output);
                                 }
                             }else {
+                                String output=cityController.removeCitizen(finalI,finalJ);
                                 tileMap.getChildren().remove(cityPanel);
                                 fillCityPanel(GameController.getSelectedCity());
                                 tileMap.getChildren().add(cityPanel);
                                 deleteCitizen=false;
-                                showMessage(cityController.removeCitizen(finalI,finalJ));
+                                showMessage(output);
                             }
                         }else {
+                            String output=cityController.putCitizenToWork(finalI, finalJ);
                             tileMap.getChildren().remove(cityPanel);
                             fillCityPanel(GameController.getSelectedCity());
                             tileMap.getChildren().add(cityPanel);
                             putCitizenToTile=false;
-                            showMessage(cityController.putCitizenToWork(finalI, finalJ));
+                            showMessage(output);
                         }
                     }
                 });
@@ -1285,6 +1291,7 @@ public class Game {
                         fillCityPanel(city);
                         tileMap.getChildren().add(cityPanel);
                         showMessage(cityController.purchaseUnitWithGold(unitController.getConstructableUnits().get(finalI).getName()));
+                        reBuildTiles(backgroundSize);
                     });
                     cityPanel.getChildren().add(no);
                     cityPanel.getChildren().add(yes);
@@ -1358,6 +1365,7 @@ public class Game {
                         fillCityPanel(city);
                         tileMap.getChildren().add(cityPanel);
                         showMessage(cityController.purchaseBuildingWithGold(cityController.constructableBuildingsForSelectedCity().get(finalI).getName()));
+                        reBuildTiles(backgroundSize);
                     });
                     cityPanel.getChildren().add(no);
                     cityPanel.getChildren().add(yes);
@@ -1484,6 +1492,12 @@ public class Game {
                     graphicTechnology.setWidth(200);
                     ImagePattern technologyImage=new ImagePattern(new Image(getClass().getResource("/images/technologyTree/"+technology.getName()+".png").toExternalForm()));
                     graphicTechnology.setFill(technologyImage);
+                    String tooltipString="name: "+technology.getName();
+                    tooltipString+=" prerequisite technologies: ";
+                    for (String prerequisiteTechnology : technology.getPrerequisiteTechnologies()) {
+                        tooltipString+=" "+prerequisiteTechnology+",";
+                    }
+                    Tooltip.install(graphicTechnology,new Tooltip(tooltipString));
                     if(GameController.getCurrentPlayer().getTechnologies().contains(technology)){
                         graphicTechnology.setOpacity(0.7);
                     }

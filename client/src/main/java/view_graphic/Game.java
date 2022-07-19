@@ -84,7 +84,6 @@ public class Game {
             Platform.runLater(() -> {
                 text.setX(borderPane.getPrefWidth() / 2 - 40);
                 text.setY(borderPane.getPrefHeight() / 2 - 5);
-                System.out.println(borderPane.getWidth());
             });
             return;
         }

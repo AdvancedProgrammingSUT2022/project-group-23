@@ -7,6 +7,7 @@ import model.User;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class NetworkController extends Thread{
@@ -37,6 +38,11 @@ public class NetworkController extends Thread{
                 request = new Gson().fromJson(requestJson, Request.class);;
             }catch (IOException e){
                 System.out.println("client disconnected");
+                if(this.user != null){
+                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm").format(new java.util.Date());
+                    this.user.setLastOnline(timeStamp);
+                }
+                networkControllers.remove(this);
                 break;
             }
             String response = "";
@@ -44,18 +50,22 @@ public class NetworkController extends Thread{
                 case "addUser" -> response = RegisterController.getInstance().addUser(request);
                 case "login" -> {
                     response = RegisterController.getInstance().login(request);
-                    if (response.equals("user logged in successfully!"))
+                    if (response.equals("user logged in successfully!")) {
                         this.user = User.getUserByUsername(request.getInfo().get("username"));
+                        this.user.setLastOnline("Online");
+                    }
                 }
                 case "changeNickname" -> response = ProfileController.getInstance().changeNickname(request, this.user);
                 case "changePassword" -> response = ProfileController.getInstance().changePassword(request, this.user);
                 case "logout" -> {
                     response = MainMenuController.getInstance().logout();
+                    String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm").format(new java.util.Date());
+                    this.user.setLastOnline(timeStamp);
                     this.user = null;
                 }
                 case "lobbyGames" ->{
                     ArrayList<ArrayList<String>> gameList = new ArrayList<>();
-                    for(GameController gameController1 : GameController.getGames()){
+                    for(GameController gameController1 : GameController.getGameControllers()){
                         ArrayList<String> gameArray = new ArrayList<>();
                         gameList.add(gameArray);
                         gameArray.add(String.valueOf(gameController1.getCapacity()));
@@ -77,7 +87,7 @@ public class NetworkController extends Thread{
                 case "joinGame" -> {
                     if(this.gameController != null) response = "you've already joined/created a game";
                     else {
-                        gameController = GameController.getGames().get(Integer.parseInt(request.getInfo().get("gameNumber")));
+                        gameController = GameController.getGameControllers().get(Integer.parseInt(request.getInfo().get("gameNumber")));
                         if(gameController.addPlayer(this)){
                             gameController.start();
                         }
@@ -88,9 +98,13 @@ public class NetworkController extends Thread{
                     if(this.gameController == null)response = "You're not in a game";
                     else {
                         gameController.getPlayers().remove(this);
+                        if(gameController.getPlayers().isEmpty())GameController.getGameControllers().remove(gameController);
                         gameController = null;
                         response = "You successfully exited the game";
                     }
+                }
+                case "userInfo" -> {
+                    response = new Gson().toJson(User.getUsers());
                 }
                 case "nextTurn" -> {
                     gameController.setData(request.getInfo().get("gameData"));

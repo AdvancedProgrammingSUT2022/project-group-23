@@ -22,7 +22,7 @@ public class User implements Comparable<User> {
         this.nickname = nickname;
         this.profilePictureURL = profilePictureURL;
         this.lastOnline = "";
-        this.lastWin = "";
+        this.lastWin = "No wins";
         this.highScore = 0;
         users.add(this);
         User.updateUsersInfo();

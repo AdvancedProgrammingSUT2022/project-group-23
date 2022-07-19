@@ -1,5 +1,6 @@
 package view_graphic;
 
+import controller.NetworkController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -10,6 +11,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import model.Request;
 import model.User;
 
 import java.util.ArrayList;
@@ -31,6 +33,8 @@ public class ScorePage {
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
         title.setFill(Color.rgb(1, 231, 212));
+        Request request = new Request("userInfo");
+        User.loadUserInfo(NetworkController.sendRequest(request));
         ArrayList<User> sortedUsers = User.getUsers();
         Collections.sort(sortedUsers);
         int i=1;
@@ -39,10 +43,15 @@ public class ScorePage {
             Circle circle=new Circle(20);
             ImagePattern imagePattern=new ImagePattern(new Image(user.getProfilePictureURL()));
             circle.setFill(imagePattern);
-            Text text=new Text(i+"-  "+user.getNickname()+"     Score:  "+user.getHighScore()+"    Last Win:  "+user.getLastWin()+"     Last Online:    "+user.getLastOnline());
+            Text text;
+            if(user.getLastOnline().equals("Online"))
+                text = new Text(i+"-  "+user.getNickname()+"     Score:  "+user.getHighScore()+"    Last Win:  "+user.getLastWin()+"     Online");
+            else
+                text = new Text(i+"-  "+user.getNickname()+"     Score:  "+user.getHighScore()+"    Last Win:  "+user.getLastWin()+"     Last Online:    "+user.getLastOnline());
+
             text.getStyleClass().add("text2");
             text.setFill(Color.rgb(200,50,50));
-            if(user.equals(User.getUserLogged())){
+            if(user.getUsername().equals(User.getUsernameLogged())){
                 text.getStyleClass().add("scoreUserLogged");
                 text.setFill(Color.rgb(68,240,21));
                 circle.setRadius(30);

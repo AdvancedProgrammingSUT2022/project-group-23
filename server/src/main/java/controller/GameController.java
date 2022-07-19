@@ -36,7 +36,7 @@ public class GameController extends Thread{
         return capacity;
     }
 
-    public static ArrayList<GameController> getGames() {
+    public static ArrayList<GameController> getGameControllers() {
         return gameControllers;
     }
 

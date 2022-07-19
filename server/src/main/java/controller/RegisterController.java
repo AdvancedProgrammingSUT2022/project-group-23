@@ -56,6 +56,10 @@ public class RegisterController {
                 if(!user.getPassword().equals(password)) {
                     return "Username and password didn't match!";
                 }
+                for(NetworkController networkController : NetworkController.getNetworkControllers()){
+                    if(networkController.getUser() != null && networkController.getUser().getUsername().equals(username))
+                        return "This username is already logged in another device!";
+                }
                 return "user logged in successfully!";
             }
         }

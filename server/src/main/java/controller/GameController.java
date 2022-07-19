@@ -1,26 +1,27 @@
-package model;
+package controller;
 
 import com.google.gson.Gson;
-import controller.NetworkController;
+import model.Request;
+import model.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Game extends Thread{
-    private static ArrayList<Game> games = new ArrayList<>();
+public class GameController extends Thread{
+    private static ArrayList<GameController> gameControllers = new ArrayList<>();
     private String data;
     private int capacity;
     private boolean hasStarted;
     private volatile boolean waiting;
     private ArrayList<NetworkController> players;
 
-    public Game(int capacity) {
+    public GameController(int capacity) {
         this.data = null;
         this.capacity = capacity;
         this.players = new ArrayList<>();
         this.hasStarted = false;
         this.waiting = true;
-        games.add(this);
+        gameControllers.add(this);
     }
     public boolean addPlayer(NetworkController player){
         players.add(player);
@@ -35,8 +36,8 @@ public class Game extends Thread{
         return capacity;
     }
 
-    public static ArrayList<Game> getGames() {
-        return games;
+    public static ArrayList<GameController> getGames() {
+        return gameControllers;
     }
 
     public boolean hasStarted() {

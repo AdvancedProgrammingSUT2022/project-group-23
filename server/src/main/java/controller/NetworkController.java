@@ -1,20 +1,18 @@
 package controller;
 
 import com.google.gson.Gson;
-import model.Game;
 import model.Request;
 import model.User;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class NetworkController extends Thread{
     private static ArrayList<NetworkController> networkControllers = new ArrayList<>();
 
-    private Game game;
+    private GameController gameController;
     private User user;
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
@@ -26,7 +24,7 @@ public class NetworkController extends Thread{
         this.dataOutputStream = dataOutputStream;
         networkControllers.add(this);
         this.user = null;
-        this.game = null;
+        this.gameController = null;
     }
 
 
@@ -38,7 +36,7 @@ public class NetworkController extends Thread{
                 String requestJson = dataInputStream.readUTF();
                 request = new Gson().fromJson(requestJson, Request.class);;
             }catch (IOException e){
-                System.out.println("can't get request from client");
+                System.out.println("client disconnected");
                 break;
             }
             String response = "";
@@ -57,11 +55,11 @@ public class NetworkController extends Thread{
                 }
                 case "lobbyGames" ->{
                     ArrayList<ArrayList<String>> gameList = new ArrayList<>();
-                    for(Game game1 : Game.getGames()){
+                    for(GameController gameController1 : GameController.getGames()){
                         ArrayList<String> gameArray = new ArrayList<>();
                         gameList.add(gameArray);
-                        gameArray.add(String.valueOf(game1.getCapacity()));
-                        for(NetworkController player : game1.getPlayers()){
+                        gameArray.add(String.valueOf(gameController1.getCapacity()));
+                        for(NetworkController player : gameController1.getPlayers()){
                             String nickname = player.getUser().getNickname();
                             gameArray.add(nickname);
                         }
@@ -69,34 +67,34 @@ public class NetworkController extends Thread{
                     response = new Gson().toJson(gameList);
                 }
                 case "createGame" -> {
-                    if(this.game != null) response = "you've already joined/created a game";
+                    if(this.gameController != null) response = "you've already joined/created a game";
                     else {
-                        game = new Game(Integer.parseInt(request.getInfo().get("capacity")));
-                        game.addPlayer(this);
+                        gameController = new GameController(Integer.parseInt(request.getInfo().get("capacity")));
+                        gameController.addPlayer(this);
                         response = "Game created successfully";
                     }
                 }
                 case "joinGame" -> {
-                    if(this.game != null) response = "you've already joined/created a game";
+                    if(this.gameController != null) response = "you've already joined/created a game";
                     else {
-                        game = Game.getGames().get(Integer.parseInt(request.getInfo().get("gameNumber")));
-                        if(game.addPlayer(this)){
-                            game.start();
+                        gameController = GameController.getGames().get(Integer.parseInt(request.getInfo().get("gameNumber")));
+                        if(gameController.addPlayer(this)){
+                            gameController.start();
                         }
                         response = "You successfully joined this game";
                     }
                 }
                 case "exitWaitingForGame" -> {
-                    if(this.game == null)response = "You're not in a game";
+                    if(this.gameController == null)response = "You're not in a game";
                     else {
-                        game.getPlayers().remove(this);
-                        game = null;
+                        gameController.getPlayers().remove(this);
+                        gameController = null;
                         response = "You successfully exited the game";
                     }
                 }
                 case "nextTurn" -> {
-                    game.setData(request.getInfo().get("gameData"));
-                    game.setWaiting(false);
+                    gameController.setData(request.getInfo().get("gameData"));
+                    gameController.setWaiting(false);
                 }
             }
 

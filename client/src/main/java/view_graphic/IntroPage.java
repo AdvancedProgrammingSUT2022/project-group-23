@@ -15,14 +15,6 @@ public class IntroPage {
     @FXML
     private BorderPane pane;
 
-//    private static MediaView introMediaView;
-//    private static MediaPlayer introMediaPlayer;
-
-//    static {
-//        introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
-//        introMediaView = new MediaView(introMediaPlayer);
-//    }
-
     public void initialize() {
         MediaPlayer introMediaPlayer = new MediaPlayer(new Media(LoginPage.class.getResource("/media/Civilization V- Brave New World Intro.mp4").toExternalForm()));
         MediaView introMediaView = new MediaView(introMediaPlayer);

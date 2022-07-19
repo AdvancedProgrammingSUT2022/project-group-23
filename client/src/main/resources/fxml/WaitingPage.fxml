@@ -16,9 +16,7 @@
     <center>
 
         <VBox spacing="10" alignment="CENTER" maxWidth="350">
-            <VBox spacing="10" alignment="CENTER" fx:id="vbox">
-
-            </VBox>
+            <Text text="Wait for other players to join" styleClass="vBoxError"/>
             <Button  styleClass="secondary-btn" text="Exit Game" onMouseClicked="#exit"/>
         </VBox>
 

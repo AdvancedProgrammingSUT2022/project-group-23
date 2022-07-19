@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
-    private static int SERVER_PORT = 8100;
+    private static int SERVER_PORT = 50000;
     public static void main(String[] args){
         ServerSocket serverSocket;
         try {

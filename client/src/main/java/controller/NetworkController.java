@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class NetworkController {
-    private static int SERVER_PORT = 8100;
+    private static int SERVER_PORT = 50000;
     private static DataOutputStream dataOutputStream;
     private static DataInputStream dataInputStream;
 

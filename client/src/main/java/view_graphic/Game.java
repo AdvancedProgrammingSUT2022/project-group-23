@@ -22,6 +22,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import model.*;
@@ -35,6 +36,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 public class Game {
+    @FXML
+    private BorderPane borderPane;
     @FXML
     private AnchorPane tileMap;
     @FXML
@@ -63,16 +66,27 @@ public class Game {
 
     public void initialize() {
         if(!User.getUsernameLogged().equals(GameController.getCurrentPlayer().getUsername())){
-            try {
-                System.out.println("waiting for your turn");
-                String requestString = NetworkController.getSecondInputStream().readUTF();
-                Request request = new Gson().fromJson(requestString, Request.class);
-                User.loadGameInfo(request.getInfo().get("gameData"));
-                App.changeMenu("Game");
+            new Thread(() -> {
+                try {
+                    String requestString = NetworkController.getSecondInputStream().readUTF();
+                    Request request = new Gson().fromJson(requestString, Request.class);
+                    User.loadGameInfo(request.getInfo().get("gameData"));
+                    App.changeMenu("Game");
 
-            } catch (IOException e) {
-                System.out.println("can't play game");
-            }
+                } catch (IOException e) {
+                    System.out.println("can't play game");
+                }
+            }).start();
+            Text text = new Text("Wait for your turn");
+            text.setFill(Color.GREEN);
+            text.setFont(Font.font ("arial", 40));
+            tileMap.getChildren().add(text);
+            Platform.runLater(() -> {
+                text.setX(borderPane.getPrefWidth() / 2 - 10);
+                text.setY(borderPane.getPrefHeight() / 2 - 20);
+                System.out.println(borderPane.getWidth());
+            });
+            return;
         }
         Timeline focusTimeline = new Timeline(new KeyFrame(Duration.millis(10), actionEvent -> {
             tileMap.requestFocus();

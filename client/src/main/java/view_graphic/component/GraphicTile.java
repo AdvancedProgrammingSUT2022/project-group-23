@@ -65,7 +65,7 @@ public class GraphicTile extends Polygon {
             else feature.setEffect(null);
         }
         if(!tile.getVisibilityForUser(GameController.getTurn()).equals("fog of war"))
-        checkCapital();
+            checkCapital();
     }
 
     public Text getLocation() {

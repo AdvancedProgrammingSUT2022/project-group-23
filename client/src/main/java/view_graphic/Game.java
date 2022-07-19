@@ -82,8 +82,8 @@ public class Game {
             text.setFont(Font.font ("arial", 40));
             tileMap.getChildren().add(text);
             Platform.runLater(() -> {
-                text.setX(borderPane.getPrefWidth() /  - 20);
-                text.setY(borderPane.getPrefHeight() / 2);
+                text.setX(borderPane.getPrefWidth() / 2 - 40);
+                text.setY(borderPane.getPrefHeight() / 2 - 5);
                 System.out.println(borderPane.getWidth());
             });
             return;

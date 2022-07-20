@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -8,11 +10,11 @@
 <?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view_graphic.ChooseSavePage"
+            fx:controller="view_graphic.ReceivedInvitesPage"
             prefHeight="720" prefWidth="1280" stylesheets="@../css/style.css" fx:id="borderPane">
     <top>
         <HBox alignment="CENTER" styleClass="titleBox">
-            <Text text="Saves" styleClass="title" fx:id="title"/>
+            <Text text="Received invitations" styleClass="title" fx:id="title"/>
         </HBox>
     </top>
 
@@ -20,8 +22,11 @@
 
         <VBox spacing="10" alignment="CENTER" maxWidth="350">
             <VBox spacing="10" alignment="CENTER" fx:id="vbox">
-
             </VBox>
+            <HBox spacing="5">
+                <Button  styleClass="primary-btn" text="Accept" fx:id="acceptButton"/>
+                <Button  styleClass="primary-btn" text="Reject" fx:id="rejectButton"/>
+            </HBox>
             <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
         </VBox>
 

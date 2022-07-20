@@ -561,7 +561,6 @@ public class Game {
         exitGame.getStyleClass().add("primary-btn");
         exitGame.setMaxWidth(100);
         exitGame.setOnMouseClicked(mouseEvent -> {
-            GameMenuPage.players=new ArrayList<>();
             GameController.setMapWidth(0);
             GameController.setMapHeight(0);
             App.changeMenu("GameMenu");

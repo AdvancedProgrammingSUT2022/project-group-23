@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.Pair;
 import model.Request;
 import model.User;
 
@@ -14,13 +15,16 @@ public class GameController extends Thread{
     private boolean hasStarted;
     private volatile boolean waiting;
     private ArrayList<NetworkController> players;
-
+    private ArrayList<String> invites;
+    private String inviter;
     public GameController(int capacity) {
         this.data = null;
         this.capacity = capacity;
         this.players = new ArrayList<>();
         this.hasStarted = false;
         this.waiting = true;
+        this.invites = new ArrayList<>();
+        this.inviter = null;
         gameControllers.add(this);
     }
     public boolean addPlayer(NetworkController player){
@@ -94,5 +98,17 @@ public class GameController extends Thread{
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public ArrayList<String> getInvites() {
+        return invites;
+    }
+
+    public void setInviter(String inviter) {
+        this.inviter = inviter;
+    }
+
+    public String getInviter() {
+        return inviter;
     }
 }

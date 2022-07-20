@@ -18,11 +18,13 @@
 
     <center>
 
-        <VBox spacing="10" alignment="CENTER" maxWidth="350">
+        <VBox spacing="10" alignment="CENTER" maxWidth="350" fx:id="containerVbox">
             <VBox spacing="10" alignment="CENTER" fx:id="vbox">
-
             </VBox>
-            <Button  fx:id="selectButton" styleClass="primary-btn" text="Select"/>
+            <Label text="Game capacity" textFill="#e8c816" fx:id="capacityLabel"/>
+            <TextField fx:id="capacityTextField" promptText="how many players should participate?" onKeyTyped="#typeCapacity"/>
+            <Button styleClass="primary-btn" text="Create Game" fx:id="createButton" onMouseClicked="#createGame"/>
+            <Button styleClass="primary-btn" text="See received invitations" onMouseClicked="#openReceivedInvitationsPage" fx:id="receivedInvitesButton"/>
             <Button  styleClass="secondary-btn" text="Back" onMouseClicked="#back"/>
         </VBox>
 

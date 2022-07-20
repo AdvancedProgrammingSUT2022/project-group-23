@@ -97,6 +97,13 @@ public class NetworkController extends Thread{
                 case "exitWaitingForGame" -> {
                     if(this.gameController == null)response = "You're not in a game";
                     else {
+                        try {
+                            secondOutputStream.writeUTF("stopWaiting");
+                            secondOutputStream.flush();
+                        }catch (IOException e){
+                            System.out.println("can't send request");
+                            return;
+                        }
                         gameController.getPlayers().remove(this);
                         if(gameController.getPlayers().isEmpty())GameController.getGameControllers().remove(gameController);
                         gameController = null;
@@ -105,6 +112,57 @@ public class NetworkController extends Thread{
                 }
                 case "userInfo" -> {
                     response = new Gson().toJson(User.getUsers());
+                }
+                case "sendInvite" -> {
+                    String receiverUsername = request.getInfo().get("destination");
+                    gameController.getInvites().add(receiverUsername);
+                    gameController.setInviter(request.getInfo().get("source"));
+                }
+                case "getInvites" -> {
+                    ArrayList<String> invites = new ArrayList<>();
+                    for (GameController gameController1 : GameController.getGameControllers()){
+                        if(gameController1.getInvites().contains(request.getInfo().get("username"))){
+                            invites.add(gameController1.getInviter());
+                        }
+                    }
+                    response = new Gson().toJson(invites);
+                }
+                case "answerInvite" -> {
+                    if(request.getInfo().get("answer").equals("accept")){
+                        for(NetworkController networkController : NetworkController.getNetworkControllers()){
+                            if(networkController.getUser().getUsername().equals(request.getInfo().get("inviter"))){
+                                try {
+                                    networkController.getSecondOutputStream().writeUTF(user.getUsername() + "accepted your invite");
+                                    networkController.getSecondOutputStream().flush();
+                                } catch (IOException e) {
+                                    System.out.println("can't update client");
+                                }
+                                break;
+                            }
+                        }
+                        for(GameController gameController1 : GameController.getGameControllers()){
+                            if(gameController1.getInviter().equals(request.getInfo().get("inviter"))){
+                                this.gameController = gameController1;
+                                if(gameController.addPlayer(this)){
+                                    gameController.start();
+                                }
+                                response = "You successfully joined this game";
+                                break;
+                            }
+                        }
+                    }else {
+                        for(NetworkController networkController : NetworkController.getNetworkControllers()){
+                            if(networkController.getUser().getUsername().equals(request.getInfo().get("inviter"))){
+                                try {
+                                    networkController.getSecondOutputStream().writeUTF(user.getUsername() + "rejected your invite");
+                                    networkController.getSecondOutputStream().flush();
+                                } catch (IOException e) {
+                                    System.out.println("can't update client");
+                                }
+                                break;
+                            }
+                        }
+                    }
                 }
                 case "nextTurn" -> {
                     gameController.setData(request.getInfo().get("gameData"));
@@ -146,5 +204,9 @@ public class NetworkController extends Thread{
 
     public DataInputStream getSecondInputStream() {
         return secondInputStream;
+    }
+
+    public GameController getGameController() {
+        return gameController;
     }
 }

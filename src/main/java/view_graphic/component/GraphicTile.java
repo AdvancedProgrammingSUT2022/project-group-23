@@ -241,6 +241,12 @@ public class GraphicTile extends Polygon {
                 improvement.getStyleClass().add("tileInfo");
                 infos.getChildren().add(improvement);
             }
+            if(this.getTile().isRuin()){
+                Text ruin = new Text("Ancient Ruin with Benefits");
+                ruin.setFill(Color.WHITE);
+                ruin.getStyleClass().add("tileInfo");
+                infos.getChildren().add(ruin);
+            }
             infos.setOpacity(0.8);
         }
         infos.setLayoutX(this.getPoints().get(10));

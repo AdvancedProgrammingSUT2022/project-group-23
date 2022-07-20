@@ -182,6 +182,7 @@ public class CivilizationController extends GameController {
                 player.setHighScore(player.getScore());
             }
         }
+        User.updateUsersInfo();
     }
 
 

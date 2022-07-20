@@ -114,4 +114,8 @@ public class LoginPage {
     public void exit(MouseEvent mouseEvent) {
         System.exit(0);
     }
+
+    public static MediaPlayer getAudioMediaPlayer () {
+        return audioMediaPlayer;
+    }
 }

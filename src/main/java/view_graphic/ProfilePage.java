@@ -113,11 +113,11 @@ public class ProfilePage {
     }
 
     public void typePassword(KeyEvent keyEvent) {
-        if (newPassword.getText().length() < 5 || currentPassword.getText().length() < 5) {
+        if (newPassword.getText().length() < 4 || currentPassword.getText().length() < 4) {
             newPassword.setStyle("-fx-border-color: #ff0066;");
             currentPassword.setStyle("-fx-border-color: #ff0066;");
             passwordButton.setDisable(true);
-        } else if(newPassword.getText().length() >= 5 && currentPassword.getText().length() >= 5){
+        } else if(newPassword.getText().length() >= 4 && currentPassword.getText().length() >= 4){
             newPassword.setStyle("-fx-border-width: 0");
             currentPassword.setStyle("-fx-border-width: 0");
             passwordButton.setDisable(false);

@@ -33,7 +33,7 @@ public class RegisterController {
         return instance;
     }
 
-    public String addUser(Request request) {
+    public synchronized String addUser(Request request) {
         String username = request.getInfo().get("username");
         String nickname = request.getInfo().get("nickname");
         String password = request.getInfo().get("password");

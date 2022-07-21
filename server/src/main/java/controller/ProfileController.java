@@ -45,4 +45,8 @@ public class ProfileController {
         User.updateUsersInfo();
         return "password changed successfully!";
     }
+    public String changeProfilePicture(Request request, User currentUser){
+        currentUser.setProfilePictureURL(request.getInfo().get("URL"));
+        return "Profile picture changed successfully";
+    }
 }

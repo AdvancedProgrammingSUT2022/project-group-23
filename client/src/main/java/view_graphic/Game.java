@@ -557,15 +557,13 @@ public class Game {
             }
         });
         buttonBar.getChildren().add(economy);
-        Button exitGame = new Button("Exit");
-        exitGame.getStyleClass().add("primary-btn");
-        exitGame.setMaxWidth(100);
-        exitGame.setOnMouseClicked(mouseEvent -> {
-            GameController.setMapWidth(0);
-            GameController.setMapHeight(0);
-            App.changeMenu("GameMenu");
+        Button setting = new Button("Setting");
+        setting.getStyleClass().add("primary-btn");
+        setting.setMaxWidth(100);
+        setting.setOnMouseClicked(mouseEvent -> {
+            App.changeMenu("Setting");
         });
-        topBar.getChildren().add(exitGame);
+        topBar.getChildren().add(setting);
         bar.getChildren().add(topBar);
         bar.getChildren().add(buttonBar);
     }

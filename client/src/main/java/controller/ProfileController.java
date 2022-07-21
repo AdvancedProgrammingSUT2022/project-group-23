@@ -34,4 +34,10 @@ public class ProfileController {
         request.getInfo().put("newPassword", newPassword);
         return NetworkController.sendRequest(request);
     }
+
+    public String changeProfilePicture(String newURL){
+        Request request = new Request("changeProfilePicture");
+        request.getInfo().put("URL", newURL);
+        return NetworkController.sendRequest(request);
+    }
 }

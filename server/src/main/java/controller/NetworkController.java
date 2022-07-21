@@ -57,6 +57,7 @@ public class NetworkController extends Thread{
                 }
                 case "changeNickname" -> response = ProfileController.getInstance().changeNickname(request, this.user);
                 case "changePassword" -> response = ProfileController.getInstance().changePassword(request, this.user);
+                case "changeProfilePicture" -> response = ProfileController.getInstance().changeProfilePicture(request, this.user);
                 case "logout" -> {
                     response = MainMenuController.getInstance().logout();
                     String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm").format(new java.util.Date());

@@ -1,6 +1,7 @@
 package view_graphic;
 
 import controller.MainMenuController;
+import controller.NetworkController;
 import controller.ProfileController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -17,11 +18,13 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import model.Request;
 import model.User;
 
 import java.awt.*;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 public class ProfilePage {
     ProfileController profileController;
@@ -48,18 +51,19 @@ public class ProfilePage {
     private Button nicknameButton;
     @FXML
     private Button passwordButton;
-    private HBox hbox1;
-    private HBox hbox2;
     private Circle currentAvatar;
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
-        hbox1=new HBox();
-        hbox2=new HBox();
+        Request request = new Request("userInfo");
+        User.loadUserInfo(NetworkController.sendRequest(request));
+        ArrayList<User> sortedUsers = User.getUsers();
+        HBox hbox1 = new HBox();
+        HBox hbox2 = new HBox();
         Text text1 = new Text("your current avatar:  ");
         text1.setFill(Color.rgb(200,50,50));
         text1.getStyleClass().add("text1");
         currentAvatar=new Circle(20);
-        ImagePattern imagePattern=new ImagePattern(new Image(User.getUserLogged().getProfilePictureURL()));
+        ImagePattern imagePattern=new ImagePattern(new Image(User.getUserByUsername(User.getUsernameLogged()).getProfilePictureURL()));
         currentAvatar.setFill(imagePattern);
         hbox1.getChildren().add(text1);
         hbox1.getChildren().add(currentAvatar);
@@ -75,8 +79,7 @@ public class ProfilePage {
             int finalI = i;
             circle.setOnMouseClicked(mouseEvent ->{
                     currentAvatar.setFill(imagePattern1);
-                    User.getUserLogged().setProfilePictureURL(getClass().getResource("/images/profilePictures/"+ finalI +".png").toExternalForm());
-                    User.updateUsersInfo();
+                    ProfileController.getInstance().changeProfilePicture(getClass().getResource("/images/profilePictures/"+ finalI +".png").toExternalForm());
             });
         }
         Button button=new Button();
@@ -86,10 +89,9 @@ public class ProfilePage {
         button.setOnMouseClicked(mouseEvent-> {
                 File file=new FileChooser().showOpenDialog(App.getStage());
                 try {
-                    User.getUserLogged().setProfilePictureURL(file.toURI().toURL().toExternalForm());
+                    ProfileController.getInstance().changeProfilePicture(file.toURI().toURL().toExternalForm());
                     ImagePattern imagePattern1=new ImagePattern(new Image(User.getUserLogged().getProfilePictureURL()));
                     currentAvatar.setFill(imagePattern1);
-                    User.updateUsersInfo();
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -113,11 +115,11 @@ public class ProfilePage {
     }
 
     public void typePassword(KeyEvent keyEvent) {
-        if (newPassword.getText().length() < 5 || currentPassword.getText().length() < 5) {
+        if (newPassword.getText().length() < 4 || currentPassword.getText().length() < 4) {
             newPassword.setStyle("-fx-border-color: #ff0066;");
             currentPassword.setStyle("-fx-border-color: #ff0066;");
             passwordButton.setDisable(true);
-        } else if(newPassword.getText().length() >= 5 && currentPassword.getText().length() >= 5){
+        } else if(newPassword.getText().length() >= 4 && currentPassword.getText().length() >= 4){
             newPassword.setStyle("-fx-border-width: 0");
             currentPassword.setStyle("-fx-border-width: 0");
             passwordButton.setDisable(false);

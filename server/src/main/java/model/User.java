@@ -14,6 +14,8 @@ public class User implements Comparable<User> {
     private String lastWin;
     private String lastOnline;
     private String profilePictureURL;
+    private ArrayList<String> friends;
+    ArrayList<Pair<String, String>> friendRequests;
     private static ArrayList<User> users = new ArrayList<>();
 
     public User(String username, String password, String nickname, String profilePictureURL) {
@@ -24,6 +26,8 @@ public class User implements Comparable<User> {
         this.lastOnline = "";
         this.lastWin = "No wins";
         this.highScore = 0;
+        this.friends = new ArrayList<>();
+        friendRequests = new ArrayList<>();
         users.add(this);
         User.updateUsersInfo();
     }
@@ -104,6 +108,10 @@ public class User implements Comparable<User> {
 
     public void setLastOnline(String lastOnline) {
         this.lastOnline = lastOnline;
+    }
+
+    public ArrayList<Pair<String, String>> getFriendRequests() {
+        return friendRequests;
     }
 
     @Override

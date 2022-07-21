@@ -1,6 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.Pair;
 import model.Request;
 import model.User;
 
@@ -9,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class NetworkController extends Thread{
     private static ArrayList<NetworkController> networkControllers = new ArrayList<>();
@@ -164,6 +166,27 @@ public class NetworkController extends Thread{
                             }
                         }
                     }
+                }
+                case "sendFriendRequest" -> {
+                    String receiverUsername = request.getInfo().get("receiver");
+                    user.getFriendRequests().add(new Pair<>(receiverUsername, "Pending"));
+                    response = "friend request sent successfully";
+                }
+                case "finishGame" -> {
+                    User.getUserByUsername(request.getInfo().get("winner")).setLastWin(request.getInfo().get("time"));
+                    gameController.setData("game finished \n" + request.getInfo().get("winner") + " won");
+                    gameController.setWaiting(false);
+                }
+                case "updateScores" -> {
+                    for(Map.Entry<String, String> entry : request.getInfo().entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue();
+                        User.getUserByUsername(key).setHighScore(Integer.parseInt(value));
+                    }
+                }
+                case "lostGame" -> {
+                    gameController.getPlayers().remove(this);
+                    this.gameController = null;
                 }
                 case "nextTurn" -> {
                     gameController.setData(request.getInfo().get("gameData"));

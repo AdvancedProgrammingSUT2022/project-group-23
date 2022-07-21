@@ -85,6 +85,7 @@ public class GameController extends Thread{
                     player.getSecondOutputStream().writeUTF(gson.toJson(request));
                     player.getSecondOutputStream().flush();
                 }
+                if(data.startsWith("game finished"))break;
             }
         } catch (IOException e) {
             System.out.println("can't connect to client");

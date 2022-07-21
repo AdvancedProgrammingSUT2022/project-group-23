@@ -171,21 +171,27 @@ public class CivilizationController extends GameController {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm").format(new java.util.Date());
         user.setLastWin(timeStamp);
         user.setScore(user.getScore() + 500);
-        User.updateUsersInfo();
+        Request request = new Request("finishGame");
+        request.getInfo().put("time", timeStamp);
+        request.getInfo().put("winner", user.getUsername());
+        NetworkController.sendRequest(request);
     }
 
     public void endGame() {
+        Request request = new Request("updateScores");
         for (User player : players) {
             if (player.getHighScore() < player.getScore()) {
                 player.setHighScore(player.getScore());
+                request.getInfo().put(player.getUsername(), String.valueOf(player.getHighScore()));
             }
         }
         for (User player : lostPlayers) {
             if (player.getHighScore() < player.getScore()) {
                 player.setHighScore(player.getScore());
+                request.getInfo().put(player.getUsername(), String.valueOf(player.getHighScore()));
             }
         }
-        User.updateUsersInfo();
+        NetworkController.sendRequest(request);
     }
 
 

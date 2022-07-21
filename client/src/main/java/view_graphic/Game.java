@@ -49,9 +49,9 @@ public class Game {
     private CityController cityController;
     private VBox tileInformation;
     private VBox unitInformation;
-    private VBox vBoxError=new VBox();
+    private VBox vBoxError = new VBox();
     private Text error = new Text();
-    private Timeline timelineError=new Timeline();
+    private Timeline timelineError = new Timeline();
     private VBox cityPanel;
     private ScrollPane technologyPanel;
     private boolean putCitizenToTile;
@@ -63,12 +63,56 @@ public class Game {
     private VBox demographicVBox;
     private VBox militaryVBox;
     private VBox economyVBox;
+    private static String winMessage;
 
     public void initialize() {
-        if(!User.getUsernameLogged().equals(GameController.getCurrentPlayer().getUsername())){
+        if(GameController.getPlayers() == null){
+            Text text = new Text(winMessage);
+            text.setFill(Color.GREEN);
+            text.setFont(Font.font("arial", 40));
+            tileMap.getChildren().add(text);
+            Platform.runLater(() -> {
+                text.setX(borderPane.getPrefWidth() / 2 - 40);
+                text.setY(borderPane.getPrefHeight() / 2 - 5);
+            });
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), actionEvent -> {
+            }));
+            timeline.setCycleCount(1);
+            timeline.setOnFinished(actionEvent -> {
+                App.changeMenu("GameMenu");
+            });
+            timeline.play();
+            return;
+        }
+        if (!GameController.getPlayers().contains(User.getUserByUsername(User.getUsernameLogged()))) {
+            Text text = new Text("You lost");
+            text.setFill(Color.GREEN);
+            text.setFont(Font.font("arial", 40));
+            tileMap.getChildren().add(text);
+            Platform.runLater(() -> {
+                text.setX(borderPane.getPrefWidth() / 2 - 40);
+                text.setY(borderPane.getPrefHeight() / 2 - 5);
+            });
+            NetworkController.sendRequest(new Request("lostGame"));
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(3), actionEvent -> {
+            }));
+            timeline.setCycleCount(1);
+            timeline.setOnFinished(actionEvent -> {
+                App.changeMenu("GameMenu");
+            });
+            timeline.play();
+            return;
+        }
+        if (!User.getUsernameLogged().equals(GameController.getCurrentPlayer().getUsername())) {
             new Thread(() -> {
                 try {
                     String requestString = NetworkController.getSecondInputStream().readUTF();
+                    if(requestString.startsWith("game finished")){
+                        winMessage = requestString;
+                        GameController.setPlayers(null);
+                        App.changeMenu("Game");
+                        return;
+                    }
                     Request request = new Gson().fromJson(requestString, Request.class);
                     User.loadGameInfo(request.getInfo().get("gameData"));
                     App.changeMenu("Game");
@@ -79,7 +123,7 @@ public class Game {
             }).start();
             Text text = new Text("Wait for your turn");
             text.setFill(Color.GREEN);
-            text.setFont(Font.font ("arial", 40));
+            text.setFont(Font.font("arial", 40));
             tileMap.getChildren().add(text);
             Platform.runLater(() -> {
                 text.setX(borderPane.getPrefWidth() / 2 - 40);
@@ -92,7 +136,7 @@ public class Game {
         }));
         focusTimeline.setCycleCount(-1);
         focusTimeline.play();
-        KeyCombination keyCombination=new KeyCodeCombination(KeyCode.C,KeyCombination.SHIFT_DOWN,KeyCombination.CONTROL_DOWN);
+        KeyCombination keyCombination = new KeyCodeCombination(KeyCode.C, KeyCombination.SHIFT_DOWN, KeyCombination.CONTROL_DOWN);
         unitController = civilizationController.getUnitController();
         cityController = civilizationController.getCityController();
         bar.setMinHeight(70);
@@ -113,12 +157,12 @@ public class Game {
             tileMap.getChildren().remove(vBoxError);
         });
         tileMap.setOnKeyPressed(keyEvent -> {
-            if(keyCombination.match(keyEvent)){
-                TextInputDialog cheatDialog=new TextInputDialog("enter cheat code");
+            if (keyCombination.match(keyEvent)) {
+                TextInputDialog cheatDialog = new TextInputDialog("enter cheat code");
                 cheatDialog.setTitle("Cheat Code");
                 cheatDialog.showAndWait();
-                cheat(cheatDialog.getEditor().getText(),backgroundSize);
-            }else {
+                cheat(cheatDialog.getEditor().getText(), backgroundSize);
+            } else {
                 move(keyEvent);
             }
         });
@@ -143,28 +187,29 @@ public class Game {
                         unit = unitController.getTileCombatUnit(i, j);
                     }
                     tile.addUnit(unit);
-                    selectUnit(unit, tile,backgroundSize);
+                    selectUnit(unit, tile, backgroundSize);
                 }
                 dy = dy == y ? dy + size * v : y;
             }
         }
         reBuildTiles(backgroundSize);
-        if(GameController.getCurrentYear()>=2050){
-            User winner=GameController.getCurrentPlayer();
+        if (GameController.getCurrentYear() >= 2050) {
+            User winner = GameController.getCurrentPlayer();
             for (User player : GameController.getPlayers()) {
-                if(player.getScore()>winner.getScore()){
-                    winner=player;
+                if (player.getScore() > winner.getScore()) {
+                    winner = player;
                 }
             }
             civilizationController.winner(winner);
             civilizationController.endGame();
-            timelineError.setOnFinished(actionEvent -> {
-                App.changeMenu("MainMenuPage");
-            });
-            showMessage("player "+winner.getNickname()+" won the game!");
+            App.changeMenu("Game");
+//            timelineError.setOnFinished(actionEvent -> {
+//                App.changeMenu("MainMenuPage");
+//            });
+//            showMessage("player " + winner.getNickname() + " won the game!");
         }
-        if(!GameController.getCurrentPlayer().getMessages().isEmpty() || !GameController.getCurrentPlayer().getGiving().isEmpty() || !GameController.getCurrentPlayer().getReceiving().isEmpty()){
-            VBox discussionVBox=new VBox();
+        if (!GameController.getCurrentPlayer().getMessages().isEmpty() || !GameController.getCurrentPlayer().getGiving().isEmpty() || !GameController.getCurrentPlayer().getReceiving().isEmpty()) {
+            VBox discussionVBox = new VBox();
             discussionVBox.setAlignment(Pos.CENTER);
             discussionVBox.setSpacing(20);
             discussionVBox.setMinWidth(400);
@@ -173,70 +218,70 @@ public class Game {
                     BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     backgroundSize);
             discussionVBox.setBackground(new Background(backgroundImage));
-            HashMap<String,ArrayList<String>> messages=GameController.getCurrentPlayer().getMessages();
-            for(Map.Entry<String,ArrayList<String>> entry:messages.entrySet()){
-                Text sender=new Text("this civilization have sent you this messages: "+entry.getKey());
+            HashMap<String, ArrayList<String>> messages = GameController.getCurrentPlayer().getMessages();
+            for (Map.Entry<String, ArrayList<String>> entry : messages.entrySet()) {
+                Text sender = new Text("this civilization have sent you this messages: " + entry.getKey());
                 sender.getStyleClass().add("info");
                 discussionVBox.getChildren().add(sender);
                 for (String s : messages.get(entry.getKey())) {
-                    Text message=new Text(s);
+                    Text message = new Text(s);
                     message.getStyleClass().add("info");
                     discussionVBox.getChildren().add(message);
                 }
             }
-            HashMap<String,ArrayList<String >> giving=GameController.getCurrentPlayer().getGiving();
-            HashMap<String,ArrayList<String >> receiving=GameController.getCurrentPlayer().getReceiving();
-            for(Map.Entry<String,ArrayList<String>> entry:giving.entrySet()){
-                Text sender=new Text("this civilization have sent you this trade: "+entry.getKey());
+            HashMap<String, ArrayList<String>> giving = GameController.getCurrentPlayer().getGiving();
+            HashMap<String, ArrayList<String>> receiving = GameController.getCurrentPlayer().getReceiving();
+            for (Map.Entry<String, ArrayList<String>> entry : giving.entrySet()) {
+                Text sender = new Text("this civilization have sent you this trade: " + entry.getKey());
                 sender.getStyleClass().add("info");
                 discussionVBox.getChildren().add(sender);
-                HBox givingHBox=new HBox();
+                HBox givingHBox = new HBox();
                 givingHBox.setSpacing(10);
                 givingHBox.setAlignment(Pos.CENTER);
-                Text give=new Text("you give: ");
+                Text give = new Text("you give: ");
                 give.getStyleClass().add("info");
                 givingHBox.getChildren().add(give);
                 for (String s : giving.get(entry.getKey())) {
-                    Text message=new Text(s);
+                    Text message = new Text(s);
                     message.getStyleClass().add("info");
                     givingHBox.getChildren().add(message);
                 }
                 discussionVBox.getChildren().add(givingHBox);
-                HBox receiveHBox=new HBox();
+                HBox receiveHBox = new HBox();
                 receiveHBox.setSpacing(10);
                 receiveHBox.setAlignment(Pos.CENTER);
-                Text receive=new Text("you receive: ");
+                Text receive = new Text("you receive: ");
                 receive.getStyleClass().add("info");
                 receiveHBox.getChildren().add(receive);
                 for (String s : receiving.get(entry.getKey())) {
-                    Text message=new Text(s);
+                    Text message = new Text(s);
                     message.getStyleClass().add("info");
                     receiveHBox.getChildren().add(message);
                 }
                 discussionVBox.getChildren().add(receiveHBox);
-                HBox buttons=new HBox();
+                HBox buttons = new HBox();
                 buttons.setSpacing(10);
                 buttons.setAlignment(Pos.CENTER);
-                Button accept=new Button("Accept");
+                Button accept = new Button("Accept");
                 accept.getStyleClass().add("primary-btn");
                 accept.setMaxWidth(100);
                 buttons.getChildren().add(accept);
-                Button deny =new Button("Deny");
+                Button deny = new Button("Deny");
                 deny.getStyleClass().add("primary-btn");
                 deny.setMaxWidth(100);
                 buttons.getChildren().add(deny);
                 discussionVBox.getChildren().add(buttons);
                 accept.setOnMouseClicked(mouseEvent -> {
-                    User user=User.getUserByUsername(entry.getKey());
+                    User user = User.getUserByUsername(entry.getKey());
                     for (String s : giving.get(entry.getKey())) {
-                        if(s.equals("+5 Gold")){
-                            GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()-5);
-                            user.setGold(user.getGold()+5);
-                        }else {
+                        if (s.equals("+5 Gold")) {
+                            GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold() - 5);
+                            user.setGold(user.getGold() + 5);
+                        } else {
                             mainLoop:
                             for (City city : GameController.getCurrentPlayer().getCities()) {
                                 for (Tile tile : city.getTiles()) {
-                                    if(tile.getResource()!=null && tile.getResource().getName().equals(s)){
+                                    if (tile.getResource() != null && tile.getResource().getName().equals(s)) {
                                         tile.setResource(null);
                                         break mainLoop;
                                     }
@@ -245,7 +290,7 @@ public class Game {
                             mainLoop:
                             for (City city : user.getCities()) {
                                 for (Tile tile : city.getTiles()) {
-                                    if(tile.getResource()==null){
+                                    if (tile.getResource() == null) {
                                         tile.setResource(ResourceDatabase.getResourceByName(s));
                                         break mainLoop;
                                     }
@@ -254,14 +299,14 @@ public class Game {
                         }
                     }
                     for (String s : receiving.get(entry.getKey())) {
-                        if(s.equals("+5 Gold")){
-                            GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+5);
-                            user.setGold(user.getGold()-5);
-                        }else {
+                        if (s.equals("+5 Gold")) {
+                            GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold() + 5);
+                            user.setGold(user.getGold() - 5);
+                        } else {
                             mainLoop:
                             for (City city : user.getCities()) {
                                 for (Tile tile : city.getTiles()) {
-                                    if(tile.getResource()!=null && tile.getResource().getName().equals(s)){
+                                    if (tile.getResource() != null && tile.getResource().getName().equals(s)) {
                                         tile.setResource(null);
                                         break mainLoop;
                                     }
@@ -270,7 +315,7 @@ public class Game {
                             mainLoop:
                             for (City city : GameController.getCurrentPlayer().getCities()) {
                                 for (Tile tile : city.getTiles()) {
-                                    if(tile.getResource()==null){
+                                    if (tile.getResource() == null) {
                                         tile.setResource(ResourceDatabase.getResourceByName(s));
                                         break mainLoop;
                                     }
@@ -292,7 +337,7 @@ public class Game {
                     discussionVBox.getChildren().remove(buttons);
                 });
             }
-            Button exit=new Button("Exit");
+            Button exit = new Button("Exit");
             exit.getStyleClass().add("secondary-btn");
             exit.setMaxWidth(100);
             discussionVBox.getChildren().add(exit);
@@ -308,7 +353,6 @@ public class Game {
     }
 
 
-
     private void createTopBar(BackgroundSize backgroundSize) {
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/topBar.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
@@ -317,8 +361,8 @@ public class Game {
         bar.setSpacing(5);
         bar.setMaxWidth(1280);
         bar.setMinHeight(100);
-        HBox topBar=new HBox();
-        HBox buttonBar=new HBox();
+        HBox topBar = new HBox();
+        HBox buttonBar = new HBox();
         buttonBar.setSpacing(10);
         topBar.setSpacing(10);
         Text userNickname = new Text(GameController.getCurrentPlayer().getNickname());
@@ -356,15 +400,15 @@ public class Game {
         scienceAmount.setY(45);
         scienceAmount.getStyleClass().add("info");
         topBar.getChildren().add(scienceAmount);
-        if(!GameController.getCurrentPlayer().getCities().isEmpty()){
+        if (!GameController.getCurrentPlayer().getCities().isEmpty()) {
             Button technologyPanelButton = new Button("Technology Panel");
             technologyPanelButton.getStyleClass().add("primary-btn");
             technologyPanelButton.setMaxWidth(150);
             technologyPanelButton.setOnMouseClicked(mouseEvent -> {
-                if(tileMap.getChildren().contains(technologyPanel)){
+                if (tileMap.getChildren().contains(technologyPanel)) {
                     tileMap.getChildren().remove(technologyPanel);
-                    technologyPanel=null;
-                }else {
+                    technologyPanel = null;
+                } else {
                     fillTechnologyPanel(backgroundSize);
                     tileMap.getChildren().add(technologyPanel);
                 }
@@ -393,8 +437,8 @@ public class Game {
         notifications.getStyleClass().add("primary-btn");
         notifications.setMaxWidth(150);
         notifications.setOnMouseClicked(mouseEvent -> {
-            if(notificationsVBox==null){
-                notificationsVBox=new VBox();
+            if (notificationsVBox == null) {
+                notificationsVBox = new VBox();
                 notificationsVBox.setMinWidth(400);
                 notificationsVBox.setMinHeight(600);
                 notificationsVBox.setSpacing(20);
@@ -403,15 +447,15 @@ public class Game {
                         backgroundSize);
                 notificationsVBox.setBackground(new Background(notificationBackground));
                 for (String notification : GameController.getCurrentPlayer().getNotifications()) {
-                    Text notif=new Text(notification);
+                    Text notif = new Text(notification);
                     notif.getStyleClass().add("info");
-                    notif.setFill(Color.rgb(10,10,100));
+                    notif.setFill(Color.rgb(10, 10, 100));
                     notificationsVBox.getChildren().add(notif);
                 }
                 tileMap.getChildren().add(notificationsVBox);
-            }else {
+            } else {
                 tileMap.getChildren().remove(notificationsVBox);
-                notificationsVBox=null;
+                notificationsVBox = null;
             }
 
         });
@@ -420,8 +464,8 @@ public class Game {
         demographic.getStyleClass().add("primary-btn");
         demographic.setMaxWidth(150);
         demographic.setOnMouseClicked(mouseEvent -> {
-            if(demographicVBox==null){
-                demographicVBox=new VBox();
+            if (demographicVBox == null) {
+                demographicVBox = new VBox();
                 demographicVBox.setMinWidth(400);
                 demographicVBox.setMinHeight(600);
                 demographicVBox.setSpacing(20);
@@ -430,49 +474,49 @@ public class Game {
                         backgroundSize);
                 demographicVBox.setBackground(new Background(demographicBackground));
                 demographicVBox.setAlignment(Pos.CENTER);
-                int population=0,tileCount=0,cities=0;
+                int population = 0, tileCount = 0, cities = 0;
                 for (City city : GameController.getCurrentPlayer().getCities()) {
-                    population+=city.getCountOfCitizens();
-                    tileCount+=city.getTiles().size();
+                    population += city.getCountOfCitizens();
+                    tileCount += city.getTiles().size();
                     cities++;
                 }
-                ArrayList<String> militaryUnits=new ArrayList<>();
+                ArrayList<String> militaryUnits = new ArrayList<>();
                 for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
-                    if(unit instanceof MilitaryUnit) militaryUnits.add(unit.getName());
+                    if (unit instanceof MilitaryUnit) militaryUnits.add(unit.getName());
                 }
-                Text populationText=new Text("Population: "+population);
+                Text populationText = new Text("Population: " + population);
                 populationText.getStyleClass().add("info");
                 demographicVBox.getChildren().add(populationText);
-                Text tileCountText=new Text("Total Tiles: "+tileCount);
+                Text tileCountText = new Text("Total Tiles: " + tileCount);
                 tileCountText.getStyleClass().add("info");
                 demographicVBox.getChildren().add(tileCountText);
-                Text totalCities=new Text("Total Cities: "+cities);
+                Text totalCities = new Text("Total Cities: " + cities);
                 totalCities.getStyleClass().add("info");
                 demographicVBox.getChildren().add(totalCities);
-                Text militaryText =new Text("Military Units: ");
+                Text militaryText = new Text("Military Units: ");
                 militaryText.getStyleClass().add("info");
                 demographicVBox.getChildren().add(militaryText);
-                String military="";
+                String military = "";
                 for (String militaryUnit : militaryUnits) {
-                    military+=" ";
-                    military+=militaryUnit;
+                    military += " ";
+                    military += militaryUnit;
                 }
-                Text militaryNameText =new Text(military);
+                Text militaryNameText = new Text(military);
                 militaryNameText.getStyleClass().add("info");
                 demographicVBox.getChildren().add(militaryNameText);
                 tileMap.getChildren().add(demographicVBox);
-            }else {
+            } else {
                 tileMap.getChildren().remove(demographicVBox);
-                demographicVBox=null;
+                demographicVBox = null;
             }
         });
         buttonBar.getChildren().add(demographic);
-        Button military=new Button("Military Overview");
+        Button military = new Button("Military Overview");
         military.getStyleClass().add("primary-btn");
         military.setMaxWidth(150);
         military.setOnMouseClicked(mouseEvent -> {
-            if(militaryVBox==null){
-                militaryVBox=new VBox();
+            if (militaryVBox == null) {
+                militaryVBox = new VBox();
                 militaryVBox.setMinWidth(400);
                 militaryVBox.setMinHeight(600);
                 militaryVBox.setSpacing(10);
@@ -481,41 +525,41 @@ public class Game {
                         backgroundSize);
                 militaryVBox.setBackground(new Background(militaryBackground));
                 militaryVBox.setAlignment(Pos.CENTER);
-                int num=1;
+                int num = 1;
                 for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
-                    Text unitName=new Text("Unit "+num+": "+unit.getName());
+                    Text unitName = new Text("Unit " + num + ": " + unit.getName());
                     unitName.getStyleClass().add("info");
                     militaryVBox.getChildren().add(unitName);
-                    Text unitLocation =new Text("Location: ("+unit.getX()+","+unit.getY()+")");
+                    Text unitLocation = new Text("Location: (" + unit.getX() + "," + unit.getY() + ")");
                     unitLocation.getStyleClass().add("info");
                     militaryVBox.getChildren().add(unitLocation);
-                    Text unitHealth =new Text("Health: "+unit.getHealth());
+                    Text unitHealth = new Text("Health: " + unit.getHealth());
                     unitHealth.getStyleClass().add("info");
                     militaryVBox.getChildren().add(unitHealth);
-                    Text unitState =new Text("Unit State: "+unit.getState());
+                    Text unitState = new Text("Unit State: " + unit.getState());
                     unitState.getStyleClass().add("info");
                     militaryVBox.getChildren().add(unitState);
-                    if(unit instanceof MilitaryUnit){
-                        MilitaryUnit militaryUnit=(MilitaryUnit) unit;
-                        Text unitStrength =new Text("Unit Strength: "+militaryUnit.getStrength());
+                    if (unit instanceof MilitaryUnit) {
+                        MilitaryUnit militaryUnit = (MilitaryUnit) unit;
+                        Text unitStrength = new Text("Unit Strength: " + militaryUnit.getStrength());
                         unitStrength.getStyleClass().add("info");
                         militaryVBox.getChildren().add(unitStrength);
                     }
                     num++;
                 }
                 tileMap.getChildren().add(militaryVBox);
-            }else{
+            } else {
                 tileMap.getChildren().remove(militaryVBox);
-                militaryVBox=null;
+                militaryVBox = null;
             }
         });
         buttonBar.getChildren().add(military);
-        Button economy =new Button("Economy Overview");
+        Button economy = new Button("Economy Overview");
         economy.getStyleClass().add("primary-btn");
         economy.setMaxWidth(150);
         economy.setOnMouseClicked(mouseEvent -> {
-            if(economyVBox==null){
-                economyVBox=new VBox();
+            if (economyVBox == null) {
+                economyVBox = new VBox();
                 economyVBox.setMinWidth(400);
                 economyVBox.setMinHeight(600);
                 economyVBox.setSpacing(10);
@@ -525,35 +569,35 @@ public class Game {
                 economyVBox.setBackground(new Background(militaryBackground));
                 economyVBox.setAlignment(Pos.CENTER);
                 for (City city : GameController.getCurrentPlayer().getCities()) {
-                    Text cityId =new Text("City "+city.getId());
+                    Text cityId = new Text("City " + city.getId());
                     cityId.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityId);
-                    Text cityLocation =new Text("Location: ("+city.getCapital().getX()+","+city.getCapital().getY()+")");
+                    Text cityLocation = new Text("Location: (" + city.getCapital().getX() + "," + city.getCapital().getY() + ")");
                     cityLocation.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityLocation);
-                    Text cityHealth =new Text("Health: "+city.getHealth());
+                    Text cityHealth = new Text("Health: " + city.getHealth());
                     cityHealth.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityHealth);
-                    Text cityStrength =new Text("Strength: "+city.strength());
+                    Text cityStrength = new Text("Strength: " + city.strength());
                     cityStrength.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityStrength);
-                    Text cityNumOfCitizen =new Text("Number of Citizens: "+city.getCountOfCitizens());
+                    Text cityNumOfCitizen = new Text("Number of Citizens: " + city.getCountOfCitizens());
                     cityNumOfCitizen.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityNumOfCitizen);
-                    Text cityGold =new Text("Gold: "+city.gold());
+                    Text cityGold = new Text("Gold: " + city.gold());
                     cityGold.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityGold);
-                    Text cityProduction =new Text("Production: "+city.production());
+                    Text cityProduction = new Text("Production: " + city.production());
                     cityProduction.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityProduction);
-                    Text cityFood =new Text("Food: "+city.totalFood());
+                    Text cityFood = new Text("Food: " + city.totalFood());
                     cityFood.getStyleClass().add("info");
                     economyVBox.getChildren().add(cityFood);
                 }
                 tileMap.getChildren().add(economyVBox);
-            }else{
+            } else {
                 tileMap.getChildren().remove(economyVBox);
-                economyVBox=null;
+                economyVBox = null;
             }
         });
         buttonBar.getChildren().add(economy);
@@ -573,16 +617,16 @@ public class Game {
             tileMap.getChildren().remove(tileInformation);
             tileInformation = null;
         }
-        if(GameController.getSelectedCity()!=null){
+        if (GameController.getSelectedCity() != null) {
             for (Tile tile : GameController.getSelectedCity().getTiles()) {
                 getGraphicByModel(tile).setOpacity(1);
-                if(tile.getFeature()!=null) getGraphicByModel(tile).getFeature().setOpacity(1);
+                if (tile.getFeature() != null) getGraphicByModel(tile).getFeature().setOpacity(1);
             }
             GameController.setSelectedCity(null);
             tileMap.getChildren().remove(cityPanel);
-            putCitizenToTile=false;
-            purchaseTile=false;
-            deleteCitizen=false;
+            putCitizenToTile = false;
+            purchaseTile = false;
+            deleteCitizen = false;
         }
         double dx = 0, dy = 0;
         if (keyEvent.getCode().getName().equals("Right") && tiles[GameController.getMapHeight() - 1][GameController.getMapWidth() - 1].getPoints().get(4) > 1280) {
@@ -612,16 +656,16 @@ public class Game {
         for (int i = 0; i < GameController.getMapHeight(); i++) {
             for (int j = 0; j < GameController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
-                if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
-                    showMessage("there is a ruin in tile : "+i+" , "+j);
+                if (tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")) {
+                    showMessage("there is a ruin in tile : " + i + " , " + j);
                     tiles[i][j].getTile().setRuinFirst(false);
                 }
                 for (City city : GameController.getCurrentPlayer().getCities()) {
-                    if(city.getCapital().equals(tiles[i][j].getTile())){
-                        Polygon select=tiles[i][j];
-                        if(tiles[i][j].getTile().getFeature()!=null) select=tiles[i][j].getFeature();
+                    if (city.getCapital().equals(tiles[i][j].getTile())) {
+                        Polygon select = tiles[i][j];
+                        if (tiles[i][j].getTile().getFeature() != null) select = tiles[i][j].getFeature();
                         select.setOnMouseClicked(mouseEvent -> {
-                            if(GameController.getSelectedCity()==null){
+                            if (GameController.getSelectedCity() == null) {
                                 GameController.setSelectedCity(city);
                                 for (Tile tile : city.getTiles()) {
                                     getGraphicByModel(tile).setOpacity(0.7);
@@ -629,7 +673,7 @@ public class Game {
                                 }
                                 fillCityPanel(city);
                                 tileMap.getChildren().add(cityPanel);
-                            }else {
+                            } else {
                                 GameController.setSelectedCity(null);
                                 for (Tile tile : city.getTiles()) {
                                     getGraphicByModel(tile).setOpacity(1);
@@ -642,7 +686,7 @@ public class Game {
                 }
                 Unit unit;
                 if (!tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
-                    if(tiles[i][j].getTile().isRuin()){
+                    if (tiles[i][j].getTile().isRuin()) {
                         showMessage(civilizationController.benefitsOfRuin(tiles[i][j].getTile()));
                     }
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
@@ -650,19 +694,20 @@ public class Game {
                     } else {
                         unit = unitController.getTileCombatUnit(i, j);
                     }
-                    if(!tiles[i][j].getGraphicUnits().containsKey(unit)) {
+                    if (!tiles[i][j].getGraphicUnits().containsKey(unit)) {
                         tiles[i][j].addUnit(unit);
-                        selectUnit(unit, tiles[i][j],backgroundSize);
+                        selectUnit(unit, tiles[i][j], backgroundSize);
                     }
-                    selectUnit(unit,tiles[i][j],backgroundSize);
+                    selectUnit(unit, tiles[i][j], backgroundSize);
                 }
-                int finalI=i,finalJ=j;
+                int finalI = i, finalJ = j;
                 Polygon select = tiles[i][j];
-                if (tiles[i][j].getTile().getFeature() != null && !tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) select = tiles[i][j].getFeature();
+                if (tiles[i][j].getTile().getFeature() != null && !tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war"))
+                    select = tiles[i][j].getFeature();
                 select.setOnMouseClicked(mouseEvent -> {
                     if (GameController.getSelectedUnit() != null) {
-                        if(!unitAttack) {
-                            if(!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
+                        if (!unitAttack) {
+                            if (!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
                                 int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
                                 String output = unitController.moveSelectedUnit(finalI, finalJ);
                                 if (output.equals("unit is moving")) {
@@ -677,41 +722,41 @@ public class Game {
                                     GameController.setSelectedUnit(null);
                                 }
                             }
-                        }else {
-                            String output="";
-                            int x1 =GameController.getSelectedUnit().getX(), y1 =GameController.getSelectedUnit().getY();
-                            City city=cityController.getCityAtCoordinate(tiles[finalI][finalJ].getTile().getX(),tiles[finalI][finalJ].getTile().getY());
-                            if(city==null)showMessage("There is no city on this tile!");
+                        } else {
+                            String output = "";
+                            int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
+                            City city = cityController.getCityAtCoordinate(tiles[finalI][finalJ].getTile().getX(), tiles[finalI][finalJ].getTile().getY());
+                            if (city == null) showMessage("There is no city on this tile!");
                             else {
-                                if(!unitController.checkSelectedUnit().equals("ok")){
+                                if (!unitController.checkSelectedUnit().equals("ok")) {
                                     showMessage(unitController.checkSelectedUnit());
-                                }else {
+                                } else {
                                     if (GameController.getSelectedUnit().getRemainingMoves() == 0) {
                                         showMessage("this unit can't attack now!");
                                     } else {
-                                        ArrayList<City> reachableCities=unitController.reachableCities();
-                                        if(!reachableCities.contains(city)){
+                                        ArrayList<City> reachableCities = unitController.reachableCities();
+                                        if (!reachableCities.contains(city)) {
                                             showMessage("you can't attack this city");
-                                        }else {
-                                            output=unitController.attackCity(city);
+                                        } else {
+                                            output = unitController.attackCity(city);
                                             showMessage(output);
                                         }
                                     }
                                 }
                             }
-                            unitAttack=false;
-                            if(output.equals("your unit died!")){
+                            unitAttack = false;
+                            if (output.equals("your unit died!")) {
                                 tiles[x1][y1].deleteUnit(GameController.getSelectedUnit());
                             }
-                            if(output.equals("dominated")){
-                                VBox which=new VBox();
-                                Text whichOne=new Text("you dominated this city, do you want to eliminate it or annex it?");
+                            if (output.equals("dominated")) {
+                                VBox which = new VBox();
+                                Text whichOne = new Text("you dominated this city, do you want to eliminate it or annex it?");
                                 whichOne.getStyleClass().add("info");
                                 which.getChildren().add(whichOne);
-                                Button eliminate=new Button("Eliminate");
+                                Button eliminate = new Button("Eliminate");
                                 eliminate.getStyleClass().add("secondary-btn");
                                 which.getChildren().add(eliminate);
-                                Button annex =new Button("Annex");
+                                Button annex = new Button("Annex");
                                 annex.getStyleClass().add("secondary-btn");
                                 which.getChildren().add(annex);
                                 unitInformation.getChildren().add(which);
@@ -723,13 +768,14 @@ public class Game {
                                     reBuildTiles(backgroundSize);
                                     bar.getChildren().clear();
                                     createTopBar(backgroundSize);
-                                    if(civilizationController.isWin()){
+                                    if (civilizationController.isWin()) {
                                         civilizationController.winner(GameController.getCurrentPlayer());
                                         civilizationController.endGame();
-                                        timelineError.setOnFinished(actionEvent -> {
-                                            App.changeMenu("MainMenuPage");
-                                        });
-                                        showMessage("you won!");
+//                                        timelineError.setOnFinished(actionEvent -> {
+//                                            App.changeMenu("MainMenuPage");
+//                                        });
+//                                        showMessage("you won!");
+                                        App.changeMenu("Game");
                                     }
                                 });
                                 annex.setOnMouseClicked(mouseEvent1 -> {
@@ -740,16 +786,17 @@ public class Game {
                                     reBuildTiles(backgroundSize);
                                     bar.getChildren().clear();
                                     createTopBar(backgroundSize);
-                                    if(civilizationController.isWin()){
+                                    if (civilizationController.isWin()) {
                                         civilizationController.winner(GameController.getCurrentPlayer());
                                         civilizationController.endGame();
-                                        timelineError.setOnFinished(actionEvent -> {
-                                            App.changeMenu("MainMenuPage");
-                                        });
-                                        showMessage("you won!");
+//                                        timelineError.setOnFinished(actionEvent -> {
+//                                            App.changeMenu("MainMenuPage");
+//                                        });
+//                                        showMessage("you won!");
+                                        App.changeMenu("Game");
                                     }
                                 });
-                            }else {
+                            } else {
                                 tileMap.getChildren().remove(unitInformation);
                                 tiles[x1][y1].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
                                 GameController.setSelectedUnit(null);
@@ -759,22 +806,22 @@ public class Game {
                             createTopBar(backgroundSize);
                         }
                     } else {
-                        if(!putCitizenToTile) {
+                        if (!putCitizenToTile) {
                             if (!deleteCitizen) {
-                                if(!purchaseTile) {
-                                    if(tileInformation==null && !tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")){
-                                        tileInformation=tiles[finalI][finalJ].getInfosBox(backgroundSize);
+                                if (!purchaseTile) {
+                                    if (tileInformation == null && !tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
+                                        tileInformation = tiles[finalI][finalJ].getInfosBox(backgroundSize);
                                         tileMap.getChildren().add(tileInformation);
-                                    }else if (!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")){
+                                    } else if (!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
                                         tileMap.getChildren().remove(tileInformation);
-                                        VBox tileInfos=tiles[finalI][finalJ].getInfosBox(backgroundSize);
-                                        if(tileInfos.getLayoutX()!=tileInformation.getLayoutX()) {
+                                        VBox tileInfos = tiles[finalI][finalJ].getInfosBox(backgroundSize);
+                                        if (tileInfos.getLayoutX() != tileInformation.getLayoutX()) {
                                             tileInformation = tileInfos;
                                             tileMap.getChildren().add(tileInformation);
-                                        }else tileInformation=null;
+                                        } else tileInformation = null;
                                     }
                                     for (City city : GameController.getCurrentPlayer().getCities()) {
-                                        if(tiles[finalI][finalJ].getTile().equals(city.getCapital())) {
+                                        if (tiles[finalI][finalJ].getTile().equals(city.getCapital())) {
                                             if (GameController.getSelectedCity() == null) {
                                                 GameController.setSelectedCity(city);
                                                 for (Tile tile1 : city.getTiles()) {
@@ -795,28 +842,28 @@ public class Game {
                                             }
                                         }
                                     }
-                                }else {
-                                    String output=cityController.purchaseTile(tiles[finalI][finalJ].getTile());
+                                } else {
+                                    String output = cityController.purchaseTile(tiles[finalI][finalJ].getTile());
                                     tileMap.getChildren().remove(cityPanel);
                                     fillCityPanel(GameController.getSelectedCity());
                                     tileMap.getChildren().add(cityPanel);
-                                    purchaseTile=false;
+                                    purchaseTile = false;
                                     showMessage(output);
                                 }
-                            }else {
-                                String output=cityController.removeCitizen(finalI,finalJ);
+                            } else {
+                                String output = cityController.removeCitizen(finalI, finalJ);
                                 tileMap.getChildren().remove(cityPanel);
                                 fillCityPanel(GameController.getSelectedCity());
                                 tileMap.getChildren().add(cityPanel);
-                                deleteCitizen=false;
+                                deleteCitizen = false;
                                 showMessage(output);
                             }
-                        }else {
-                            String output=cityController.putCitizenToWork(finalI, finalJ);
+                        } else {
+                            String output = cityController.putCitizenToWork(finalI, finalJ);
                             tileMap.getChildren().remove(cityPanel);
                             fillCityPanel(GameController.getSelectedCity());
                             tileMap.getChildren().add(cityPanel);
-                            putCitizenToTile=false;
+                            putCitizenToTile = false;
                             showMessage(output);
                         }
                     }
@@ -827,50 +874,50 @@ public class Game {
         createTopBar(backgroundSize);
     }
 
-    public void selectUnit(Unit unit, GraphicTile tile,BackgroundSize backgroundSize) {
+    public void selectUnit(Unit unit, GraphicTile tile, BackgroundSize backgroundSize) {
         if (tile.getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")) {
             Rectangle graphicUnit = tile.getGraphicUnits().get(unit);
             graphicUnit.setOnMouseClicked(mouseEvent -> {
-                if(!unitAttack) {
-                    if(!cityAttack) {
+                if (!unitAttack) {
+                    if (!cityAttack) {
                         if (GameController.getCurrentPlayer().getUnits().contains(unit)) {
-                            fillUnitInformation(tile,unit,graphicUnit,backgroundSize);
+                            fillUnitInformation(tile, unit, graphicUnit, backgroundSize);
                         }
-                    }else {
-                        ArrayList<Unit> reachableUnits=cityController.reachableUnits();
-                        String output="";
-                        if(!reachableUnits.contains(unit)){
+                    } else {
+                        ArrayList<Unit> reachableUnits = cityController.reachableUnits();
+                        String output = "";
+                        if (!reachableUnits.contains(unit)) {
                             showMessage("you can't attack this unit!");
-                        }else {
-                            output=cityController.attackUnit(unit);
+                        } else {
+                            output = cityController.attackUnit(unit);
                             showMessage(output);
                         }
                         tileMap.getChildren().remove(cityPanel);
-                        cityPanel=null;
+                        cityPanel = null;
                         for (Tile tile1 : GameController.getSelectedCity().getTiles()) {
                             getGraphicByModel(tile1).setOpacity(1);
-                            if(tile1.getFeature()!=null) getGraphicByModel(tile1).getFeature().setOpacity(1);
+                            if (tile1.getFeature() != null) getGraphicByModel(tile1).getFeature().setOpacity(1);
                         }
-                        if(output.equals("you killed the unit!")){
+                        if (output.equals("you killed the unit!")) {
                             tiles[unit.getX()][unit.getY()].deleteUnit(unit);
                         }
                         GameController.setSelectedCity(null);
                         reBuildTiles(backgroundSize);
-                        purchaseTile=false;
-                        deleteCitizen=false;
-                        putCitizenToTile=false;
-                        cityAttack=false;
+                        purchaseTile = false;
+                        deleteCitizen = false;
+                        putCitizenToTile = false;
+                        cityAttack = false;
                     }
-                }else {
-                    ArrayList<Unit> reachableUnits=unitController.reachableUnits();
-                    int x=GameController.getSelectedUnit().getX(),y=GameController.getSelectedUnit().getY();
+                } else {
+                    ArrayList<Unit> reachableUnits = unitController.reachableUnits();
+                    int x = GameController.getSelectedUnit().getX(), y = GameController.getSelectedUnit().getY();
                     String output = "";
-                    if(!reachableUnits.contains(unit)){
+                    if (!reachableUnits.contains(unit)) {
                         showMessage("You Can't Attack This Unit");
-                    }else {
-                        if(!unitController.checkSelectedUnit().equals("ok")){
+                    } else {
+                        if (!unitController.checkSelectedUnit().equals("ok")) {
                             showMessage(unitController.checkSelectedUnit());
-                        }else {
+                        } else {
                             if (GameController.getSelectedUnit().getRemainingMoves() == 0) {
                                 showMessage("this unit can't attack now!");
                             } else {
@@ -879,14 +926,14 @@ public class Game {
                             }
                         }
                     }
-                    unitAttack=false;
+                    unitAttack = false;
                     tileMap.getChildren().remove(unitInformation);
                     tiles[x][y].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
-                    if(output.equals("your unit died!")){
+                    if (output.equals("your unit died!")) {
                         tiles[x][y].deleteUnit(GameController.getSelectedUnit());
                     }
-                    if(output.equals("you killed the unit")){
-                        MilitaryUnit militaryUnit=(MilitaryUnit) GameController.getSelectedUnit();
+                    if (output.equals("you killed the unit")) {
+                        MilitaryUnit militaryUnit = (MilitaryUnit) GameController.getSelectedUnit();
                         tile.deleteUnit(unit);
                         if (militaryUnit.getRange() == -1) {
                             tiles[x][y].deleteUnit(GameController.getSelectedUnit());
@@ -902,9 +949,9 @@ public class Game {
         }
     }
 
-    public Button createUnitActionButton(String actionName){
+    public Button createUnitActionButton(String actionName) {
         Button actionButton = new Button();
-        ImageView buttonImageView = new ImageView(new Image(getClass().getResource("/images/unitActions/"+ actionName +".png").toExternalForm()));
+        ImageView buttonImageView = new ImageView(new Image(getClass().getResource("/images/unitActions/" + actionName + ".png").toExternalForm()));
         buttonImageView.setFitWidth(30);
         buttonImageView.setFitHeight(30);
         actionButton.setGraphic(buttonImageView);
@@ -914,7 +961,8 @@ public class Game {
         actionButton.setTooltip(actionTooltip);
         return actionButton;
     }
-    public void fillUnitInformation(GraphicTile tile,Unit unit,Rectangle graphicUnit,BackgroundSize backgroundSize){
+
+    public void fillUnitInformation(GraphicTile tile, Unit unit, Rectangle graphicUnit, BackgroundSize backgroundSize) {
         VBox unitInfo = new VBox();
         unitInfo.setAlignment(Pos.CENTER);
         unitInfo.setSpacing(15);
@@ -938,20 +986,20 @@ public class Game {
         unitSpec.getStyleClass().add("tileInfo");
         unitValues.getChildren().add(unitName);
         unitValues.getChildren().add(unitSpec);
-        if(unit instanceof MilitaryUnit){
-            MilitaryUnit militaryUnit=(MilitaryUnit) unit;
+        if (unit instanceof MilitaryUnit) {
+            MilitaryUnit militaryUnit = (MilitaryUnit) unit;
             int rangeStrength;
-            if(militaryUnit.getRange()==-1) rangeStrength=0;
-            else rangeStrength=militaryUnit.getRangeStrength();
-            Text unitStrength = new Text("Strength: "+militaryUnit.getStrength()+"  Range Strength: "+rangeStrength);
+            if (militaryUnit.getRange() == -1) rangeStrength = 0;
+            else rangeStrength = militaryUnit.getRangeStrength();
+            Text unitStrength = new Text("Strength: " + militaryUnit.getStrength() + "  Range Strength: " + rangeStrength);
             unitStrength.setFill(Color.WHITE);
             unitStrength.getStyleClass().add("tileInfo");
             unitValues.getChildren().add(unitStrength);
         }
         unitHBox.getChildren().add(unitValues);
         unitInfo.getChildren().add(unitHBox);
-        VBox firstColumnActions=new VBox();
-        VBox secondColumnActions=new VBox();
+        VBox firstColumnActions = new VBox();
+        VBox secondColumnActions = new VBox();
         Button sleep = createUnitActionButton("Sleep");
         sleep.setOnMouseClicked(mouseEvent1 -> {
             showMessage(unitController.sleep());
@@ -1030,7 +1078,7 @@ public class Game {
         unitHBox.getChildren().add(firstColumnActions);
         unitHBox.getChildren().add(secondColumnActions);
         if (unit instanceof MilitaryUnit) {
-            VBox militaryActions=new VBox();
+            VBox militaryActions = new VBox();
             Button attack = new Button("Attack");
             attack.getStyleClass().add("secondary-btn");
             attack.setMaxWidth(100);
@@ -1063,112 +1111,112 @@ public class Game {
             });
             unitHBox.getChildren().add(foundCity);
         }
-        if(unit instanceof WorkerUnit){
-            VBox workerActions=new VBox();
-            Button improve=new Button("Improve Tile");
+        if (unit instanceof WorkerUnit) {
+            VBox workerActions = new VBox();
+            Button improve = new Button("Improve Tile");
             improve.getStyleClass().add("secondary-btn");
             improve.setMaxWidth(100);
             workerActions.getChildren().add(improve);
             improve.setOnMouseClicked(mouseEvent1 -> {
                 unitInformation.getChildren().clear();
-                HashMap<Tile,Improvement> waitedImprovement=GameController.getCurrentPlayer().getImprovingTiles();
-                HashMap<Tile,Integer> processingTiles=GameController.getCurrentPlayer().getProcessingTiles();
-                ArrayList<Tile> eliminatingFeatures=GameController.getCurrentPlayer().getEliminatingFeatures();
-                String currentWork="";
-                int totalTurn=0;
-                if(waitedImprovement.get(tile.getTile())==null && processingTiles.get(tile.getTile())!=null && !eliminatingFeatures.contains(tile.getTile())){
-                    currentWork="Building Road";
-                    totalTurn=3;
-                }else {
-                    if(processingTiles.get(tile.getTile())==null){
-                        currentWork="no work!";
+                HashMap<Tile, Improvement> waitedImprovement = GameController.getCurrentPlayer().getImprovingTiles();
+                HashMap<Tile, Integer> processingTiles = GameController.getCurrentPlayer().getProcessingTiles();
+                ArrayList<Tile> eliminatingFeatures = GameController.getCurrentPlayer().getEliminatingFeatures();
+                String currentWork = "";
+                int totalTurn = 0;
+                if (waitedImprovement.get(tile.getTile()) == null && processingTiles.get(tile.getTile()) != null && !eliminatingFeatures.contains(tile.getTile())) {
+                    currentWork = "Building Road";
+                    totalTurn = 3;
+                } else {
+                    if (processingTiles.get(tile.getTile()) == null) {
+                        currentWork = "no work!";
                     }
-                    if(waitedImprovement.get(tile.getTile())!=null){
-                        if(eliminatingFeatures.contains(tile.getTile())){
-                            currentWork=waitedImprovement.get(tile.getTile()).getName()+" + eliminating "+tile.getTile().getFeature().getName();
-                            totalTurn=12;
-                        }else {
-                            currentWork=waitedImprovement.get(tile.getTile()).getName();
-                            if(tile.getTile().getLootedImprovement()==null)
-                                totalTurn=6;
-                            else totalTurn=3;
+                    if (waitedImprovement.get(tile.getTile()) != null) {
+                        if (eliminatingFeatures.contains(tile.getTile())) {
+                            currentWork = waitedImprovement.get(tile.getTile()).getName() + " + eliminating " + tile.getTile().getFeature().getName();
+                            totalTurn = 12;
+                        } else {
+                            currentWork = waitedImprovement.get(tile.getTile()).getName();
+                            if (tile.getTile().getLootedImprovement() == null)
+                                totalTurn = 6;
+                            else totalTurn = 3;
                         }
-                    }else if(eliminatingFeatures.contains(tile.getTile())){
-                        currentWork="eliminating "+tile.getTile().getFeature().getName();
-                        totalTurn=6;
+                    } else if (eliminatingFeatures.contains(tile.getTile())) {
+                        currentWork = "eliminating " + tile.getTile().getFeature().getName();
+                        totalTurn = 6;
                     }
                 }
-                ProgressBar progressBar=new ProgressBar();
-                Text currentWorkText=new Text("Current Improvement: "+currentWork);
+                ProgressBar progressBar = new ProgressBar();
+                Text currentWorkText = new Text("Current Improvement: " + currentWork);
                 currentWorkText.getStyleClass().add("info");
                 unitInformation.getChildren().add(currentWorkText);
-                if(processingTiles.get(tile.getTile())!=null){
-                    double progress=1.0-((processingTiles.get(tile.getTile())).doubleValue()/totalTurn);
-                    if(progress==0) progress=0.1;
+                if (processingTiles.get(tile.getTile()) != null) {
+                    double progress = 1.0 - ((processingTiles.get(tile.getTile())).doubleValue() / totalTurn);
+                    if (progress == 0) progress = 0.1;
                     progressBar.setProgress(progress);
                     unitInformation.getChildren().add(progressBar);
                 }
-                Button roadButton=new Button("Road");
+                Button roadButton = new Button("Road");
                 roadButton.getStyleClass().add("secondary-btn");
                 roadButton.setMinWidth(100);
                 unitInformation.getChildren().add(roadButton);
                 roadButton.setOnMouseClicked(mouseEvent2 -> {
                     showMessage(unitController.buildRoad("Road"));
                     unitInformation.getChildren().clear();
-                    fillUnitInformation(tile,unit,graphicUnit,backgroundSize);
+                    fillUnitInformation(tile, unit, graphicUnit, backgroundSize);
                 });
                 for (Improvement improvement : ImprovementDatabase.getImprovements()) {
-                    Button improvementButton=new Button(improvement.getName());
+                    Button improvementButton = new Button(improvement.getName());
                     improvementButton.getStyleClass().add("secondary-btn");
                     improvementButton.setMinWidth(70);
                     unitInformation.getChildren().add(improvementButton);
-                    String toolTip="needed technology: "+improvement.getNeededTechnology()+" , needed tile: ";
+                    String toolTip = "needed technology: " + improvement.getNeededTechnology() + " , needed tile: ";
                     for (String s : improvement.getPlacesItCanBeBuild()) {
-                        toolTip+=s+", ";
+                        toolTip += s + ", ";
                     }
                     improvementButton.setTooltip(new Tooltip(toolTip));
                     improvementButton.setOnMouseClicked(mouseEvent2 -> {
                         showMessage(unitController.improveTile(improvement));
                         unitInformation.getChildren().clear();
-                        fillUnitInformation(tile,unit,graphicUnit,backgroundSize);
+                        fillUnitInformation(tile, unit, graphicUnit, backgroundSize);
                     });
                 }
-                Button back =new Button("Back");
+                Button back = new Button("Back");
                 back.getStyleClass().add("secondary-btn");
                 back.setMinWidth(100);
                 unitInformation.getChildren().add(back);
                 back.setOnMouseClicked(mouseEvent2 -> {
                     unitInformation.getChildren().clear();
-                    fillUnitInformation(tile,unit,graphicUnit,backgroundSize);
+                    fillUnitInformation(tile, unit, graphicUnit, backgroundSize);
                 });
             });
-            Button eliminate =new Button("Eliminate");
+            Button eliminate = new Button("Eliminate");
             eliminate.getStyleClass().add("secondary-btn");
             eliminate.setMaxWidth(100);
             workerActions.getChildren().add(eliminate);
             eliminate.setOnMouseClicked(mouseEvent1 -> {
                 unitInformation.getChildren().clear();
-                Text which=new Text("Choose one to eliminate:");
+                Text which = new Text("Choose one to eliminate:");
                 which.getStyleClass().add("info");
                 unitInformation.getChildren().add(which);
-                Button road=new Button("Road");
+                Button road = new Button("Road");
                 road.getStyleClass().add("secondary-btn");
                 unitInformation.getChildren().add(road);
                 road.setOnMouseClicked(mouseEvent2 -> {
                     showMessage(unitController.eliminateRoad());
                     unitInformation.getChildren().clear();
-                    fillUnitInformation(tile,unit,graphicUnit,backgroundSize);
+                    fillUnitInformation(tile, unit, graphicUnit, backgroundSize);
                 });
-                Button feature =new Button("Feature");
+                Button feature = new Button("Feature");
                 feature.getStyleClass().add("secondary-btn");
                 unitInformation.getChildren().add(feature);
                 feature.setOnMouseClicked(mouseEvent2 -> {
                     showMessage(unitController.eliminateFeature());
                     unitInformation.getChildren().clear();
-                    fillUnitInformation(tile,unit,graphicUnit,backgroundSize);
+                    fillUnitInformation(tile, unit, graphicUnit, backgroundSize);
                 });
             });
-            Button heal =new Button("Heal Tile");
+            Button heal = new Button("Heal Tile");
             heal.getStyleClass().add("secondary-btn");
             heal.setMaxWidth(100);
             workerActions.getChildren().add(heal);
@@ -1197,10 +1245,10 @@ public class Game {
         }
     }
 
-    public GraphicTile getGraphicByModel(Tile tile){
-        for(int i=0;i<GameController.getMapWidth();i++){
-            for(int j=0;j<GameController.getMapHeight();j++){
-                if(tiles[i][j].getTile().equals(tile)){
+    public GraphicTile getGraphicByModel(Tile tile) {
+        for (int i = 0; i < GameController.getMapWidth(); i++) {
+            for (int j = 0; j < GameController.getMapHeight(); j++) {
+                if (tiles[i][j].getTile().equals(tile)) {
                     return tiles[i][j];
                 }
             }
@@ -1208,17 +1256,17 @@ public class Game {
         return null;
     }
 
-    public void showMessage(String message){
+    public void showMessage(String message) {
         timelineError.stop();
         error.setText(message);
-        if(!tileMap.getChildren().contains(vBoxError)) tileMap.getChildren().add(vBoxError);
+        if (!tileMap.getChildren().contains(vBoxError)) tileMap.getChildren().add(vBoxError);
         timelineError.play();
     }
 
-    public void fillCityPanel(City city){
-        cityPanel=new VBox();
+    public void fillCityPanel(City city) {
+        cityPanel = new VBox();
         cityPanel.setAlignment(Pos.CENTER);
-        if(getGraphicByModel(city.getCapital()).getPoints().get(0)<600){
+        if (getGraphicByModel(city.getCapital()).getPoints().get(0) < 600) {
             cityPanel.setLayoutX(800);
         }
         cityPanel.setSpacing(5);
@@ -1229,10 +1277,10 @@ public class Game {
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
         cityPanel.setBackground(new Background(backgroundImage));
-        Text cityId = new Text("City "+city.getId()+" belong to "+cityController.getCityOwner(city).getNickname());
+        Text cityId = new Text("City " + city.getId() + " belong to " + cityController.getCityOwner(city).getNickname());
         cityId.getStyleClass().add("info");
         cityPanel.getChildren().add(cityId);
-        HBox goldHBox=new HBox();
+        HBox goldHBox = new HBox();
         goldHBox.setSpacing(20);
         Circle gold = new Circle(17);
         gold.setCenterY(15);
@@ -1244,7 +1292,7 @@ public class Game {
         goldAmount.getStyleClass().add("info");
         goldHBox.getChildren().add(goldAmount);
         cityPanel.getChildren().add(goldHBox);
-        HBox productionHBox =new HBox();
+        HBox productionHBox = new HBox();
         productionHBox.setSpacing(20);
         Circle production = new Circle(17);
         production.setCenterY(15);
@@ -1256,7 +1304,7 @@ public class Game {
         productionAmount.getStyleClass().add("info");
         productionHBox.getChildren().add(productionAmount);
         cityPanel.getChildren().add(productionHBox);
-        HBox FoodHBox =new HBox();
+        HBox FoodHBox = new HBox();
         FoodHBox.setSpacing(20);
         Circle food = new Circle(17);
         food.setCenterY(15);
@@ -1268,127 +1316,127 @@ public class Game {
         foodAmount.getStyleClass().add("info");
         FoodHBox.getChildren().add(foodAmount);
         cityPanel.getChildren().add(FoodHBox);
-        Text health=new Text("Remaining Health: "+city.getHealth());
+        Text health = new Text("Remaining Health: " + city.getHealth());
         health.getStyleClass().add("info");
         cityPanel.getChildren().add(health);
-        Text strength =new Text("Strength: "+city.strength());
+        Text strength = new Text("Strength: " + city.strength());
         strength.getStyleClass().add("info");
         cityPanel.getChildren().add(strength);
-        Text uCitizens =new Text("Number of Workless Citizens:"+(city.getCountOfCitizens()-city.getTilesWithCitizen().size()));
+        Text uCitizens = new Text("Number of Workless Citizens:" + (city.getCountOfCitizens() - city.getTilesWithCitizen().size()));
         uCitizens.getStyleClass().add("info");
         cityPanel.getChildren().add(uCitizens);
-        Text wCitizens =new Text("Tile With Working Citizens:");
+        Text wCitizens = new Text("Tile With Working Citizens:");
         wCitizens.getStyleClass().add("info");
         cityPanel.getChildren().add(wCitizens);
-        Text workingCitizens=new Text();
-        String citizens="";
+        Text workingCitizens = new Text();
+        String citizens = "";
         for (Tile tile : city.getTilesWithCitizen()) {
-            citizens+=" (";
-            citizens+=Integer.toString(tile.getX());
-            citizens+=",";
-            citizens+=Integer.toString(tile.getY());
-            citizens+=")";
+            citizens += " (";
+            citizens += Integer.toString(tile.getX());
+            citizens += ",";
+            citizens += Integer.toString(tile.getY());
+            citizens += ")";
         }
         workingCitizens.setText(citizens);
         workingCitizens.getStyleClass().add("info");
         cityPanel.getChildren().add(workingCitizens);
-        int turn=0;
-        if(city.totalFood()>0) {
+        int turn = 0;
+        if (city.totalFood() > 0) {
             turn = (int) (((Math.pow(2, city.getCountOfCitizens()) - city.getFoodLeft())) / city.totalFood());
         }
-        Text turnLeft=new Text("+1 Citizen in "+turn+" turns");
+        Text turnLeft = new Text("+1 Citizen in " + turn + " turns");
         turnLeft.getStyleClass().add("info");
         cityPanel.getChildren().add(turnLeft);
-        Button purchaseTileButton =new Button("Purchase Tile");
+        Button purchaseTileButton = new Button("Purchase Tile");
         purchaseTileButton.setMaxWidth(150);
         purchaseTileButton.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(purchaseTileButton);
-        Button putCitizen=new Button("Put Citizen To Tile");
+        Button putCitizen = new Button("Put Citizen To Tile");
         putCitizen.setMaxWidth(150);
         putCitizen.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(putCitizen);
-        Button eliminateCitizen =new Button("Eliminate Citizen From Tile");
+        Button eliminateCitizen = new Button("Eliminate Citizen From Tile");
         eliminateCitizen.setMaxWidth(200);
         eliminateCitizen.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(eliminateCitizen);
-        Button attack =new Button("Attack Unit");
+        Button attack = new Button("Attack Unit");
         attack.setMaxWidth(200);
         attack.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(attack);
         purchaseTileButton.setOnMouseClicked(mouseEvent -> {
-            putCitizenToTile=false;
-            deleteCitizen=false;
-            cityAttack=false;
+            putCitizenToTile = false;
+            deleteCitizen = false;
+            cityAttack = false;
             attack.setOpacity(1);
             putCitizen.setOpacity(1);
             attack.setOpacity(1);
-            if(purchaseTile) purchaseTileButton.setOpacity(1);
+            if (purchaseTile) purchaseTileButton.setOpacity(1);
             else purchaseTileButton.setOpacity(0.5);
             purchaseTile = !purchaseTile;
         });
         putCitizen.setOnMouseClicked(mouseEvent -> {
-            deleteCitizen=false;
-            purchaseTile=false;
-            cityAttack=false;
+            deleteCitizen = false;
+            purchaseTile = false;
+            cityAttack = false;
             attack.setOpacity(1);
             purchaseTileButton.setOpacity(1);
             attack.setOpacity(1);
-            if(putCitizenToTile) putCitizen.setOpacity(1);
+            if (putCitizenToTile) putCitizen.setOpacity(1);
             else putCitizen.setOpacity(0.5);
             putCitizenToTile = !putCitizenToTile;
         });
         eliminateCitizen.setOnMouseClicked(mouseEvent -> {
-            putCitizenToTile=false;
-            purchaseTile=false;
-            cityAttack=false;
+            putCitizenToTile = false;
+            purchaseTile = false;
+            cityAttack = false;
             attack.setOpacity(1);
             purchaseTileButton.setOpacity(1);
             putCitizen.setOpacity(1);
-            if(deleteCitizen) eliminateCitizen.setOpacity(1);
+            if (deleteCitizen) eliminateCitizen.setOpacity(1);
             else eliminateCitizen.setOpacity(0.5);
-            deleteCitizen=!deleteCitizen;
+            deleteCitizen = !deleteCitizen;
         });
         attack.setOnMouseClicked(mouseEvent -> {
-            putCitizenToTile=false;
-            purchaseTile=false;
-            deleteCitizen=false;
+            putCitizenToTile = false;
+            purchaseTile = false;
+            deleteCitizen = false;
             eliminateCitizen.setOpacity(1);
             purchaseTileButton.setOpacity(1);
             putCitizen.setOpacity(1);
-            if(cityAttack) attack.setOpacity(1);
+            if (cityAttack) attack.setOpacity(1);
             else attack.setOpacity(0.5);
-            cityAttack=!cityAttack;
+            cityAttack = !cityAttack;
         });
-        Button unitProductionButton =new Button("Unit Production Panel");
+        Button unitProductionButton = new Button("Unit Production Panel");
         unitProductionButton.setMaxWidth(200);
         unitProductionButton.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(unitProductionButton);
         unitProductionButton.setOnMouseClicked(mouseEvent -> {
-            purchaseTile=false;
-            putCitizenToTile=false;
-            deleteCitizen=false;
-            cityAttack=false;
+            purchaseTile = false;
+            putCitizenToTile = false;
+            deleteCitizen = false;
+            cityAttack = false;
             cityPanel.getChildren().clear();
-            Text currentProduction=new Text("Your Current Production: "+city.getConstructingUnit());
+            Text currentProduction = new Text("Your Current Production: " + city.getConstructingUnit());
             currentProduction.getStyleClass().add("info");
             cityPanel.getChildren().add(currentProduction);
-            Text text =new Text("You Can Constrict these units:");
+            Text text = new Text("You Can Constrict these units:");
             text.getStyleClass().add("info");
             cityPanel.getChildren().add(text);
-            for (int i=0;i<unitController.getConstructableUnits().size();i++){
-                Button unit=new Button(unitController.getConstructableUnits().get(i).getName());
+            for (int i = 0; i < unitController.getConstructableUnits().size(); i++) {
+                Button unit = new Button(unitController.getConstructableUnits().get(i).getName());
                 unit.getStyleClass().add("secondary-btn");
                 unit.setMaxWidth(200);
                 cityPanel.getChildren().add(unit);
                 int finalI = i;
                 unit.setOnMouseClicked(mouseEvent1 -> {
                     cityPanel.getChildren().clear();
-                    Text purchaseText=new Text("purchase this unit with gold?");
+                    Text purchaseText = new Text("purchase this unit with gold?");
                     purchaseText.getStyleClass().add("info");
                     cityPanel.getChildren().add(purchaseText);
-                    Button yes=new Button("Yes");
+                    Button yes = new Button("Yes");
                     yes.getStyleClass().add("secondary-btn");
-                    Button no=new Button("No");
+                    Button no = new Button("No");
                     no.getStyleClass().add("secondary-btn");
                     no.setOnMouseClicked(mouseEvent2 -> {
                         tileMap.getChildren().remove(cityPanel);
@@ -1407,7 +1455,7 @@ public class Game {
                     cityPanel.getChildren().add(yes);
                 });
             }
-            Button back =new Button("Back");
+            Button back = new Button("Back");
             back.getStyleClass().add("secondary-btn");
             back.setMaxWidth(200);
             cityPanel.getChildren().add(back);
@@ -1417,52 +1465,52 @@ public class Game {
                 tileMap.getChildren().add(cityPanel);
             });
         });
-        Button buildingProductionButton =new Button("Building Production Panel");
+        Button buildingProductionButton = new Button("Building Production Panel");
         buildingProductionButton.setMaxWidth(200);
         buildingProductionButton.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(buildingProductionButton);
         buildingProductionButton.setOnMouseClicked(mouseEvent -> {
-            purchaseTile=false;
-            putCitizenToTile=false;
-            deleteCitizen=false;
-            cityAttack=false;
+            purchaseTile = false;
+            putCitizenToTile = false;
+            deleteCitizen = false;
+            cityAttack = false;
             cityPanel.getChildren().clear();
-            Text currentProduction=new Text("Your Current Production: "+city.getConstructingBuilding());
+            Text currentProduction = new Text("Your Current Production: " + city.getConstructingBuilding());
             currentProduction.getStyleClass().add("info");
             cityPanel.getChildren().add(currentProduction);
-            if(!city.getBuildings().isEmpty()) {
-                Text buildingsText=new Text("Your Have These Buildings:");
+            if (!city.getBuildings().isEmpty()) {
+                Text buildingsText = new Text("Your Have These Buildings:");
                 buildingsText.getStyleClass().add("info");
                 cityPanel.getChildren().add(buildingsText);
                 HBox buildings = new HBox();
                 buildings.setAlignment(Pos.CENTER);
                 for (Building building : city.getBuildings()) {
-                    Rectangle rectangle=new Rectangle();
+                    Rectangle rectangle = new Rectangle();
                     rectangle.setWidth(80);
                     rectangle.setHeight(80);
-                    ImagePattern buildingImage = new ImagePattern(new Image(getClass().getResource("/images/buildings/"+building.getName()+".png").toExternalForm()));
+                    ImagePattern buildingImage = new ImagePattern(new Image(getClass().getResource("/images/buildings/" + building.getName() + ".png").toExternalForm()));
                     rectangle.setFill(buildingImage);
                     buildings.getChildren().add(rectangle);
                 }
                 cityPanel.getChildren().add(buildings);
             }
-            Text text =new Text("You Can Constrict these buildings:");
+            Text text = new Text("You Can Constrict these buildings:");
             text.getStyleClass().add("info");
             cityPanel.getChildren().add(text);
-            for (int i=0;i<cityController.constructableBuildingsForSelectedCity().size();i++){
-                Button building =new Button(cityController.constructableBuildingsForSelectedCity().get(i).getName());
+            for (int i = 0; i < cityController.constructableBuildingsForSelectedCity().size(); i++) {
+                Button building = new Button(cityController.constructableBuildingsForSelectedCity().get(i).getName());
                 building.getStyleClass().add("secondary-btn");
                 building.setMaxWidth(200);
                 cityPanel.getChildren().add(building);
                 int finalI = i;
                 building.setOnMouseClicked(mouseEvent1 -> {
                     cityPanel.getChildren().clear();
-                    Text purchaseText=new Text("purchase this building with gold?");
+                    Text purchaseText = new Text("purchase this building with gold?");
                     purchaseText.getStyleClass().add("info");
                     cityPanel.getChildren().add(purchaseText);
-                    Button yes=new Button("Yes");
+                    Button yes = new Button("Yes");
                     yes.getStyleClass().add("secondary-btn");
-                    Button no=new Button("No");
+                    Button no = new Button("No");
                     no.getStyleClass().add("secondary-btn");
                     no.setOnMouseClicked(mouseEvent2 -> {
                         tileMap.getChildren().remove(cityPanel);
@@ -1481,7 +1529,7 @@ public class Game {
                     cityPanel.getChildren().add(yes);
                 });
             }
-            Button back =new Button("Back");
+            Button back = new Button("Back");
             back.getStyleClass().add("secondary-btn");
             back.setMaxWidth(200);
             cityPanel.getChildren().add(back);
@@ -1491,89 +1539,79 @@ public class Game {
                 tileMap.getChildren().add(cityPanel);
             });
         });
-        Button close=new Button("Close Panel");
+        Button close = new Button("Close Panel");
         close.setMaxWidth(150);
         close.getStyleClass().add("secondary-btn");
         cityPanel.getChildren().add(close);
         close.setOnMouseClicked(mouseEvent -> {
             tileMap.getChildren().remove(cityPanel);
-            cityPanel=null;
+            cityPanel = null;
             for (Tile tile : city.getTiles()) {
                 getGraphicByModel(tile).setOpacity(1);
-                if(tile.getFeature()!=null) getGraphicByModel(tile).getFeature().setOpacity(1);
+                if (tile.getFeature() != null) getGraphicByModel(tile).getFeature().setOpacity(1);
             }
             GameController.setSelectedCity(null);
-            purchaseTile=false;
-            deleteCitizen=false;
-            putCitizenToTile=false;
-            cityAttack=false;
-            if(tileMap.getChildren().contains(tileInformation)) {
+            purchaseTile = false;
+            deleteCitizen = false;
+            putCitizenToTile = false;
+            cityAttack = false;
+            if (tileMap.getChildren().contains(tileInformation)) {
                 tileMap.getChildren().remove(tileInformation);
-                tileInformation=null;
+                tileInformation = null;
             }
         });
     }
 
-    public void cheat(String input,BackgroundSize backgroundSize){
+    public void cheat(String input, BackgroundSize backgroundSize) {
         Matcher matcher;
-        if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_GOLD)) != null) {
+        if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_GOLD)) != null) {
             GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold() + Integer.parseInt(matcher.group("amount")));
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_TURN)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_TURN)) != null) {
             String message = "";
-            for(int i=0;i<Integer.parseInt(matcher.group("amount"));i++){
+            for (int i = 0; i < Integer.parseInt(matcher.group("amount")); i++) {
                 message = civilizationController.nextTurn();
             }
             showMessage(message);
             App.changeMenu("Game");
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_HAPPINESS)) != null)
-            GameController.getCurrentPlayer().setHappiness(GameController.getCurrentPlayer().getHappiness()+Integer.parseInt(matcher.group("amount")));
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_UNIT_FULL_HEALTH)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_HAPPINESS)) != null)
+            GameController.getCurrentPlayer().setHappiness(GameController.getCurrentPlayer().getHappiness() + Integer.parseInt(matcher.group("amount")));
+        else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_UNIT_FULL_HEALTH)) != null) {
             for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
                 unit.setHealth(10);
             }
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CITY_FULL_HEALTH)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CITY_FULL_HEALTH)) != null) {
             for (City city : GameController.getCurrentPlayer().getCities()) {
                 city.setHealth(20);
             }
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_CITIZEN)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_CITIZEN)) != null) {
             for (City city : GameController.getCurrentPlayer().getCities()) {
-                if(city.getId()==Integer.parseInt(matcher.group("id"))){
-                    city.setCountOfCitizens(city.getCountOfCitizens()+Integer.parseInt(matcher.group("amount")));
+                if (city.getId() == Integer.parseInt(matcher.group("id"))) {
+                    city.setCountOfCitizens(city.getCountOfCitizens() + Integer.parseInt(matcher.group("amount")));
                     break;
                 }
             }
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null) {
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_ROAD)) != null) {
             GameController.getTiles()[Integer.parseInt(matcher.group("x"))][Integer.parseInt(matcher.group("y"))].setRoad(true);
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_INCREASE_MOVEMENT)) != null) {
             for (Unit unit : GameController.getCurrentPlayer().getUnits()) {
-                unit.setRemainingMoves(unit.getRemainingMoves()+Integer.parseInt(matcher.group("amount")));
+                unit.setRemainingMoves(unit.getRemainingMoves() + Integer.parseInt(matcher.group("amount")));
             }
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CREATE_CITY)) != null) {
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_CREATE_CITY)) != null) {
             cityController.createCity(Integer.parseInt(matcher.group("x")), Integer.parseInt(matcher.group("y")));
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_FINISH_STUDY)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_FINISH_STUDY)) != null) {
             GameController.getCurrentPlayer().addTechnology(GameController.getCurrentPlayer().getCurrentStudy());
             GameController.getCurrentPlayer().getWaitedTechnologies().remove(GameController.getCurrentPlayer().getCurrentStudy().getName());
             GameController.getCurrentPlayer().setCurrentStudy(null);
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_UNIT)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_UNIT)) != null) {
             for (City city : GameController.getCurrentPlayer().getCities()) {
-                if(city.getId()==Integer.parseInt(matcher.group("id"))){
-                    cityController.createUnit(matcher.group("name"),city);
+                if (city.getId() == Integer.parseInt(matcher.group("id"))) {
+                    cityController.createUnit(matcher.group("name"), city);
                 }
             }
-        }
-        else if((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_BUILDING)) != null){
+        } else if ((matcher = Commands.getCommandMatcher(input, Commands.CHEAT_BUILD_BUILDING)) != null) {
             for (City city : GameController.getCurrentPlayer().getCities()) {
-                if(city.getId()==Integer.parseInt(matcher.group("id"))){
-                    cityController.createBuilding(matcher.group("name"),city);
+                if (city.getId() == Integer.parseInt(matcher.group("id"))) {
+                    cityController.createBuilding(matcher.group("name"), city);
                 }
             }
         }
@@ -1582,54 +1620,52 @@ public class Game {
         reBuildTiles(backgroundSize);
     }
 
-    public void fillTechnologyPanel(BackgroundSize backgroundSize){
-        Pane scroll=new Pane();
-        technologyPanel=new ScrollPane();
+    public void fillTechnologyPanel(BackgroundSize backgroundSize) {
+        Pane scroll = new Pane();
+        technologyPanel = new ScrollPane();
         technologyPanel.setMinHeight(400);
         technologyPanel.setPrefWidth(1280);
         BackgroundImage backgroundImage = new BackgroundImage(new Image(getClass().getResource("/images/backgrounds/technologyPanel.png").toExternalForm()),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 backgroundSize);
-        Platform.runLater(()->scroll.setBackground(new Background(backgroundImage)));
-        HashMap<Technology,Rectangle> technologies=new HashMap<>();
+        Platform.runLater(() -> scroll.setBackground(new Background(backgroundImage)));
+        HashMap<Technology, Rectangle> technologies = new HashMap<>();
         int j;
-        for(int i=0;i<13;i++) {
-            j=0;
+        for (int i = 0; i < 13; i++) {
+            j = 0;
             for (Technology technology : TechnologyDatabase.getTechnologies()) {
-                if(technology.getTreePlace()==i) {
+                if (technology.getTreePlace() == i) {
                     Rectangle graphicTechnology = new Rectangle();
                     graphicTechnology.setHeight(40);
                     graphicTechnology.setWidth(200);
-                    ImagePattern technologyImage=new ImagePattern(new Image(getClass().getResource("/images/technologyTree/"+technology.getName()+".png").toExternalForm()));
+                    ImagePattern technologyImage = new ImagePattern(new Image(getClass().getResource("/images/technologyTree/" + technology.getName() + ".png").toExternalForm()));
                     graphicTechnology.setFill(technologyImage);
-                    String tooltipString="name: "+technology.getName();
-                    tooltipString+=" prerequisite technologies: ";
+                    String tooltipString = "name: " + technology.getName();
+                    tooltipString += " prerequisite technologies: ";
                     for (String prerequisiteTechnology : technology.getPrerequisiteTechnologies()) {
-                        tooltipString+=" "+prerequisiteTechnology+",";
+                        tooltipString += " " + prerequisiteTechnology + ",";
                     }
-                    Tooltip.install(graphicTechnology,new Tooltip(tooltipString));
-                    if(GameController.getCurrentPlayer().getTechnologies().contains(technology)){
+                    Tooltip.install(graphicTechnology, new Tooltip(tooltipString));
+                    if (GameController.getCurrentPlayer().getTechnologies().contains(technology)) {
                         graphicTechnology.setOpacity(0.7);
                     }
-                    technologies.put(technology,graphicTechnology);
-                    graphicTechnology.setLayoutX(i*225);
-                    graphicTechnology.setLayoutY(j*55+20);
+                    technologies.put(technology, graphicTechnology);
+                    graphicTechnology.setLayoutX(i * 225);
+                    graphicTechnology.setLayoutY(j * 55 + 20);
                     scroll.getChildren().add(graphicTechnology);
                     j++;
                     graphicTechnology.setOnMouseClicked(mouseEvent -> {
-                        if(GameController.getCurrentPlayer().readyTechnologies().contains(technology)) {
+                        if (GameController.getCurrentPlayer().readyTechnologies().contains(technology)) {
                             tileMap.getChildren().remove(technologyPanel);
                             technologyPanel = null;
                             civilizationController.studyTechnology(technology);
                             showMessage("studying technology!");
-                        }else {
-                            if(GameController.getCurrentPlayer().getCurrentStudy()!=null && GameController.getCurrentPlayer().getCurrentStudy().equals(technology)){
+                        } else {
+                            if (GameController.getCurrentPlayer().getCurrentStudy() != null && GameController.getCurrentPlayer().getCurrentStudy().equals(technology)) {
                                 showMessage("you are already studying this technology!");
-                            }else
-                            if(GameController.getCurrentPlayer().getTechnologies().contains(technology)){
+                            } else if (GameController.getCurrentPlayer().getTechnologies().contains(technology)) {
                                 showMessage("you have already studied this technology");
-                            }
-                            else {
+                            } else {
                                 showMessage("you have to study it's prerequisite technologies first!");
                             }
                         }
@@ -1637,33 +1673,33 @@ public class Game {
                 }
             }
         }
-        Text currentStudy=new Text();
-        if(GameController.getCurrentPlayer().getCurrentStudy()!=null){
+        Text currentStudy = new Text();
+        if (GameController.getCurrentPlayer().getCurrentStudy() != null) {
             int turnsLeft;
             if (GameController.getCurrentPlayer().getWaitedTechnologies().get(GameController.getCurrentPlayer().getCurrentStudy().getName()) % GameController.getCurrentPlayer().totalCup() == 0) {
-                turnsLeft =  GameController.getCurrentPlayer().getWaitedTechnologies().get(GameController.getCurrentPlayer().getCurrentStudy().getName()) / GameController.getCurrentPlayer().totalCup();
+                turnsLeft = GameController.getCurrentPlayer().getWaitedTechnologies().get(GameController.getCurrentPlayer().getCurrentStudy().getName()) / GameController.getCurrentPlayer().totalCup();
             } else {
                 turnsLeft = GameController.getCurrentPlayer().getWaitedTechnologies().get(GameController.getCurrentPlayer().getCurrentStudy().getName()) / GameController.getCurrentPlayer().totalCup() + 1;
             }
             currentStudy.setText("you are currently studying " + GameController.getCurrentPlayer().getCurrentStudy().getName() + " and there is " + turnsLeft + " turns left to unlock");
-        }else {
+        } else {
             currentStudy.setText("no current study!");
         }
         currentStudy.getStyleClass().add("title");
-        currentStudy.setFill(Color.rgb(100,250,0));
+        currentStudy.setFill(Color.rgb(100, 250, 0));
         currentStudy.setX(0);
         currentStudy.setY(370);
         scroll.getChildren().add(currentStudy);
         technologyPanel.setContent(scroll);
         for (Technology technology : TechnologyDatabase.getTechnologies()) {
             for (String prerequisiteTechnology : technology.getPrerequisiteTechnologies()) {
-                Line line=new Line();
-                Platform.runLater(()->line.setStartX(225*TechnologyDatabase.getTechnologyByName(prerequisiteTechnology).getTreePlace()+200));
-                Platform.runLater(()->line.setStartY(technologies.get(TechnologyDatabase.getTechnologyByName(prerequisiteTechnology)).getLayoutY()));
-                Platform.runLater(()->line.setEndX(technology.getTreePlace()*225));
-                Platform.runLater(()->line.setEndY(technologies.get(technology).getLayoutY()));
-                Platform.runLater(()->line.setStroke(Color.RED));
-                Platform.runLater(()->scroll.getChildren().add(line));
+                Line line = new Line();
+                Platform.runLater(() -> line.setStartX(225 * TechnologyDatabase.getTechnologyByName(prerequisiteTechnology).getTreePlace() + 200));
+                Platform.runLater(() -> line.setStartY(technologies.get(TechnologyDatabase.getTechnologyByName(prerequisiteTechnology)).getLayoutY()));
+                Platform.runLater(() -> line.setEndX(technology.getTreePlace() * 225));
+                Platform.runLater(() -> line.setEndY(technologies.get(technology).getLayoutY()));
+                Platform.runLater(() -> line.setStroke(Color.RED));
+                Platform.runLater(() -> scroll.getChildren().add(line));
             }
         }
     }

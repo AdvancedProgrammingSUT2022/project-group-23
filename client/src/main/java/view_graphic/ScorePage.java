@@ -1,6 +1,8 @@
 package view_graphic;
 
 import controller.NetworkController;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
@@ -11,6 +13,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import model.Request;
 import model.User;
 
@@ -25,6 +28,7 @@ public class ScorePage {
     private Text title;
     @FXML
     private VBox vbox1;
+    private Timeline updateTimeline;
     public void initialize() {
         Platform.runLater(() -> borderPane.requestFocus());
         BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, true, true, true);
@@ -33,6 +37,15 @@ public class ScorePage {
                 backgroundSize);
         borderPane.setBackground(new Background(backgroundImage));
         title.setFill(Color.rgb(1, 231, 212));
+        addScoresToVbox();
+        updateTimeline = new Timeline(new KeyFrame(Duration.seconds(2),actionEvent -> {
+            vbox1.getChildren().clear();
+            addScoresToVbox();
+        }));
+        updateTimeline.setCycleCount(-1);
+        updateTimeline.play();
+    }
+    public void addScoresToVbox(){
         Request request = new Request("userInfo");
         User.loadUserInfo(NetworkController.sendRequest(request));
         ArrayList<User> sortedUsers = User.getUsers();
@@ -65,6 +78,7 @@ public class ScorePage {
 
 
     public void back(MouseEvent mouseEvent) {
+        updateTimeline.stop();
         App.changeMenu("MainMenuPage");
     }
 }

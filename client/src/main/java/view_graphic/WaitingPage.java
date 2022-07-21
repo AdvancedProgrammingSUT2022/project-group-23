@@ -2,6 +2,7 @@ package view_graphic;
 
 import com.google.gson.Gson;
 import controller.CivilizationController;
+import controller.GameController;
 import controller.NetworkController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -39,6 +40,7 @@ public class WaitingPage {
                     App.changeMenu("Game");
                 } else if (request.getType().equals("gameStarted")) {
                     User.loadGameInfo(request.getInfo().get("gameData"));
+                    User.setUsers(GameController.getPlayers());
                     App.changeMenu("Game");
                 }
 

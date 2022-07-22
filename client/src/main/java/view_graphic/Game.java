@@ -656,16 +656,16 @@ public class Game {
         for (int i = 0; i < GameController.getMapHeight(); i++) {
             for (int j = 0; j < GameController.getMapWidth(); j++) {
                 tiles[i][j].reBuildTile();
-                if (tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")) {
-                    showMessage("there is a ruin in tile : " + i + " , " + j);
+                if(tiles[i][j].getTile().isRuinFirst() && tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("visible")){
+                    showMessage("there is a ruin in tile : "+i+" , "+j);
                     tiles[i][j].getTile().setRuinFirst(false);
                 }
                 for (City city : GameController.getCurrentPlayer().getCities()) {
-                    if (city.getCapital().equals(tiles[i][j].getTile())) {
-                        Polygon select = tiles[i][j];
-                        if (tiles[i][j].getTile().getFeature() != null) select = tiles[i][j].getFeature();
+                    if(city.getCapital().equals(tiles[i][j].getTile())){
+                        Polygon select=tiles[i][j];
+                        if(tiles[i][j].getTile().getFeature()!=null) select=tiles[i][j].getFeature();
                         select.setOnMouseClicked(mouseEvent -> {
-                            if (GameController.getSelectedCity() == null) {
+                            if(GameController.getSelectedCity()==null){
                                 GameController.setSelectedCity(city);
                                 for (Tile tile : city.getTiles()) {
                                     getGraphicByModel(tile).setOpacity(0.7);
@@ -673,7 +673,7 @@ public class Game {
                                 }
                                 fillCityPanel(city);
                                 tileMap.getChildren().add(cityPanel);
-                            } else {
+                            }else {
                                 GameController.setSelectedCity(null);
                                 for (Tile tile : city.getTiles()) {
                                     getGraphicByModel(tile).setOpacity(1);
@@ -686,7 +686,7 @@ public class Game {
                 }
                 Unit unit;
                 if (!tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war") && (unitController.getTileNonCombatUnit(i, j) != null || unitController.getTileCombatUnit(i, j) != null)) {
-                    if (tiles[i][j].getTile().isRuin()) {
+                    if(tiles[i][j].getTile().isRuin()){
                         showMessage(civilizationController.benefitsOfRuin(tiles[i][j].getTile()));
                     }
                     if (unitController.getTileNonCombatUnit(i, j) != null) {
@@ -694,20 +694,19 @@ public class Game {
                     } else {
                         unit = unitController.getTileCombatUnit(i, j);
                     }
-                    if (!tiles[i][j].getGraphicUnits().containsKey(unit)) {
+                    if(!tiles[i][j].getGraphicUnits().containsKey(unit)) {
                         tiles[i][j].addUnit(unit);
-                        selectUnit(unit, tiles[i][j], backgroundSize);
+                        selectUnit(unit, tiles[i][j],backgroundSize);
                     }
-                    selectUnit(unit, tiles[i][j], backgroundSize);
+                    selectUnit(unit,tiles[i][j],backgroundSize);
                 }
-                int finalI = i, finalJ = j;
+                int finalI=i,finalJ=j;
                 Polygon select = tiles[i][j];
-                if (tiles[i][j].getTile().getFeature() != null && !tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war"))
-                    select = tiles[i][j].getFeature();
+                if (tiles[i][j].getTile().getFeature() != null && !tiles[i][j].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) select = tiles[i][j].getFeature();
                 select.setOnMouseClicked(mouseEvent -> {
                     if (GameController.getSelectedUnit() != null) {
-                        if (!unitAttack) {
-                            if (!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
+                        if(!unitAttack) {
+                            if(!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
                                 int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
                                 String output = unitController.moveSelectedUnit(finalI, finalJ);
                                 if (output.equals("unit is moving")) {
@@ -722,41 +721,41 @@ public class Game {
                                     GameController.setSelectedUnit(null);
                                 }
                             }
-                        } else {
-                            String output = "";
-                            int x1 = GameController.getSelectedUnit().getX(), y1 = GameController.getSelectedUnit().getY();
-                            City city = cityController.getCityAtCoordinate(tiles[finalI][finalJ].getTile().getX(), tiles[finalI][finalJ].getTile().getY());
-                            if (city == null) showMessage("There is no city on this tile!");
+                        }else {
+                            String output="";
+                            int x1 =GameController.getSelectedUnit().getX(), y1 =GameController.getSelectedUnit().getY();
+                            City city=cityController.getCityAtCoordinate(tiles[finalI][finalJ].getTile().getX(),tiles[finalI][finalJ].getTile().getY());
+                            if(city==null)showMessage("There is no city on this tile!");
                             else {
-                                if (!unitController.checkSelectedUnit().equals("ok")) {
+                                if(!unitController.checkSelectedUnit().equals("ok")){
                                     showMessage(unitController.checkSelectedUnit());
-                                } else {
+                                }else {
                                     if (GameController.getSelectedUnit().getRemainingMoves() == 0) {
                                         showMessage("this unit can't attack now!");
                                     } else {
-                                        ArrayList<City> reachableCities = unitController.reachableCities();
-                                        if (!reachableCities.contains(city)) {
+                                        ArrayList<City> reachableCities=unitController.reachableCities();
+                                        if(!reachableCities.contains(city)){
                                             showMessage("you can't attack this city");
-                                        } else {
-                                            output = unitController.attackCity(city);
+                                        }else {
+                                            output=unitController.attackCity(city);
                                             showMessage(output);
                                         }
                                     }
                                 }
                             }
-                            unitAttack = false;
-                            if (output.equals("your unit died!")) {
+                            unitAttack=false;
+                            if(output.equals("your unit died!")){
                                 tiles[x1][y1].deleteUnit(GameController.getSelectedUnit());
                             }
-                            if (output.equals("dominated")) {
-                                VBox which = new VBox();
-                                Text whichOne = new Text("you dominated this city, do you want to eliminate it or annex it?");
+                            if(output.equals("dominated")){
+                                VBox which=new VBox();
+                                Text whichOne=new Text("you dominated this city, do you want to eliminate it or annex it?");
                                 whichOne.getStyleClass().add("info");
                                 which.getChildren().add(whichOne);
-                                Button eliminate = new Button("Eliminate");
+                                Button eliminate=new Button("Eliminate");
                                 eliminate.getStyleClass().add("secondary-btn");
                                 which.getChildren().add(eliminate);
-                                Button annex = new Button("Annex");
+                                Button annex =new Button("Annex");
                                 annex.getStyleClass().add("secondary-btn");
                                 which.getChildren().add(annex);
                                 unitInformation.getChildren().add(which);
@@ -796,7 +795,7 @@ public class Game {
                                         App.changeMenu("Game");
                                     }
                                 });
-                            } else {
+                            }else {
                                 tileMap.getChildren().remove(unitInformation);
                                 tiles[x1][y1].getGraphicUnits().get(GameController.getSelectedUnit()).setOpacity(1);
                                 GameController.setSelectedUnit(null);
@@ -806,22 +805,22 @@ public class Game {
                             createTopBar(backgroundSize);
                         }
                     } else {
-                        if (!putCitizenToTile) {
+                        if(!putCitizenToTile) {
                             if (!deleteCitizen) {
-                                if (!purchaseTile) {
-                                    if (tileInformation == null && !tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
-                                        tileInformation = tiles[finalI][finalJ].getInfosBox(backgroundSize);
+                                if(!purchaseTile) {
+                                    if(tileInformation==null && !tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")){
+                                        tileInformation=tiles[finalI][finalJ].getInfosBox(backgroundSize);
                                         tileMap.getChildren().add(tileInformation);
-                                    } else if (!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")) {
+                                    }else if (!tiles[finalI][finalJ].getTile().getVisibilityForUser(GameController.getTurn()).equals("fog of war")){
                                         tileMap.getChildren().remove(tileInformation);
-                                        VBox tileInfos = tiles[finalI][finalJ].getInfosBox(backgroundSize);
-                                        if (tileInfos.getLayoutX() != tileInformation.getLayoutX()) {
+                                        VBox tileInfos=tiles[finalI][finalJ].getInfosBox(backgroundSize);
+                                        if(tileInfos.getLayoutX()!=tileInformation.getLayoutX()) {
                                             tileInformation = tileInfos;
                                             tileMap.getChildren().add(tileInformation);
-                                        } else tileInformation = null;
+                                        }else tileInformation=null;
                                     }
                                     for (City city : GameController.getCurrentPlayer().getCities()) {
-                                        if (tiles[finalI][finalJ].getTile().equals(city.getCapital())) {
+                                        if(tiles[finalI][finalJ].getTile().equals(city.getCapital())) {
                                             if (GameController.getSelectedCity() == null) {
                                                 GameController.setSelectedCity(city);
                                                 for (Tile tile1 : city.getTiles()) {
@@ -842,28 +841,28 @@ public class Game {
                                             }
                                         }
                                     }
-                                } else {
-                                    String output = cityController.purchaseTile(tiles[finalI][finalJ].getTile());
+                                }else {
+                                    String output=cityController.purchaseTile(tiles[finalI][finalJ].getTile());
                                     tileMap.getChildren().remove(cityPanel);
                                     fillCityPanel(GameController.getSelectedCity());
                                     tileMap.getChildren().add(cityPanel);
-                                    purchaseTile = false;
+                                    purchaseTile=false;
                                     showMessage(output);
                                 }
-                            } else {
-                                String output = cityController.removeCitizen(finalI, finalJ);
+                            }else {
+                                String output=cityController.removeCitizen(finalI,finalJ);
                                 tileMap.getChildren().remove(cityPanel);
                                 fillCityPanel(GameController.getSelectedCity());
                                 tileMap.getChildren().add(cityPanel);
-                                deleteCitizen = false;
+                                deleteCitizen=false;
                                 showMessage(output);
                             }
-                        } else {
-                            String output = cityController.putCitizenToWork(finalI, finalJ);
+                        }else {
+                            String output=cityController.putCitizenToWork(finalI, finalJ);
                             tileMap.getChildren().remove(cityPanel);
                             fillCityPanel(GameController.getSelectedCity());
                             tileMap.getChildren().add(cityPanel);
-                            putCitizenToTile = false;
+                            putCitizenToTile=false;
                             showMessage(output);
                         }
                     }

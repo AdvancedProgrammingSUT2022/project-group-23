@@ -108,13 +108,13 @@ public class Game {
             new Thread(() -> {
                 try {
                     String requestString = NetworkController.getSecondInputStream().readUTF();
-                    if(requestString.startsWith("game finished")){
+                    Request request = new Gson().fromJson(requestString, Request.class);
+                    if(request.getInfo().get("gameData").startsWith("game finished")){
                         winMessage = requestString;
                         GameController.setPlayers(null);
                         App.changeMenu("Game");
                         return;
                     }
-                    Request request = new Gson().fromJson(requestString, Request.class);
                     User.loadGameInfo(request.getInfo().get("gameData"));
                     App.changeMenu("Game");
 

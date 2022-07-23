@@ -142,7 +142,7 @@ public class GraphicTile extends Polygon {
 
     private void checkCapital() {
         ImagePattern imagePattern = null;
-        for (User user : User.getUsers()) {
+        for (User user : GameController.getPlayers()) {
             for (City city : user.getCities()) {
                 if(city.getCapital().equals(this.tile)){
                     imagePattern = new ImagePattern(new Image(getClass().getResource("/images/tile/Capital.png").toExternalForm()));

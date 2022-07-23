@@ -2,6 +2,7 @@ package view_graphic;
 
 import com.google.gson.Gson;
 import controller.*;
+import database.BuildingDatabase;
 import database.ImprovementDatabase;
 import database.ResourceDatabase;
 import database.TechnologyDatabase;
@@ -785,6 +786,9 @@ public class Game {
                                     reBuildTiles(backgroundSize);
                                     bar.getChildren().clear();
                                     createTopBar(backgroundSize);
+                                    if(city.getBuildings().contains(BuildingDatabase.findBuilding("Burial Tomb"))){
+                                        GameController.getCurrentPlayer().setGold(GameController.getCurrentPlayer().getGold()+city.gold()*2);
+                                    }
                                     if (civilizationController.isWin()) {
                                         civilizationController.winner(GameController.getCurrentPlayer());
                                         civilizationController.endGame();
@@ -1527,6 +1531,12 @@ public class Game {
                     cityPanel.getChildren().add(no);
                     cityPanel.getChildren().add(yes);
                 });
+                String tooltipString="";
+                int turnLeftBuilding=cityController.constructableBuildingsForSelectedCity().get(i).getCost()/ city.production();
+                tooltipString+="turns left to construct: "+turnLeftBuilding;
+                tooltipString+=" maintenance: "+cityController.constructableBuildingsForSelectedCity().get(i).getMaintenance();
+                tooltipString+=" defence: "+cityController.constructableBuildingsForSelectedCity().get(i).getDefence();
+                building.setTooltip(new Tooltip(tooltipString));
             }
             Button back = new Button("Back");
             back.getStyleClass().add("secondary-btn");

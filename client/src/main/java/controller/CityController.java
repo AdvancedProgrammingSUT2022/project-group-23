@@ -239,7 +239,19 @@ public class CityController extends GameController {
         ArrayList<Building> buildings = new ArrayList<>();
         for (Building building : BuildingDatabase.getBuildings()) {
             if ((building.getNeededBuilding() == null || selectedCity.getBuildings().contains(building)) && (building.getNeededTechnology() == null || currentPlayer.hasTechnology(building.getNeededTechnology()))) {
-                buildings.add(building);
+                if(building.getName().equals("Water Mill")){
+                 if(selectedCity.getCapital().getRivers().size()>0){
+                     buildings.add(building);
+                 }
+                }else if(building.getName().equals("Circus")){
+                    for (Tile tile : selectedCity.getTiles()) {
+                        if(tile.getResource().getName().equals("Horses") || tile.getResource().getName().equals("Ivory")){
+                            buildings.add(building);
+                        }
+                    }
+                } else {
+                    buildings.add(building);
+                }
             }
         }
         return buildings;

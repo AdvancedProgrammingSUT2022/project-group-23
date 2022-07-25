@@ -291,10 +291,10 @@ public class User implements Comparable<User> {
     }
 
     public static void autoSave() {
-        GameController.setSaveNumber(GameController.getSaveNumber() + 1);
         if (GameController.getSaveNumber() > AutoSaveMenu.getAutoSaveNumber())
             GameController.setSaveNumber(1);
         User.saveGame("AutoSave" + GameController.getSaveNumber());
+        GameController.setSaveNumber(GameController.getSaveNumber() + 1);
     }
 
     private static Gson getGson() {

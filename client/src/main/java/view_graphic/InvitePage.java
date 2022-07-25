@@ -112,6 +112,7 @@ public class InvitePage {
                                 Game.setCivilizationController(new CivilizationController(User.getUsers()));
                                 NetworkController.getSecondOutputStream().writeUTF(User.getGameData());
                                 NetworkController.getSecondOutputStream().flush();
+                                Game.setShouldRead(true);
                                 App.changeMenu("Game");
                             }
                             break;

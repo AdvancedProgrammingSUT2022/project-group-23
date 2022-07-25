@@ -22,7 +22,7 @@ public class GameController extends Thread{
         this.capacity = capacity;
         this.players = new ArrayList<>();
         this.hasStarted = false;
-        this.waiting = true;
+        this.waiting = false;
         this.invites = new ArrayList<>();
         this.inviter = null;
         gameControllers.add(this);
@@ -85,7 +85,7 @@ public class GameController extends Thread{
                     player.getSecondOutputStream().writeUTF(gson.toJson(request));
                     player.getSecondOutputStream().flush();
                 }
-                if(data.startsWith("game finished"))break;
+                if(data.startsWith("Game finished"))break;
             }
         } catch (IOException e) {
             System.out.println("can't connect to client");

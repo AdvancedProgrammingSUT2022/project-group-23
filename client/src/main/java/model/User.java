@@ -500,5 +500,10 @@ public class User implements Comparable<User> {
     public int hashCode() {
         return Objects.hash(username, password, nickname, highScore);
     }
+
+    @Override
+    public String toString() {
+        return username + " " + nickname;
+    }
 }
 

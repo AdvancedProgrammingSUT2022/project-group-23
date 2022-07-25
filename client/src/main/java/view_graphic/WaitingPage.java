@@ -37,10 +37,12 @@ public class WaitingPage {
                     Game.setCivilizationController(new CivilizationController(User.getUsers()));
                     NetworkController.getSecondOutputStream().writeUTF(User.getGameData());
                     NetworkController.getSecondOutputStream().flush();
+                    Game.setShouldRead(true);
                     App.changeMenu("Game");
                 } else if (request.getType().equals("gameStarted")) {
                     User.loadGameInfo(request.getInfo().get("gameData"));
                     User.setUsers(GameController.getPlayers());
+                    Game.setShouldRead(true);
                     App.changeMenu("Game");
                 }
 

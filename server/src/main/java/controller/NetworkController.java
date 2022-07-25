@@ -135,7 +135,7 @@ public class NetworkController extends Thread{
                         for(NetworkController networkController : NetworkController.getNetworkControllers()){
                             if(networkController.getUser().getUsername().equals(request.getInfo().get("inviter"))){
                                 try {
-                                    networkController.getSecondOutputStream().writeUTF(user.getUsername() + "accepted your invite");
+                                    networkController.getSecondOutputStream().writeUTF(user.getUsername() + " accepted your invite");
                                     networkController.getSecondOutputStream().flush();
                                 } catch (IOException e) {
                                     System.out.println("can't update client");
@@ -157,7 +157,7 @@ public class NetworkController extends Thread{
                         for(NetworkController networkController : NetworkController.getNetworkControllers()){
                             if(networkController.getUser().getUsername().equals(request.getInfo().get("inviter"))){
                                 try {
-                                    networkController.getSecondOutputStream().writeUTF(user.getUsername() + "rejected your invite");
+                                    networkController.getSecondOutputStream().writeUTF(user.getUsername() + " rejected your invite");
                                     networkController.getSecondOutputStream().flush();
                                 } catch (IOException e) {
                                     System.out.println("can't update client");
@@ -174,7 +174,7 @@ public class NetworkController extends Thread{
                 }
                 case "finishGame" -> {
                     User.getUserByUsername(request.getInfo().get("winner")).setLastWin(request.getInfo().get("time"));
-                    gameController.setData("game finished \n" + request.getInfo().get("winner") + " won");
+                    gameController.setData("Game finished \n" + request.getInfo().get("winner") + " won");
                     gameController.setWaiting(false);
                 }
                 case "updateScores" -> {

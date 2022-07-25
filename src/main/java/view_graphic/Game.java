@@ -1361,7 +1361,7 @@ public class Game {
             Text currentProduction=new Text("Your Current Production: "+city.getConstructingUnit());
             currentProduction.getStyleClass().add("info");
             cityPanel.getChildren().add(currentProduction);
-            Text text =new Text("You Can Constrict these units:");
+            Text text =new Text("You Can Construct these units:");
             text.getStyleClass().add("info");
             cityPanel.getChildren().add(text);
             for (int i=0;i<unitController.getConstructableUnits().size();i++){
@@ -1435,7 +1435,7 @@ public class Game {
                 }
                 cityPanel.getChildren().add(buildings);
             }
-            Text text =new Text("You Can Constrict these buildings:");
+            Text text =new Text("You Can Construct these buildings:");
             text.getStyleClass().add("info");
             cityPanel.getChildren().add(text);
             for (int i=0;i<cityController.constructableBuildingsForSelectedCity().size();i++){

@@ -25,8 +25,6 @@ public class CityController extends GameController {
                 city.addTile(tile);
         }
         currentPlayer.setScore(currentPlayer.getScore() + 100);
-        if (AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after founding a city"))
-            User.autoSave();
         return "city founded";
     }
 

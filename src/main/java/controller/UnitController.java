@@ -198,6 +198,8 @@ public class UnitController extends GameController {
         if(message.equals("city founded")){
             currentPlayer.addNotification("you found a city  at : (" + selectedUnit.getX() + "," + selectedUnit.getY() + ")");
             deleteSelectedUnit(false);
+            if (AutoSaveMenu.getSelectedAutoSave() != null && AutoSaveMenu.getSelectedAutoSave().equals("after founding a city"))
+                User.autoSave();
         }
         return message;
 
